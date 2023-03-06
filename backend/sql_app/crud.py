@@ -6,6 +6,17 @@ from sqlalchemy.orm import Session
 
 import models
 
+def get_listing(db: Session, listing_id: int):
+    return db.query(models.Listing).filter(models.Listing.id == listing_id).first()
+
+def get_listings(db: Session):
+    return ''
+
+
+'''
+Online templates copied below
+'''
+
 # def get_user(db: Session, user_id: int):
 #     return db.query(models.User).filter(models.User.id == user_id).first()
 
