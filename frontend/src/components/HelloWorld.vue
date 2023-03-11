@@ -88,6 +88,7 @@
         </v-row>
       </v-col>
     </v-row>
+    <router-link to="../pages/page.vue">page </router-link>
   </v-container>
 </template>
 
