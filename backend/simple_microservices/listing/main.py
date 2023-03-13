@@ -2,7 +2,7 @@
 Here core functions are defined for different operations.
 '''
 
-from typing import Dict
+from typing import Dict, List
 from fastapi import FastAPI, Depends, HTTPException, Request, Form
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
@@ -32,33 +32,34 @@ def ping():
     return 'pong'
 
 ### GET ALL LISTINGS ###
-# @app.get('/listing', response_model=schemas.ListingBase)
-# async def get_all_listings(db: Session = Depends(get_db)):
-#     try:
-#         listing = db.query(models.Listing).all()
-#         if not listing:
-#             raise HTTPException(status_code=404, detail="Listing not found")
-#         return listing
-#     except SQLAlchemyError as e:
-#         raise HTTPException(status_code=500, detail=e)
+@app.get('/listing', response_model=List[schemas.Listing])
+async def get_all_listings(db: Session = Depends(get_db)):
+    try:
+        listing = db.query(models.Listing).all()
+        print(type(listing))
+        if not listing:
+            raise HTTPException(status_code=404, detail="Listing not found")
+        return listing
+    except SQLAlchemyError as e:
+        raise HTTPException(status_code=500, detail=e)
     
-@app.get('/listing', response_model=schemas.ListingBase)
-def get_all_listings(db: Session = Depends(get_db)):
-    listing = db.query(models.Listing).all()
-    if not listing:
-        raise HTTPException(status_code=404, detail="Listing not found")
-    return listing
+# @app.get('/listing', response_model=schemas.ListingBase)
+# def get_all_listings(db: Session = Depends(get_db)):
+#     listing = db.query(models.Listing).all()
+#     if not listing:
+#         raise HTTPException(status_code=404, detail="Listing not found")
+#     return listing
     # except SQLAlchemyError as e:
     #     raise HTTPException(status_code=500, detail=e)
 
 ### GET SINGLE LISTING BASED ON LISTING ID ###
-@app.get('/listing/{listing_id}', response_model=schemas.ListingBase)
+@app.get('/listing/{listing_id}', response_model=schemas.Listing)
 async def get_listing_by_id(listing_id: int, db: Session = Depends(get_db)):
     try: 
         listing = db.query(models.Listing).filter(models.Listing.listing_id==listing_id).first()
         if not listing:
             raise HTTPException(status_code=404, detail="Listing not found")
-        return listing 
+        return vars(listing)
     except SQLAlchemyError as e:
         raise HTTPException(status_code=500, detail=e)
     
