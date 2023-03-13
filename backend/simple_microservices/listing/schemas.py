@@ -1,11 +1,10 @@
 import datetime
-from typing import Optional
+from typing import Union, Optional
 from pydantic import BaseModel
 
 # Optional[str] = None
 
 class ListingBase(BaseModel):
-    listing_id: int
     corporate_id: int
     name: str
     description: str
@@ -15,11 +14,11 @@ class ListingBase(BaseModel):
     district: int
     category: int
     quantity: int
-    nlp_1: str
-    nlp_2: str
-    nlp_3: str
-    created: datetime.datetime
-    modified: datetime.datetime
+    nlp_cat1: Optional[Union[str, None]] = None
+    nlp_cat2: Optional[Union[str, None]] = None
+    nlp_cat3: Optional[Union[str, None]] = None
+    created: Optional[datetime.datetime] = None
+    modified: Optional[datetime.datetime] = None
 
 class ListingCreate(ListingBase):
     pass
