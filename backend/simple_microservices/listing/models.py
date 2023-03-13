@@ -1,6 +1,7 @@
 '''
 Database tables Classes are defined here
 '''
+
 import datetime
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime, func
 from sqlalchemy.orm import relationship
@@ -19,8 +20,8 @@ class Listing(Base):
     district = Column(Integer, nullable = False, index=True)
     category = Column(String(50), nullable=False, index=True)
     quantity = Column(Integer, nullable=False, index=True)
-    nlp_cat1 = Column(String(100), nullable=False, index=True)
-    nlp_cat2 = Column(String(100), nullable=False, index=True)
-    nlp_cat3 = Column(String(100), nullable=False, index=True)
+    nlp_cat1 = Column(String(100), index=True)
+    nlp_cat2 = Column(String(100), index=True)
+    nlp_cat3 = Column(String(100), index=True)
     created = Column(DateTime(timezone=True), server_default=func.now())
-    modified = Column(DateTime(timezone=True), onupdate=func.now())
+    modified = Column(DateTime(timezone=True),  onupdate=func.now())
