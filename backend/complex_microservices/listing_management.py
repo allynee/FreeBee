@@ -55,7 +55,6 @@ def testMSAccess(listing):
         "data": {"listing_result": listing_result}
     }
 
-
 def processCreateListing(listing):
     #2. send JSON to geocoding API
     #Invoke the geocoding microservice
