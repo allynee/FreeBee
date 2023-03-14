@@ -18,6 +18,7 @@ class Listing(Base):
     address = Column(String(200), nullable = False)
     postal= Column(Integer, nullable = False)
     district = Column(Integer, nullable = False, index=True)
+    area = Column(String(50), nullable = False)
     category = Column(String(50), nullable=False, index=True)
     quantity = Column(Integer, nullable=False, index=True)
     nlp_cat1 = Column(String(100), index=True)

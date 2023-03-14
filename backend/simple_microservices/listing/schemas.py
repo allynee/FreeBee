@@ -10,6 +10,7 @@ class ListingBase(BaseModel):
     address: str
     postal: Optional[int] = None
     district: Optional[int] = None
+    area: Optional[str] = None
     category: str
     quantity: int
     nlp_cat1: Optional[Union[str, None]] = None
