@@ -6,15 +6,15 @@ import os, sys
 import requests
 from invokes import invoke_http
 
-import amqp_setup
-import pika
-import json
+# import amqp_setup
+# import pika
+# import json
 
 app = Flask(__name__)
 CORS(app)
 
-listing_URL = "http://localhost:5000/listing"
-geocoding_URL = "http://localhost:5000/geocoding"
+listing_URL = "http://localhost:8000/listing"
+geocoding_URL = "http://localhost:8000/geocoding"
 
 @app.route("/create_listing", methods=['POST'])
 def create_listing():
@@ -26,7 +26,8 @@ def create_listing():
 
             # do the actual work
             # 1. Create listing info 
-            result = processCreateListing(listing)
+            # result = processCreateListing(listing)
+            result = testMSAccess(listing)
             return jsonify(result), result["code"]
 
         except Exception as e:
@@ -47,8 +48,15 @@ def create_listing():
         "message": "Invalid JSON input: " + str(request.get_data())
     }), 400
 
-def processCreateListing(listing):
+def testMSAccess(listing):
+    print('\n-----Invoking listing microservice-----')
+    listing_result = invoke_http(listing_URL, method='POST', json=listing)
+    return {
+        "data": {"listing_result": listing_result}
+    }
 
+
+def processCreateListing(listing):
     #2. send JSON to geocoding API
     #Invoke the geocoding microservice
     print('\n-----Invoking geocoding microservice-----')
