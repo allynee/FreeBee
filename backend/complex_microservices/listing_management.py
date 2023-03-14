@@ -3,7 +3,7 @@ from flask_cors import CORS
 
 import os, sys
 
-import requests
+# import requests
 from invokes import invoke_http
 
 # import amqp_setup
@@ -26,9 +26,9 @@ def create_listing():
 
             # do the actual work
             # 1. Create listing info 
-            # result = processCreateListing(listing)
+            #result = processCreateListing(listing)
             result = testMSAccess(listing)
-            return jsonify(result), result["code"]
+            return jsonify(result)
 
         except Exception as e:
             # Unexpected error in code
