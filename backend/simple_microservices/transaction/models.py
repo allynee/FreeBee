@@ -9,7 +9,7 @@ from sqlalchemy.orm import relationship
 from database import Base
 
 class Transaction(Base):
-    tablename = 'transaction'
+    __tablename__ = 'transaction'
     transaction_id = Column(Integer, primary_key=True, autoincrement=True, index=True)
     listing_id = Column(Integer, nullable=False, index=True)
     corporate_id = Column(Integer, nullable=False, index=True)

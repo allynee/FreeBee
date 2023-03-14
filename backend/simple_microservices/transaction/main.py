@@ -1,4 +1,4 @@
-# To run with debug: uvicorn main:app --reload --host 0.0.0.0 --port 8000
+# To run with debug: uvicorn main:app --reload --host 0.0.0.0 --port 9000
 
 '''
 Here core functions are defined for different operations.
@@ -62,8 +62,8 @@ def ping():
 ### CREATE SINGLE LISTING ###
 @app.post('/transaction', response_model=schemas.Transaction)
 def create_transaction(transaction: schemas.TransactionCreate, db: Session = Depends(get_db)):
-    return crud.create_transaction(db, transaction=transaction)
+    return crud.create_transaction(db=db, transaction=transaction)
 
 if __name__ == '__main__':
     import uvicorn
-    uvicorn.run(app, host='0.0.0.0', port=8000)
+    uvicorn.run(app, host='0.0.0.0', port=9000)
