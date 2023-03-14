@@ -1,36 +1,35 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import create_engine
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://admin1:12345678@esdeeznutspublic.cwjfrbjqz4fp.ap-southeast-1.rds.amazonaws.com:3306/transaction'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://admin1:12345678@esdeeznutspublic.cwjfrbjqz4fp.ap-southeast-1.rds.amazonaws.com:3306/transaction'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 
 db = SQLAlchemy(app)
-
-sql_file = open('mysql+pymysql://admin1:12345678@esdeeznutspublic.cwjfrbjqz4fp.ap-southeast-1.rds.amazonaws.com:3306/transaction', 'r')
-
+engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
 
 class Transaction(db.Model):
     __tablename__ = 'transaction'
 
 
-    transaction_ID = db.Column(db.Integer, primary_key=True, nullable=False)
-    listing_ID = db.Column(db.Integer, nullable=False)
-    user_ID = db.Column(db.Integer, nullable=False)
-    corporate_ID = db.Column(db.Integer, nullable=False)
+    transaction_id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
+    listing_id = db.Column(db.Integer, nullable=False)
+    user_id = db.Column(db.Integer, nullable=False)
+    corporate_id = db.Column(db.Integer, nullable=False)
     status = db.Column(db.String(13), nullable=False)
 
 
-    def __init__(self, transaction_ID, listing_ID, user_ID, corporate_ID, status):
-        self.transaction_ID = transaction_ID
-        self.listing_ID = listing_ID
-        self.user_ID = user_ID
-        self.corporate_ID = corporate_ID
+    def __init__(self, transaction_id, listing_id, user_id, corporate_id, status):
+        self.transaction_id = transaction_id
+        self.listing_id = listing_id
+        self.user_id = user_id
+        self.corporate_id = corporate_id
         self.status = status
 
     def json(self):
-        return {"transaction_ID": self.transaction_ID, "listing_ID": self.listing_ID, "user_ID": self.user_ID, "corporate_ID": self.corporate_ID, "status": self.status}
+        return {"transaction_id": self.transaction_id, "listing_id": self.listing_id, "user_id": self.user_id, "corporate_id": self.corporate_id, "status": self.status}
 
 @app.route("/")
 def index():
@@ -38,37 +37,71 @@ def index():
 
 @app.route("/transaction")
 def get_all():
-    return jsonify({"transactions": [transaction.json() for transaction in Transaction.query.all()]})
-
-@app.route("/transaction/transaction_ID", methods=["GET"])
-def find_by_transactionID(transaction_ID):
-    return jsonify(
+    transaction_list = Transaction.query.all()
+    if len(transaction_list):
+        return jsonify(
             {
                 "code": 200,
                 "data": {
-                    "transaction_id":  1,
-                    "listing_id": 1,
-                    "user_id": 1,
-                    "corporate_id": 1,
-                    "status": "Completed"
+                    "transaction": [transaction.json() for transaction in transaction_list]
                 }
-            }, 200
+            }
         )
-
-@app.route("/transaction/<int:transaction_ID>", methods=["POST"])
-def create_transaction():
     return jsonify(
+        {
+        "code": 404,
+        "message": "There are no transactions."
+        }
+    ), 404
+
+@app.route("/transaction/<int:transaction_id>", methods=["GET"])
+def find_by_transactionID(transaction_id):
+    print("test")
+    transaction = Transaction.query.filter_by(transaction_id=transaction_id).first()
+    if transaction:
+        return jsonify(
             {
-                "code": 201,
-                "data": {
-                    "transaction_id":  1,
-                    "listing_id": 1,
-                    "user_id": 1,
-                    "corporate_id": 1,
-                    "status": "Completed"
-                }
-            }, 201
+                "code": 200,
+                "data": transaction.json()
+            }
         )
+    return jsonify(
+        {
+            "code": 404,
+            "message": "Transaction not found."
+        }
+    ), 404
+
+@app.route("/transaction", methods=["POST"])
+def create_transaction():
+    data = request.get_json()
+    transaction = Transaction(**data)
+
+    if Transaction.query.filter_by(listing_id=transaction.listing_id, user_id=transaction.user_id).first():
+        return jsonify(
+            {
+                "code": 400,
+                "data": {
+                    "transaction_ID": transaction_id
+                },
+                "message": "A transaction with listing ID '{}' and user ID '{}' already exists.".format(transaction.listing_id, transaction.user_id)
+            }
+        ), 400
+    try:
+        db.session.add(transaction)
+        db.session.commit()
+    except:
+        return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "transaction_ID": transaction_id
+                },
+                "message": "An error occurred creating the transaction."
+            }
+        ), 500
+    
+    return jsonify(transaction)
 
 if __name__ == "__main__":
     app.run(port=5000, debug=True)
