@@ -65,6 +65,10 @@ def create_listing(listing: schemas.ListingCreate, db: Session = Depends(get_db)
     return crud.create_listing(db, listing=listing)
 
 ### UPDATE LISTING QUANTITY ###
+@app.put('/listing/{listing_id}', response_model=schemas.Listing)
+def update_listing(listing_id: int, listing: schemas.ListingUpdate, db: Session = Depends(get_db)):
+    return crud.update_listing(db, listing_id=listing_id, data=listing)
+
 # @app.put('/listing/{listing_id}', response_model=schemas.Listing)
 # def update_listing(listing_id: int, new_qty: int, listing: schemas.ListingUpdate, db: Session = Depends(get_db)):
 #     db_listing = crud.get_listing(db, listing_id=listing_id)

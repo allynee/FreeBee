@@ -3,7 +3,7 @@ from flask_cors import CORS
 
 import os, sys
 
-import requests
+from requests import request
 from invokes import invoke_http
 
 # import amqp_setup
