@@ -48,9 +48,11 @@ async function sendMail(){
     }
 }
 
-sendMail().then(result => console.log('Email sent...', result))
-.catch(error => console.log(error.message));
+// sendMail().then(result => console.log('Email sent...', result))
+// .catch(error => console.log(error.message));
 // node app.js TO RUN THE THING
+
+module.exports = { sendMail };
 
 // error message: self signed certificate in certificate chain
 // // solution 'set NODE_TLS_REJECT_UNAUTHORIZED=0' in terminal (this is for windows)

@@ -27,7 +27,7 @@ def create_listing():
             # do the actual work
             # 1. Create listing info 
             #result = processCreateListing(listing)
-            result = testMSAccess(listing)
+            result = testListing(listing)
             return jsonify(result)
 
         except Exception as e:
@@ -48,11 +48,18 @@ def create_listing():
         "message": "Invalid JSON input: " + str(request.get_data())
     }), 400
 
-def testMSAccess(listing):
+def testListing(listing):
     print('\n-----Invoking listing microservice-----')
     listing_result = invoke_http(listing_URL, method='POST', json=listing)
     return {
         "data": {"listing_result": listing_result}
+    }
+
+def testGeoCoding():
+    print('\n-----Invoking geocoding microservice-----')
+    geocoding_result = invoke_http(geocoding_URL, method='GET', json=listing)
+    return {
+        "data": {"listing_result": geocoding_result}
     }
 
 def processCreateListing(listing):
