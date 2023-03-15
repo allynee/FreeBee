@@ -1,0 +1,11 @@
+FROM python:3-slim
+
+WORKDIR /allyne/esdeeznuts/backend/simple_microservices/listing
+
+COPY requirements.txt ./
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY /allyne/esdeeznuts/backend/simple_microservices/listing/main.py .
+
+CMD ["python","main.py"]
