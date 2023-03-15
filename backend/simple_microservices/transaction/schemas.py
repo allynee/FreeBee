@@ -8,12 +8,6 @@ class TransactionBase(BaseModel):
     user_id: int
     status: str
 
-class TransactionCreate(TransactionBase):
-    pass
-
-class TransactionUpdate(TransactionBase):
-    pass
-
 class Transaction(TransactionBase):
     transaction_id: int
     created: datetime.datetime
@@ -21,3 +15,10 @@ class Transaction(TransactionBase):
 
     class Config:
         orm_mode = True
+
+
+class TransactionCreate(TransactionBase):
+    pass
+
+class TransactionUpdate(TransactionBase):
+    __annotations__ = {k: Optional[v] for k, v in TransactionBase.__annotations__.items()}

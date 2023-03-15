@@ -43,26 +43,31 @@ Insert relavant operations below
 def ping():
     return 'pong'
 
-### GET ALL LISTINGS ###
-# @app.get('/transaction', response_model=List[schemas.Listing])
-# def get_all_listings(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-#     items = crud.get_listings(db,skip=skip,limit=limit)
-#     if items is None:
-#         raise HTTPException(status_code=404, detail="No listings available")
-#     return items
+### GET ALL TRANSACTIONS ###
+@app.get('/transaction', response_model=List[schemas.Transaction])
+def get_all_transactions(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    transactions = crud.get_transactions(db,skip=skip,limit=limit)
+    if transactions is None:
+        raise HTTPException(status_code=404, detail="No transactions available")
+    return transactions
 
-# ### GET SINGLE LISTING BASED ON LISTING ID ###
-# @app.get('/listing/{listing_id}', response_model=schemas.Listing)
-# def get_listing_by_id(listing_id: int, db: Session = Depends(get_db)):
-#     listing = crud.get_listing(db, listing_id=listing_id)
-#     if listing is None:
-#         raise HTTPException(status_code=404, detail="Listing not found")
-#     return listing
+# ### GET SINGLE TRANSACTION BASED ON TRANSACTION ID ###
+@app.get('/transaction/{transaction_id}', response_model=schemas.Transaction)
+def get_transaction_by_id(transaction_id: int, db: Session = Depends(get_db)):
+    transaction = crud.get_transaction(db, transaction_id=transaction_id)
+    if transaction is None:
+        raise HTTPException(status_code=404, detail="Transaction not found")
+    return transaction
     
-### CREATE SINGLE LISTING ###
+### CREATE SINGLE TRANSACTION ###
 @app.post('/transaction', response_model=schemas.Transaction)
 def create_transaction(transaction: schemas.TransactionCreate, db: Session = Depends(get_db)):
     return crud.create_transaction(db=db, transaction=transaction)
+
+### UPDATE ANY FIELD IN TRANSACTION ###
+@app.put('/transaction/{transaction_id}', response_model=schemas.Transaction)
+def update_transaction(transaction_id: int, transaction: schemas.TransactionUpdate, db: Session = Depends(get_db)):
+    return crud.update_transaction(db, transaction_id=transaction_id, data=transaction)
 
 if __name__ == '__main__':
     import uvicorn
