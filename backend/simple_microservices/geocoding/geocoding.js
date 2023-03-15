@@ -86,7 +86,7 @@ async function geocode(address) {
           area = key;
         }
       });
-      let return_json = {'area': area, 'district': district , 'postal_code': postalCode};
+      let return_json = {"address":address,'area': area, 'district': district , 'postal_code': postalCode};
       return return_json;
     } catch (error) {
       console.log(error);
