@@ -35,6 +35,17 @@ def update_listing(db: Session, listing_id: int, data: schemas.ListingUpdate):
 
     return listing
 
+def delete_listing(db: Session, listing_id: int):
+    listing= db.query(models.Listing).filter(models.Listing.listing_id == listing_id).first()
+
+    if not listing:
+        raise HTTPException(status_code=404, detail="Listing not found")
+
+    db.delete(listing)
+    db.commit()
+
+    return {"message": "Listing deleted successfully"}
+
 # def update_listing(db: Session, db_obj: models.Listing, obj_in: Union[schemas.ListingUpdate, Dict[str, Any]]) -> models.Listing:
 #     obj_data = jsonable_encoder(db_obj)
 #     if isinstance(obj_in, dict):
