@@ -29,4 +29,4 @@ class ListingCreate(ListingBase):
     pass
 
 class ListingUpdate(ListingBase):
-    pass
+    __annotations__ = {k: Optional[v] for k, v in ListingCreate.__annotations__.items()}
