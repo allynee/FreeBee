@@ -5,69 +5,75 @@ const express = require('express')
 const app = express()
 const port = 3000
 
-const amqplib = require('amqplib');
+const amqp = require('amqplib/callback_api');
 
-var amqp_url = process.env.CLOUDAMQP_URL || 'amqp://localhost:5672';
-var amqp_setup = require('./amqp_setup');
-
-
-async function init() {
-    const connection = await amqp.connect(amqp_url)
-   
-    const q = "Notification"
-    const channel = await connection.createChannel()
-   
-    await channel.assertQueue(q, { autoDelete: false })
-   
-    channel.prefetch(1)
-   
-    channel.consume(q, (msg) => {
-     console.log("receieved msg from" + __file__)
-     console.log(JSON.parse(msg.content))
-     channel.ack(msg)
-     sendOneEmail(JSON.parse(msg.content))
+amqp.connect('amqp://127.0.0.1', (err, connection) => { 
+    if (err){
+        throw err;
+    }
+    connection.createChannel((err, channel) => {
+        if (err){
+            throw err;
+        }
+        let queueName = "letterbox";
+        channel.assertQueue(queueName, { durable: false });
+        channel.consume(queueName, (msg) => {
+            console.log("receieved :" + msg.content.toString())
+            channel.ack(msg);
+            sendOneEmail(msg.content.toString())
+        })
     })
-   }
+})
 
 function sendOneEmail(email){
+    console.log("sending mail " + email)
     if (email != null){
         console.log("sending mail " + email)
         try {
             // This tries to send the email
             result = mail.sendMail(email);
-            // res.status(200).send('ITS OKAY!!')
-            // If the email sending is successful, it will return a string
-            if (typeof result == 'string'){
-                res.json({
-                    message: 'email sent',
-                    status: 250
-                    
-                })
-            }
-            // if the email sending is unsuccessful, it will return result = undefined
-            else{res.json({
-                    message: 'Wrong email format',
-                    status: 400
-                })}
+            console.log(result)
+            result.then((result) => {
+                // res.status(200).send('ITS OKAY!!')
+                // If the email sending is successful, it will return a string
+                if (typeof result == 'string'){
+                    console.log('email sent ' + 250)
+                    return JSON.parse(JSON.stringify({
+                        message: 'email sent',
+                        status: 250
+                        
+                    }))
+                }
+                // if the email sending is unsuccessful, it will return result = undefined
+                else{
+                    console.log('email not sent ' + 400)
+                    return JSON.parse(JSON.stringify({
+                        message: 'Wrong email format',
+                        status: 400
+                    }))
+                }
+            })
         } catch (error) {
         // this is if there is an error with trying the sendmail function
-            res.json({
+            console.log('email not sent ' + 500)
+            return JSON.parse(JSON.stringify({
                 message: 'internal error within samplemail.js',
                 status: 500
-            });
+            }));
             // res.status(500).send('internal error within samplemail.js')
         }
     }
-    res.json({
+    console.log('email not sent ' + 404)
+    return JSON.parse(JSON.stringify({
     // this is if there is no email parameter at all
         message: 'invalid email address',
         status: 404
-    });
+    }));
     // res.status(404).send('invalid email address')
 }
 
-if( __name__ == "__main__"){
-    console.log("\nThis is " + os.path.basename(__file__), end='')
-    console.log(": monitoring routing key '{" + monitorBindingKey + "}' in exchange '{" + amqp_setup.exchangename + "}' ...")
-    // call function num1
-}
+// if( __name__ == "__main__"){
+//     console.log("\nThis is " + os.path.basename(__file__), end='')
+//     console.log(": monitoring routing key '{" + monitorBindingKey + "}' in exchange '{" + amqp_setup.exchangename + "}' ...")
+//     // call function num1
+// }

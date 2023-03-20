@@ -9,7 +9,7 @@ const { google } = require('googleapis');
 const CLIENT_ID = '406765810173-lial73q96ehf1bm3c2num3q4870df64l.apps.googleusercontent.com';
 const CLIENT_SECRET = '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';
 const REDIRECT_URI = 'https://developers.google.com/oauthplayground';
-const REFRESH_TOKEN = '1//04c1KdrptPhA3CgYIARAAGAQSNwF-L9Ir185THrwzqwIZmVZiHrO44nsX2RRsKKFpBl_8-uuObVh9-F-mWAJgNISfmWJc_MKeg34';
+const REFRESH_TOKEN = '1//04uU3zbcjZsvBCgYIARAAGAQSNwF-L9IrUDZwqKk3Gma0g7cTVaDg2VUkGEx8XkzoXEXdweTruHFXuhUYMkpLKmWzWdzvoBVyB3Y';
 // const OAuth2 = google.auth.OAuth2;
 
 //access token will expire aft awhile so have to recreate it
@@ -47,8 +47,17 @@ async function sendMail(toMail){
         };
 
         //this returns a promise
-        const result = await transport.sendMail(mailOptions)
-        return result.response
+        // const result = await transport.sendMail(mailOptions)
+        await transport.sendMail(mailOptions)
+        .then(function (result) {
+            console.log(result);
+            return result.response;
+        })
+        .catch(function (error) {
+            // console.log(error);
+            return error.response;
+        });
+        // return result.response;
         
     } catch (error){
         return error.response
@@ -63,3 +72,6 @@ module.exports = { sendMail };
 
 // error message: self signed certificate in certificate chain
 // // solution 'set NODE_TLS_REJECT_UNAUTHORIZED=0' in terminal (this is for windows)
+
+// error message: 400: Invalid Credentials
+// refresh token expires every 7 days
