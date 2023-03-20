@@ -1,6 +1,7 @@
 // THIS IS A SAMPLE FOR SENDING EMAILS USING NODEMAILER AND GOOGLE API
 // npm install googleapis nodemailer
 // THIS IS IN APP.JS WHEN TESTED
+process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = 0
 
 const nodemailer = require('nodemailer');
 const { google } = require('googleapis');
@@ -15,8 +16,14 @@ const REFRESH_TOKEN = '1//04c1KdrptPhA3CgYIARAAGAQSNwF-L9Ir185THrwzqwIZmVZiHrO44
 const oAuth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
 oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
 
+
+// to = 'lixuen.low.2021@smu.edu.sg',
+// subject = 'SAMPLE EMAIL from FreeBeeSg2',
+// text = 'This is a sample email from FreeBeeSg \n Please do not reply to this email. \n Thank you for using FreeBeeSg!',
+// html = '<h1>This is a sample email from FreeBeeSg</h1> \n <h2>Please do not reply to this email.</h2> \n <p>Thank you for using FreeBeeSg!</p>'
+
 // can pass in parameters to sendMail function
-async function sendMail(){
+async function sendMail(toMail){
     try{
         const accessToken = await oAuth2Client.getAccessToken();
         const transport = nodemailer.createTransport({
@@ -33,7 +40,7 @@ async function sendMail(){
 
         const mailOptions = {
             from: 'FreeBeeSg <FreeBeeDoNotReply@gmail.com>',
-            to: 'lixuen.low.2021@smu.edu.sg',
+            to: toMail,
             subject: 'SAMPLE EMAIL from FreeBeeSg2',
             text: 'This is a sample email from FreeBeeSg \n Please do not reply to this email. \n Thank you for using FreeBeeSg!',
             html: '<h1>This is a sample email from FreeBeeSg</h1> \n <h2>Please do not reply to this email.</h2> \n <p>Thank you for using FreeBeeSg!</p>'
@@ -41,14 +48,14 @@ async function sendMail(){
 
         //this returns a promise
         const result = await transport.sendMail(mailOptions)
-        return result
+        return result.response
         
     } catch (error){
-        return error
+        return error.response
     }
 }
 
-// sendMail().then(result => console.log('Email sent...', result))
+// sendMail('lixuen.low.2021@scis.smu.edu.sg').then(result => console.log('Email sent...', result))
 // .catch(error => console.log(error.message));
 // node app.js TO RUN THE THING
 
