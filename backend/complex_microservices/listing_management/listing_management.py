@@ -3,6 +3,8 @@ from flask_cors import CORS
 
 import os, sys
 
+import json #import json 
+
 import requests
 from invokes import invoke_http
 
@@ -14,7 +16,7 @@ app = Flask(__name__)
 CORS(app)
 
 listing_URL = "http://localhost:8000/listing"
-geocoding_URL = "http://localhost:8000/geocoding"
+geocoding_URL = "http://localhost:3000/"
 
 @app.route("/create_listing", methods=['POST'])
 def create_listing():
@@ -22,8 +24,8 @@ def create_listing():
     if request.is_json:
         try:
             listing = request.get_json()
-            print("\nReceived an listing in JSON:", listing)
-
+            print("\nReceived an listing in JSON:", listing)        
+         
             # do the actual work
             # 1. Create listing info 
             result = processCreateListing(listing)
@@ -47,52 +49,54 @@ def create_listing():
         "message": "Invalid JSON input: " + str(request.get_data())
     }), 400
 
-def testGeoCoding():
-    print('\n-----Invoking geocoding microservice-----')
-    geocoding_result = invoke_http(geocoding_URL, method='GET', json=listing)
-    return {
-        "data": {"listing_result": geocoding_result}
-    }
-
 def processCreateListing(listing):
-    #2. send JSON to geocoding API
+    #2. send address string from listing to geocoding API
+    address = listing["address"]
+    geocoding_URL_full = geocoding_URL + address
     #Invoke the geocoding microservice
     print('\n-----Invoking geocoding microservice-----')
-    geocoding_result = invoke_http(geocoding_URL, method='GET', json=listing)
+    geocoding_result = invoke_http(geocoding_URL_full, method='GET', json=listing)
 
-    #Check if geocoding result was successful; if successful then create listing
-    code = geocoding_result["code"]
-    message = json.dumps(geocoding_result)
+    area = geocoding_result["area"]
+    district = geocoding_result["district"]
+    postal_code = geocoding_result["postal_code"]
 
-    if code == 200:
+    listing["area"] = area
+    listing["district"] = district
+    listing["postal_code"] = postal_code
 
-        listing = geocoding_result["data"]
+    print(listing) #check if area district and postal code was added to listing object
+
+    code = 200 #placeholder
+
+    if code == 200: #create listing
+
         #3. Send the listing info to database
         #Invoke the listing microservice
         print('\n-----Invoking listing microservice-----')
-        listing_result = invoke_http(listing_URL, method='GET', json=listing)
+        listing_result = invoke_http(listing_URL, method='POST', json=listing)
         print('listing_result:', listing_result)
 
         #Check listing creation result; if successful then invoke notification service
-        code = listing_result["code"]
-        message = json.dumps(listing_result)
+        # code = listing_result["code"]
+        # message = json.dumps(listing_result)
 
-        if code == 200:
-            #4. Create the notification
-            # Invoke the notification service
-            print('\n-----Invoking notification microservice-----')
+        # if code != 200:
+        #     #4. Create the notification
+        #     # Invoke the notification service
+        #     print('\n-----Invoking notification microservice-----')
 
-            amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="listing.notification", 
-                body=message, properties=pika.BasicProperties(delivery_mode = 2))
+        #     amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="listing.notification", 
+        #         body=message, properties=pika.BasicProperties(delivery_mode = 2))
             
-            print("\nListing status ({:d}) published to the RabbitMQ Exchange:".format(
-                code), listing_result)
+        #     print("\nListing status ({:d}) published to the RabbitMQ Exchange:".format(
+        #         code), listing_result)
             
-            return {
-                "code": 500,
-                "data": {"listing_result": listing_result},
-                "message": "Listing created, notification sent to subscribers."
-            }
+        #     return {
+        #         "code": 500,
+        #         "data": {"listing_result": listing_result},
+        #         "message": "Listing created, notification sent to subscribers."
+        #     }
     
 if __name__ == "__main__":
     print("This is flask " + os.path.basename(__file__) + " for managing a listing...")
