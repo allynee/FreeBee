@@ -18,7 +18,7 @@ CORS(app)
 listing_URL = "http://localhost:8000/listing"
 geocoding_URL = "http://localhost:3000/"
 
-@app.route("/create_listing", methods=['POST'])
+@app.route("/listing_management", methods=['POST'])
 def create_listing():
     #Simple check of input format and data of the request are JSON
     if request.is_json:
@@ -63,7 +63,7 @@ def processCreateListing(listing):
 
     listing["area"] = area
     listing["district"] = district
-    listing["postal_code"] = postal_code
+    listing["postal"] = postal_code
 
     print(listing) #check if area district and postal code was added to listing object
 
