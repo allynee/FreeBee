@@ -5,6 +5,7 @@ async function geocode(address) {
   if ((address == null) | (address == "")) {
     return null;
   } else {
+    console.log(address);
     try {
       // Getting the data from Google Maps API based on the address given
       const response = await axios.get(
@@ -16,7 +17,9 @@ async function geocode(address) {
           },
         }
       );
+
       // Retrieves Latitude and Longitude
+      console.log(response.data);
       const lat = response.data.results[0].geometry.location.lat;
       const lng = response.data.results[0].geometry.location.lng;
       // Calling PlaceId Function to get the PlaceId
