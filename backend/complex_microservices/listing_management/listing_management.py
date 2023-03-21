@@ -10,7 +10,6 @@ from invokes import invoke_http
 
 # import amqp_setup
 # import pika
-# import json
 
 app = Flask(__name__)
 CORS(app)
@@ -81,23 +80,23 @@ def processCreateListing(listing):
         # code = listing_result["code"]
         # message = json.dumps(listing_result)
 
-        # if code != 200:
+        # if code == 200:
         #     #4. Create the notification
         #     # Invoke the notification service
         #     print('\n-----Invoking notification microservice-----')
 
-        #     amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="listing.notification", 
+        #     amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="listing.notif", 
         #         body=message, properties=pika.BasicProperties(delivery_mode = 2))
             
         #     print("\nListing status ({:d}) published to the RabbitMQ Exchange:".format(
-        #         code), listing_result)
+        #         "what do we want to send here?"), listing_result)
             
         #     return {
         #         "code": 500,
         #         "data": {"listing_result": listing_result},
         #         "message": "Listing created, notification sent to subscribers."
         #     }
-    
+
 if __name__ == "__main__":
     print("This is flask " + os.path.basename(__file__) + " for managing a listing...")
     app.run(host="0.0.0.0", port=5000, debug=True)

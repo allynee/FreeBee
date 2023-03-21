@@ -15,20 +15,20 @@ CORS(app)
 
 transaction_URL = "http://localhost:9000/transaction"
 
-@app.route("/transaction_management", methods=['PUT'])
-def update_transaction():
+@app.route("/transaction_management", methods=['POST'])
+def create_transaction():
     # Simple check of input format and data of the request are JSON
     if request.is_json:
         try:
             transaction = request.get_json()
-            print("\nReceived an transaction in JSON:", transaction)
+            print("\nCreated a transaction in JSON:", transaction)
 
             # do the actual work
-            # 1. initiate update of transaction
-            result = processUpdateTransaction(transaction_)
+            # 1. initiate creation of transaction
+            result = processCreateTransaction(transaction)
             print('\n------------------------')
             print('\nresult: ', result)
-            return jsonify(result), result["code"]
+            return jsonify(result)
 
         except Exception as e:
             # Unexpected error in code
@@ -48,15 +48,13 @@ def update_transaction():
         "message": "Invalid JSON input: " + str(request.get_data())
     }), 400
 
-
-def processUpdateTransaction(transaction):
-    # 2. Send the transaction info {cart items}
+def processCreateTransaction(transaction):
+    # 2. Send the transaction info
     # Invoke the transaction microservice
     print('\n-----Invoking transaction microservice-----')
-    transaction_result = invoke_http(transaction_URL, method='PUT', json=transaction)
+    transaction_result = invoke_http(transaction_URL, method='POST', json=transaction)
     print('transaction_result:', transaction_result)
 
-# Execute this program if it is run as a main script (not by 'import')
 if __name__ == "__main__":
-    print("This is flask " + os.path.basename(__file__) + " for placing an order...")
+    print("This is flask " + os.path.basename(__file__) + " for managing a transaction...")
     app.run(host="0.0.0.0", port=5100, debug=True)
