@@ -64,24 +64,15 @@ def get_listing_by_id(listing_id: int, db: Session = Depends(get_db)):
 def create_listing(listing: schemas.ListingCreate, db: Session = Depends(get_db)):
     return crud.create_listing(db, listing=listing)
 
-### UPDATE LISTING QUANTITY ###
+### UPDATE ANY FIELD IN LISTING ###
 @app.put('/listing/{listing_id}', response_model=schemas.Listing)
 def update_listing(listing_id: int, listing: schemas.ListingUpdate, db: Session = Depends(get_db)):
     return crud.update_listing(db, listing_id=listing_id, data=listing)
 
-# @app.put('/listing/{listing_id}', response_model=schemas.Listing)
-# def update_listing(listing_id: int, new_qty: int, listing: schemas.ListingUpdate, db: Session = Depends(get_db)):
-#     db_listing = crud.get_listing(db, listing_id=listing_id)
-#     if db_listing is None:
-#         raise HTTPException(status_code=404, detail="Listing not found")
-#     return crud.update_listing(db, listing=listing, new_qty=new_qty)
-
-# @app.put('/listing/{listing_id}', response_model=schemas.Listing)
-# def update_listing(listing_id: int, listing: schemas.ListingUpdate, db: Session = Depends(get_db)):
-#     db_listing = crud.get_listing(db, listing_id=listing_id)
-#     if db_listing is None:
-#         raise HTTPException(status_code=404, detail="Listing not found")
-#     return crud.update_listing(db, db_obj=db_listing, obj_in=listing)
+### DELETE SINGLE LISTING ###
+@app.delete('/listing/{listing_id}')
+def delete_listing(listing_id: int, db: Session = Depends(get_db)):
+    return crud.delete_listing(db, listing_id=listing_id)
 
 if __name__ == '__main__':
     import uvicorn

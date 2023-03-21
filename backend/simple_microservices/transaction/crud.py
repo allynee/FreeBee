@@ -18,3 +18,19 @@ def create_transaction(db: Session, transaction: schemas.TransactionCreate):
     db.commit()
     db.refresh(transaction)
     return transaction
+
+def update_transaction(db: Session, transaction_id: int, data: schemas.TransactionUpdate):
+    transaction = db.query(models.Transaction).filter(models.Transaction.transaction_id == transaction_id).first()
+
+    if not transaction:
+        raise HTTPException(status_code=404, detail="Transaction not found")
+
+    for field, value in vars(data).items():
+        if value is not None:
+            setattr(transaction, field, value)
+
+    db.add(transaction)
+    db.commit()
+    db.refresh(transaction)
+
+    return transaction
