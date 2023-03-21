@@ -26,8 +26,7 @@ def create_listing():
 
             # do the actual work
             # 1. Create listing info 
-            #result = processCreateListing(listing)
-            result = testListing(listing)
+            result = processCreateListing(listing)
             return jsonify(result)
 
         except Exception as e:
@@ -47,13 +46,6 @@ def create_listing():
         "code": 400,
         "message": "Invalid JSON input: " + str(request.get_data())
     }), 400
-
-def testListing(listing):
-    print('\n-----Invoking listing microservice-----')
-    listing_result = invoke_http(listing_URL, method='POST', json=listing)
-    return {
-        "data": {"listing_result": listing_result}
-    }
 
 def testGeoCoding():
     print('\n-----Invoking geocoding microservice-----')
@@ -78,7 +70,7 @@ def processCreateListing(listing):
         #3. Send the listing info to database
         #Invoke the listing microservice
         print('\n-----Invoking listing microservice-----')
-        listing_result = invoke_http(listing_URL, method='POST', json=listing)
+        listing_result = invoke_http(listing_URL, method='GET', json=listing)
         print('listing_result:', listing_result)
 
         #Check listing creation result; if successful then invoke notification service
