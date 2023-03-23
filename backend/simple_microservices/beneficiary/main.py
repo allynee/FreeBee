@@ -1,4 +1,4 @@
-# To run with debug: uvicorn main: app --reload --host 0.0.0.0 --port 8421
+# To run with debug: uvicorn main:app --reload --host 0.0.0.0 --port 8421
 
 '''
 Here core functions are defined for different operations.
