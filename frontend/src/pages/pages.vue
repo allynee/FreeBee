@@ -2,6 +2,20 @@
   <v-app>
     <v-btn id="Login" @click="googleSignIn">Login</v-btn>
     <v-main>
+      <input type="text" v-model="email" placeholder="Email" />
+      <input type="password" v-model="password" placeholder="Password" />
+      <button @click="login" style="background-color: blue">Login</button>
+      <button @click="getCookien" style="background-color: red">getttt</button>
+      <button @click="getToken" style="background-color:green">decode</button>
+
+      <br/>
+      <div v-if="cookie">
+        <p>{{ cookie }}</p>
+      </div>
+      <div v-if="loginResult">
+        <p>{{ loginResult }}</p>
+      </div>
+      <br />
       <label for="autocomplete-input">Enter a location:</label>
       <input id="autocomplete-input" type="text" />
       <v-btn @click="geoCoding()">Get Area</v-btn>
@@ -23,10 +37,11 @@
 ></script> -->
 
 <script>
-import { signInWithGoogle } from "../components/authentication.js";
-import {
-  geocode,
-} from "../../../backend/simple_microservices/geocoding/geocoding.js";
+// import {
+//   // signInWithGoogle,
+//   loginEmailPassword,
+// } from "../../../backend/simple_microservices/auth/authentication.js";
+import { geocode } from "../../../backend/simple_microservices/geocoding/geocoding.js";
 /* global google */
 
 export default {
@@ -35,15 +50,24 @@ export default {
   },
   data() {
     return {
+      email: "",
+      password: "",
       area: null,
       geocodeResult: null,
       apiKey: "AIzaSyCuYRt4DvWiVVLzsBaR8fyuU_vRz9zCn9I",
+      loginResult: null,
+      cookie: null
     };
   },
   methods: {
-    googleSignIn() {
-      signInWithGoogle();
-    },
+    // async googleSignIn() {
+    //   await signInWithGoogle().then(async (response) => {
+    //     this.loginResult = response
+    //     await checkAccess(response.accessToken).then((result) => {
+    //       console.log(result)
+    //     })
+    //   })
+    // },
     geoCoding() {
       if (this.geocodeResult) {
         geocode(this.geocodeResult).then((response) => {
@@ -102,6 +126,25 @@ export default {
         }
       });
     },
+    // async login() {
+    //   console.log(this.email, this.password);
+    //   const checklogin = await loginEmailPassword(this.email, this.password);
+    //   console.log(checklogin);
+    //   if (checklogin) {
+    //     this.loginResult = checklogin;
+    //     console.log(this.loginResult);
+    //   }
+    // },
+    // getCookien(){
+    //     const result = getCookie()
+    //     console.log(result);
+    // },
+    // async getToken(){
+    //   const result = getCookie()
+    //   console.log(result)
+    //   const response = await checkAccess(result)
+    //   console.log(response)
+    // }
   },
 };
 </script>
