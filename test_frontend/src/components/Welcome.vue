@@ -52,7 +52,14 @@
         <h1 class="text-h4 grey--text text--darken-3">All FreeBees</h1>
       </v-row>
       <v-row class="my-15">
-        <v-col cols="3">
+        <v-col cols="4">
+          <Listing></Listing>
+        </v-col>
+        <v-col cols="4">
+          <Listing></Listing>
+        </v-col>
+        <v-col cols="4">
+          <Listing></Listing>
         </v-col>
       </v-row>
       
@@ -81,6 +88,7 @@
 import AOS from 'aos'
 import Category from './Category.vue';
 import SearchBar from './SearchBar.vue';
+import Listing from './Listing.vue';
   export default {
     name: "HelloWorld",
     mounted() {
@@ -90,8 +98,9 @@ import SearchBar from './SearchBar.vue';
     },
     data() {
         return {
-            href: "#sect1",
             fab: false,
+            //listings array retrieved from MS:
+            allListingsArray:[],
         };
     },
     methods: {
@@ -109,6 +118,9 @@ import SearchBar from './SearchBar.vue';
                 .scrollIntoView({ behavior: "smooth" });
         }
     },
-    components: { SearchBar, Category, }
+    components: { SearchBar, Category, Listing},
+    created(){
+    //Get from Listing MS. Then for each listing, this.allListingsArray.push()  
+    }
 }
 </script>
