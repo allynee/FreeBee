@@ -100,6 +100,7 @@ import Listing from './Listing.vue';
         return {
             fab: false,
             //listings array retrieved from MS:
+            categories: ["Food and Beverage",""],
             allListingsArray:[],
         };
     },
@@ -122,5 +123,5 @@ import Listing from './Listing.vue';
     created(){
     //Get from Listing MS. Then for each listing, this.allListingsArray.push()  
     }
-}
+} 
 </script>
