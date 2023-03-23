@@ -1,12 +1,12 @@
 
-from flask import Flask, request, jsonify
-from flask_sqlalchemy import SQLAlchemy
-from flask_cors import CORS
-from os import environ
+# from flask import Flask, request, jsonify
+# from flask_sqlalchemy import SQLAlchemy
+# from flask_cors import CORS
+# from os import environ
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# app = Flask(__name__)
+# app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
+# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 
 
@@ -40,27 +40,51 @@ channel.exchange_declare(exchange=exchangename, exchange_type=exchangetype, dura
 # Here can be a place to set up all queues needed by the microservices,
 # - instead of setting up the queues using RabbitMQ UI.
 
-############   Notification queue   #############
-#delcare Notification queue
-queue_name = 'Notification'
+############   Special queue   #############
+#delcare Special queue
+queue_name = 'Collection'
 channel.queue_declare(queue=queue_name, durable=True) 
     # 'durable' makes the queue survive broker restarts
 
-#bind Notification queue
-channel.queue_bind(exchange=exchangename, queue=queue_name, routing_key='#.notif') 
+#bind Subscription queue
+channel.queue_bind(exchange=exchangename, queue=queue_name, routing_key='#.collect') 
     # bind the queue to the exchange via the key
-    # any routing_key ending with '.notif' will be matched
+    # any routing_key ending with '.subscribers' will be matched
 
-# ############   Activity_Log queue    #############
-# #delcare Activity_Log queue
-# queue_name = 'Activity_Log'
-# channel.queue_declare(queue=queue_name, durable=True)
-#     # 'durable' makes the queue survive broker restarts
 
-# #bind Activity_Log queue
-# channel.queue_bind(exchange=exchangename, queue=queue_name, routing_key='#') 
-#     # bind the queue to the exchange via the key
-#     # 'routing_key=#' => any routing_key would be matched
+############   Subscription queue   #############
+#delcare Subscription queue
+queue_name = 'Subscription'
+channel.queue_declare(queue=queue_name, durable=True) 
+    # 'durable' makes the queue survive broker restarts
+
+#bind Subscription queue
+channel.queue_bind(exchange=exchangename, queue=queue_name, routing_key='#.subscribers') 
+    # bind the queue to the exchange via the key
+    # any routing_key ending with '.subscribers' will be matched
+
+############   Company queue   #############
+#delcare company queue
+queue_name = 'ToCompany'
+channel.queue_declare(queue=queue_name, durable=True) 
+    # 'durable' makes the queue survive broker restarts
+
+#bind Subscription queue
+channel.queue_bind(exchange=exchangename, queue=queue_name, routing_key='#.company') 
+    # bind the queue to the exchange via the key
+    # any routing_key ending with '.subscribers' will be matched
+    
+############   Beneficiary queue   #############
+#delcare ToBeneficiary queue
+queue_name = 'ToBeneficiary'
+channel.queue_declare(queue=queue_name, durable=True) 
+    # 'durable' makes the queue survive broker restarts
+
+#bind ToBeneficiary queue
+channel.queue_bind(exchange=exchangename, queue=queue_name, routing_key='#.beneficiary') 
+    # bind the queue to the exchange via the key
+    # any routing_key ending with '.subscribers' will be matched
+
     
 
 """
