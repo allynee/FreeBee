@@ -3,7 +3,7 @@
 # 1. docker run -d --hostname esd-rabbit --name rabbitmq-mgmt -p 5672:5672 -p 15672:15672 rabbitmq:3-management
 #    (start the rabbitmq server on docker)
 # 2. run amqp_setup.py
-# 3. run the publisher
+# 3. run the publisher code
 # optional --> to see the successful consumption, need to run the consumer text
 
 
@@ -54,4 +54,3 @@ amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="
 
 print(f"sending message: {message} to queue 'collection'")
 
-amqp_setup.connection.close()
