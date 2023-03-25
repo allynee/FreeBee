@@ -14,7 +14,8 @@ app = Flask(__name__)
 CORS(app)
 
 transaction_URL = "http://localhost:9000/transaction"
-listing_URL = "http://localhost:8000/listing"
+authentication_URL = "localhost:3001"
+
 
 @app.route("/transaction_management", methods=['POST'])
 def create_transaction():
@@ -49,52 +50,39 @@ def create_transaction():
         "message": "Invalid JSON input: " + str(request.get_data())
     }), 400
 
-@app.route("/listing_update", methods=['PUT'])
-def update_listing(listing):
-    # Simple check of input format and data of the request are JSON
-    if request.is_json:
-        try:
-            listing = request.get_json()
-            print("\nUpdated listing in JSON:", listing)
+def processCreateTransaction(transaction, quantityDeducted):
 
-            # do the actual work
-            # 1. initiate creation of listing
-            result = processUpdateListing(listing)
-            print('\n------------------------')
-            print('\nresult: ', result)
-            return jsonify(result)
+    # 2. Authenticate user
+    print('\n-----Authenticating user-----')
+    authentication_URL_full = authentication_URL + "/wtf@gmail.com/test1234" #this is currently HARDCODED!!
+    authentication_result = invoke_http(authentication_URL_full, method="GET", json=None)
+    print('authentication_result:', authentication_result)
 
-        except Exception as e:
-            # Unexpected error in code
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            ex_str = str(e) + " at " + str(exc_type) + ": " + fname + ": line " + str(exc_tb.tb_lineno)
-            print(ex_str)
-
-            return jsonify({
-                "code": 500,
-                "message": "create_transaction.py internal error: " + ex_str
-            }), 500
-
-    # if reached here, not a JSON request.
-    return jsonify({
-        "code": 400,
-        "message": "Invalid JSON input: " + str(request.get_data())
-    }), 400
-
-def processCreateTransaction(transaction):
-    # 2. Send the transaction info
+    # 3. Create the transaction info
     # Invoke the transaction microservice
     print('\n-----Invoking transaction microservice-----')
     transaction_result = invoke_http(transaction_URL, method='POST', json=transaction)
     print('transaction_result:', transaction_result)
+    print('listing_id', transaction_result['listing_id'])
 
-def processUpdateListing(listing):
-    # 2. Send the listing info
-    # Invoke the listing microservice
-    print('\n-----Invoking listing microservice-----')
-    listing_result = invoke_http(listing_URL, method='PUT', json=listing)
-    print('listing_result:', listing_result)    
+    listing_id = transaction_result['listing_id'] #get listing_id of newly created transaction
+
+    #4. Update listing quantity
+
+    #Get existing listing details
+    print('\n-----Invoking listing management microservice-----')
+    listing_result = invoke_http(transaction_URL, method='GET', json=None)
+    print('listing_result:', listing_result)
+
+
+    #Create listing json object
+
+    # Invoke listing management
+    print('\n-----Invoking listing management microservice-----')
+    listing_result = invoke_http(transaction_URL, method='PUT', json=)
+
+
+
 
 
 if __name__ == "__main__":
