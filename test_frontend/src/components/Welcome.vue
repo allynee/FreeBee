@@ -59,7 +59,15 @@
         <h1 class="text-h4 grey--text text--darken-3">All FreeBees</h1>
       </v-row>
       <v-row class="my-15">
-        <v-col cols="3"> </v-col>
+        <v-col cols="4">
+          <Listing></Listing>
+        </v-col>
+        <v-col cols="4">
+          <Listing></Listing>
+        </v-col>
+        <v-col cols="4">
+          <Listing></Listing>
+        </v-col>
       </v-row>
 
       <!-- <v-row justify="center" class="">
@@ -73,7 +81,6 @@
         </p>
         </v-col>
       </v-row> -->
-      <button @click="checkDocument()">check</button>
     </v-container>
 
     <!-- scroll to top button -->
@@ -93,38 +100,31 @@
 </template>
 
 <script>
-import AOS from "aos";
-import Category from "./Category.vue";
-import SearchBar from "./SearchBar.vue";
-export default {
-  name: "HelloWorld",
-  mounted() {
-    AOS.init({
-      duration: 1600,
-    });
-  },
-  data() {
-    return {
-      href: "#sect1",
-      fab: false,
-    };
-  },
-  methods: {
-    onScroll(e) {
-      if (typeof window === "undefined") return;
-      const top = window.pageYOffset || e.target.scrollTop || 0;
-      this.fab = top > 20;
+import AOS from 'aos'
+import Category from './Category.vue';
+import SearchBar from './SearchBar.vue';
+import Listing from './Listing.vue';
+  export default {
+    name: "HelloWorld",
+    mounted() {
+        AOS.init({
+            duration: 1600,
+        });
     },
-    toTop() {
-      this.$vuetify.goTo(0);
+    data() {
+        return {
+            fab: false,
+            //listings array retrieved from MS:
+            categories: ["Food and Beverage",""],
+            allListingsArray:[],
+        };
     },
     scroll() {
       document.querySelector(this.href).scrollIntoView({ behavior: "smooth" });
     },
-    checkDocument() {
-      console.log(document.cookie);
-    },
-  },
-  components: { SearchBar, Category },
-};
+    components: { SearchBar, Category, Listing},
+    created(){
+    //Get from Listing MS. Then for each listing, this.allListingsArray.push()  
+    }
+} 
 </script>

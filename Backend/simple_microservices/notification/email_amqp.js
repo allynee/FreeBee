@@ -15,46 +15,48 @@ amqp.connect('amqp://127.0.0.1', (err, connection) => {
         if (err){
             throw err;
         }
-        let queueName = "letterbox";
-        channel.assertQueue(queueName, { durable: false });
+        let queueName = "Subscription";
+        channel.assertQueue(queueName, { durable: true });
         channel.consume(queueName, (msg) => {
             console.log("receieved :" + msg.content.toString())
             channel.ack(msg);
-            sendOneEmail(msg.content.toString())
+            // convertAndSend(msg.content.toString())
         })
     })
 })
 
-function sendOneEmail(email){
-    console.log("sending mail " + email)
-    if (email != null){
+function convertAndSend(aStringOfAnObj){
+    const aJson = JSON.parse(aStringOfAnObj)
+    console.log(aJson)
+    console.log(aJson.Subscribers)
+    for (let i = 0; i < aJson.Subscribers.length; i++){
+        console.log(aJson.Subscribers[i].email)
+        sendOneEmail(aJson.Subscribers[i].email)
+    }
+    // const email = aJson[0].email
+    // console.log(email)
+    // sendOneEmail(email)
+}
+
+async function sendOneEmail(email){
+    if (email != null && email != undefined && email != '' && email != ' '){
         console.log("sending mail " + email)
         try {
             // This tries to send the email
-            result = mail.sendMail(email);
-            console.log(result)
-            result.then((result) => {
-                // res.status(200).send('ITS OKAY!!')
-                // If the email sending is successful, it will return a string
-                if (typeof result == 'string'){
-                    console.log('email sent ' + 250)
-                    return JSON.parse(JSON.stringify({
-                        message: 'email sent',
-                        status: 250
-                        
-                    }))
-                }
-                // if the email sending is unsuccessful, it will return result = undefined
-                else{
-                    console.log('email not sent ' + 400)
-                    return JSON.parse(JSON.stringify({
-                        message: 'Wrong email format',
-                        status: 400
-                    }))
-                }
-            })
+            const result = await mail.sendMail(email);
+            // console.log(result)
+            // res.status(200).send('ITS OKAY!!')
+            // If the email sending is successful, it will return a string
+            if (typeof result.response == 'string'){
+                console.log('email sent ' + 250)
+                return JSON.parse(JSON.stringify({
+                    message: 'email sent',
+                    status: 250
+                    //////RECENTLY FOUND ERROR THAT IF EMAIL IS TEMP@GMAIL (W0 .COM) IT STILL WORKS SMH
+                }))
+            }
         } catch (error) {
-        // this is if there is an error with trying the sendmail function
+        // this is if there is an error with trying the sendmail function (e.g. wrong email format)
             console.log('email not sent ' + 500)
             return JSON.parse(JSON.stringify({
                 message: 'internal error within samplemail.js',
@@ -63,17 +65,13 @@ function sendOneEmail(email){
             // res.status(500).send('internal error within samplemail.js')
         }
     }
-    console.log('email not sent ' + 404)
-    return JSON.parse(JSON.stringify({
-    // this is if there is no email parameter at all
-        message: 'invalid email address',
-        status: 404
-    }));
+    else{
+        console.log('email param is empty ' + 404)
+        return JSON.parse(JSON.stringify({
+        // this is if there is no email parameter at all
+            message: 'invalid email address',
+            status: 404
+        }));
+    }
     // res.status(404).send('invalid email address')
 }
-
-// if( __name__ == "__main__"){
-//     console.log("\nThis is " + os.path.basename(__file__), end='')
-//     console.log(": monitoring routing key '{" + monitorBindingKey + "}' in exchange '{" + amqp_setup.exchangename + "}' ...")
-//     // call function num1
-// }

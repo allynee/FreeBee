@@ -48,18 +48,13 @@ async function sendMail(toMail){
 
         //this returns a promise
         // const result = await transport.sendMail(mailOptions)
-        await transport.sendMail(mailOptions)
-        .then(function (result) {
-            console.log(result);
-            return result.response;
-        })
-        .catch(function (error) {
-            // console.log(error);
-            return error.response;
-        });
-        // return result.response;
+        const result = await transport.sendMail(mailOptions)
+        console.log(result);
+        return result;
+
         
     } catch (error){
+        console.log(error);
         return error.response
     }
 }
