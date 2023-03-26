@@ -3,6 +3,12 @@ require("firebase/compat/auth");
 
 jwt = require("jsonwebtoken");
 
+const axios = require("axios");
+
+const { ref, set, getDatabase } = require("firebase/database");
+
+const { getStorage } = require("firebase/storage");
+
 const {
   getAuth,
   onAuthStateChanged,
@@ -14,20 +20,26 @@ const {
 } = require("firebase/auth");
 
 const firebaseConfig = initializeApp({
-  apiKey: "AIzaSyDR1Tf3bAMUUHyksaUsiZWyPvzOqw62d0I",
-  authDomain: "esdddtest.firebaseapp.com",
-  projectId: "esdddtest",
-  storageBucket: "esdddtest.appspot.com",
-  messagingSenderId: "444566927588",
-  appId: "1:444566927588:web:fcbb1cdf23c6c5e5ca54f1",
+  apiKey: "AIzaSyD5ESzYYAhQhq7fecEJZofuXqjZTzSHRus",
+  authDomain: "esdeeznutz.firebaseapp.com",
+  databaseURL: "https://esdeeznutz-default-rtdb.firebaseio.com",
+  projectId: "esdeeznutz",
+  storageBucket: "esdeeznutz.appspot.com",
+  messagingSenderId: "74897120396",
+  appId: "1:74897120396:web:ab4510df9dcce9a7296fa9",
 });
 
 const auth = getAuth(firebaseConfig);
 
-const provider = new GoogleAuthProvider();
+const db = getDatabase(firebaseConfig);
+
+const storage = getStorage();
+
+// const provider = new GoogleAuthProvider();
 
 async function loginEmailPassword(email, password) {
   try {
+    console.log("login");
     const userCredential = await signInWithEmailAndPassword(
       auth,
       email,
@@ -37,58 +49,71 @@ async function loginEmailPassword(email, password) {
     const user = userCredential._tokenResponse.idToken;
     // setCookie(user, 1);
     if (checkAuthStatus()) {
-      let access = await checkAccess(user);
+      let access = { accessToken: user };
       // let return_json = { result: user };
-
       return access;
     } else {
       console.log("LOG IN FAILED");
-      let return_json = { result: "Unsuccessful" };
+      let return_json = { result: "Unsuccessful", code: "403" };
       return return_json;
     }
   } catch (error) {
     console.log(error);
-    let return_json = { result: "Unsuccessful" };
+    let return_json = { result: "Unauthorised User", code: "401" };
     return return_json;
   }
 }
 
 // Function will login using google and return a UID
-async function signInWithGoogle() {
+// async function signInWithGoogle() {
+//   try {
+//     // This gives you a Google Access Token. You can use it to access the Google API.
+//     const result = await signInWithPopup(auth, provider);
+//     const credential = GoogleAuthProvider.credentialFromResult(result);
+//     console.log(credential);
+//     const token = credential.idToken;
+//     setCookie(token, 1);
+//     let return_json = { accessToken: token };
+//     return return_json;
+//   } catch (error) {
+//     // Handle Errors here.
+//     const errorCode = error.code;
+//     console.log(errorCode);
+//   }
+// }
+
+async function signUp(email, password,role) {
   try {
-    // This gives you a Google Access Token. You can use it to access the Google API.
-    const result = await signInWithPopup(auth, provider);
-    const credential = GoogleAuthProvider.credentialFromResult(result);
-    console.log(credential)
-    const token = credential.idToken;
-    setCookie(token, 1);
-    let return_json = { accessToken: token };
-    return return_json;
+    const response = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+    // Signed in
+    const uid = response.user.uid;
+    const accessToken = response.user.accessToken;
+
+    set(ref(db, "UserData/" + uid), {
+      role: role,
+    }).catch((error) => {
+      console.log(error);
+    });
+    
+    let userData = { uid: uid, authStatus: "Sign Up Success", accessToken: accessToken, statusCode: '200' };
+    return userData;
   } catch (error) {
-    // Handle Errors here.
-    const errorCode = error.code;
-    console.log(errorCode);
+    let userData = { authStatus: "Sign Up Failed", statusCode: '401', error: error};
+
+    return userData;
   }
 }
 
-function signUp(email, password) {
-  // not done
-  createUserWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      // Signed in
-      const user = userCredential.user;
-      // ...
-    })
-    .catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      // ..
-    });
-}
+//
 
 async function checkAuthStatus() {
   const authChange = await onAuthStateChanged(auth, (user) => {
     if (user) {
+      console.log("yes");
       // User is signed in, see docs for a list of available properties
       // https://firebase.google.com/docs/reference/js/firebase.User
       // ...
@@ -104,54 +129,39 @@ async function checkAuthStatus() {
 }
 
 async function checkAccess(token) {
-  // const endpoint = `https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${token}`;
-  // const response = await fetch(endpoint, {
-  //   method: 'GET',
-  //   headers: {
-  //     "Content-Type": "application/json"
-  //   },
-  // });
-  // if (!response.ok) {
-  //   throw new Error("Network response was not ok");
-  // }
-  // let return_json = { authStatus: "Success" };
-  // return return_json;
+  // const cookie = await getCookie();
   const decodedToken = jwt.decode(token, { complete: true });
-  const response = decodedToken.payload.user_id
-  let return_json = { uid : response}
+  const uid = decodedToken.payload.user_id;
+  const role = await getUser(uid);
+  // get back uid code and success message
+  let return_json = {
+    uid: uid,
+    code: "200",
+    role: role,
+    authStatus: "Success",
+  };
   return return_json;
 }
 
-// Frontend function
-// Set cookie function
-// function setCookie(accessToken, time) {
-//   var expires = "";
-//   if (time) {
-//     var date = new Date();
-//     date.setTime(date.getTime() + time * 60 * 1000);
-//     expires = "; expires=" + date.toUTCString();
-//   }
-//   document.cookie = "accessToken=" + accessToken + ";" + expires;
-// }
-
-// Get cookie function
-// function getCookie() {
-//   var nameEQ = "accessToken=";
-//   var ca = document.cookie.split(";");
-//   for (var i = 0; i < ca.length; i++) {
-//     var c = ca[i];
-//     while (c.charAt(0) == " ") c = c.substring(1, c.length);
-//     if (c.indexOf(nameEQ) == 0) {
-//       return c.substring(nameEQ.length, c.length);
-//     }
-//   }
-//   return null;
-// }
+async function getUser(uid) {
+  try {
+    const response = await axios.get(
+      "https://esdeeznutz-default-rtdb.firebaseio.com/UserData/" +
+        uid +
+        "/.json"
+    );
+    let role = response.data.role;
+    return role;
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 module.exports = {
-  signInWithGoogle,
+  // signInWithGoogle,
   loginEmailPassword,
   checkAccess,
   // setCookie,
   // getCookie,
+  signUp,
 };
