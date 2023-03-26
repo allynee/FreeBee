@@ -234,7 +234,7 @@ export default {
           if (response_data.statusCode == "200") {
             var expires = "";
             var date = new Date();
-            date.setTime(date.getTime() + 1 * 60 * 1000);
+            date.setTime(date.getTime() + 10 * 60 * 1000);
             expires = "; expires=" + date.toUTCString();
             document.cookie =
               "accessToken=" + response_data.accessToken + ";" + expires;
