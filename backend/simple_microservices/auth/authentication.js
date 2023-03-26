@@ -49,17 +49,17 @@ async function loginEmailPassword(email, password) {
     const user = userCredential._tokenResponse.idToken;
     // setCookie(user, 1);
     if (checkAuthStatus()) {
-      let access = { accessToken: user };
+      let access = { accessToken: user, statusCode: '200' };
       // let return_json = { result: user };
       return access;
     } else {
       console.log("LOG IN FAILED");
-      let return_json = { result: "Unsuccessful", code: "403" };
+      let return_json = { result: "Unsuccessful", statusCode: "401" };
       return return_json;
     }
   } catch (error) {
     console.log(error);
-    let return_json = { result: "Unauthorised User", code: "401" };
+    let return_json = { result: "Unsuccessful", statusCode: "401" };
     return return_json;
   }
 }
@@ -100,10 +100,11 @@ async function signUp(email, password,role) {
     });
     
     let userData = { uid: uid, authStatus: "Sign Up Success", accessToken: accessToken, statusCode: '200' };
+    console.log(userData);
     return userData;
   } catch (error) {
-    let userData = { authStatus: "Sign Up Failed", statusCode: '401', error: error};
-
+    let userData = { authStatus: "Sign Up Failed", statusCode: '200', errorMessage: error.code};
+    console.log(userData)
     return userData;
   }
 }
@@ -130,17 +131,25 @@ async function checkAuthStatus() {
 
 async function checkAccess(token) {
   // const cookie = await getCookie();
+  try{
   const decodedToken = jwt.decode(token, { complete: true });
   const uid = decodedToken.payload.user_id;
   const role = await getUser(uid);
   // get back uid code and success message
   let return_json = {
     uid: uid,
-    code: "200",
+    statusCode: "200",
     role: role,
     authStatus: "Success",
   };
   return return_json;
+}catch(error){
+  let return_json = {
+    statusCode: '403',
+    authStatus: "Unauthorized User",
+  }
+  return return_json;
+}
 }
 
 async function getUser(uid) {
