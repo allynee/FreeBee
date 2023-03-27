@@ -14,6 +14,7 @@ app = Flask(__name__)
 CORS(app)
 
 transaction_URL = "http://localhost:9000/transaction"
+listing_management_URL = "http://localhost:5000/listing_management"
 authentication_URL = "localhost:3001"
 
 
@@ -51,12 +52,13 @@ def create_transaction():
     }), 400
 
 def processCreateTransaction(transaction, quantityDeducted):
+    #assuming you get the token...
 
     # 2. Authenticate user
-    print('\n-----Authenticating user-----')
-    authentication_URL_full = authentication_URL + "/wtf@gmail.com/test1234" #this is currently HARDCODED!!
-    authentication_result = invoke_http(authentication_URL_full, method="GET", json=None)
-    print('authentication_result:', authentication_result)
+    # print('\n-----Authenticating user-----')
+    # authentication_URL_full = authentication_URL + "login/test@gmail.com/test1234" #this is currently HARDCODED!!
+    # authentication_result = invoke_http(authentication_URL_full, method="GET", json=None)
+    # print('authentication_result:', authentication_result)
 
     # 3. Create the transaction info
     # Invoke the transaction microservice
@@ -68,21 +70,11 @@ def processCreateTransaction(transaction, quantityDeducted):
     listing_id = transaction_result['listing_id'] #get listing_id of newly created transaction
 
     #4. Update listing quantity
-
     #Get existing listing details
     print('\n-----Invoking listing management microservice-----')
-    listing_result = invoke_http(transaction_URL, method='GET', json=None)
+    listing_management_URL_full = listing_management_URL + "/" + str(listing_id)
+    listing_result = invoke_http(listing_management_URL_full, method='PUT', json=None)
     print('listing_result:', listing_result)
-
-
-    #Create listing json object
-
-    # Invoke listing management
-    print('\n-----Invoking listing management microservice-----')
-    listing_result = invoke_http(transaction_URL, method='PUT', json=)
-
-
-
 
 
 if __name__ == "__main__":

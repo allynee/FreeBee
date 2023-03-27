@@ -3,13 +3,12 @@ from flask_cors import CORS
 
 import os, sys
 
-import json #import json 
-
 import requests
 from invokes import invoke_http
 
-# import amqp_setup
-# import pika
+import amqp_setup
+import pika
+import json
 
 app = Flask(__name__)
 CORS(app)
@@ -41,15 +40,14 @@ def create_listing():
                 "code": 500,
                 "message": "place_order.py internal error: " + ex_str
             }), 500
-
     # if reached here, not a JSON request.
     return jsonify({
         "code": 400,
         "message": "Invalid JSON input: " + str(request.get_data())
     }), 400
 
-@app.route("/listing_management", methods=['PUT'])
-def update_listing():
+@app.route("/listing_management/<int:listing_id>", methods=['PUT'])
+def update_listing(listing_id):
     #Simple check of input format and data of the request are JSON
     if request.is_json:
         try:
@@ -58,7 +56,7 @@ def update_listing():
          
             # do the actual work
             # 1. Update listing info 
-            result = processUpdateListing(listing)
+            result = processUpdateListing(listing, listing_id)
             return jsonify(result)
 
         except Exception as e:
@@ -72,7 +70,6 @@ def update_listing():
                 "code": 500,
                 "message": "place_order.py internal error: " + ex_str
             }), 500
-
     # if reached here, not a JSON request.
     return jsonify({
         "code": 400,
@@ -81,21 +78,19 @@ def update_listing():
 
 @app.route("/listing_management", methods=['GET'])
 def get_listing():
-    #1. get listing
+    #1. get all listings
     print('\n-----Invoking listing microservice-----')
     listing_result = invoke_http(listing_URL, method='GET', json=None)
     print('listing_result:', listing_result)
-
     return jsonify(listing_result)
 
 @app.route("/listing_management/<int:listing_id>", methods=['GET'])
 def get_specific_listing(listing_id):
-    #1. get listing
-    listing_URL_full = listing_URL + listing_id
+    listing_URL_full = listing_URL + "/" + str(listing_id)
+    #1. get specific listing
     print('\n-----Invoking listing microservice-----')
     listing_result = invoke_http(listing_URL_full, method='GET', json=None)
     print('listing_result:', listing_result)
-
     return jsonify(listing_result)
 
 def processCreateListing(listing):
@@ -116,44 +111,22 @@ def processCreateListing(listing):
 
     print(listing) #check if area district and postal code was added to listing object
 
-    code = 200 #placeholder
-
-    if code == 200: #create listing
-
-        #3. Send the listing info to database
-        #Invoke the listing microservice
-        print('\n-----Invoking listing microservice-----')
-        listing_result = invoke_http(listing_URL, method='POST', json=listing)
-        print('listing_result:', listing_result)
-
-        #Check listing creation result; if successful then invoke notification service
-        # code = listing_result["code"]
-        # message = json.dumps(listing_result)
-
-        # if code == 200:
-        #     #4. Create the notification
-        #     # Invoke the notification service
-        #     print('\n-----Invoking notification microservice-----')
-
-        #     amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="listing.notif", 
-        #         body=message, properties=pika.BasicProperties(delivery_mode = 2))
-            
-        #     print("\nListing status ({:d}) published to the RabbitMQ Exchange:".format(
-        #         "what do we want to send here?"), listing_result)
-            
-        #     return {
-        #         "code": 500,
-        #         "data": {"listing_result": listing_result},
-        #         "message": "Listing created, notification sent to subscribers."
-        #     }
-
-def processUpdateListing(listing):
-    #2. Update listing info in the database
+    #3. Send the listing info to database
     #Invoke the listing microservice
     print('\n-----Invoking listing microservice-----')
-    listing_result = invoke_http(listing_URL, method='PUT', json=listing)
+    listing_result = invoke_http(listing_URL, method='POST', json=listing)
     print('listing_result:', listing_result)
-    
+
+    #4. Send the notification to users
+    ############  Publish to subscribe queue   #############
+
+def processUpdateListing(listing, listing_id):
+    #2. Update listing info in the database
+    #Invoke the listing microservice
+    listing_URL_full = listing_URL + "/" + str(listing_id)
+    print('\n-----Invoking listing microservice-----')
+    listing_result = invoke_http(listing_URL_full, method='PUT', json=listing)
+    print('listing_result:', listing_result)
 
 if __name__ == "__main__":
     print("This is flask " + os.path.basename(__file__) + " for managing a listing...")
