@@ -17,6 +17,7 @@ transaction_URL = "http://localhost:9000/transaction"
 listing_management_URL = "http://localhost:5000/listing_management"
 authentication_URL = "localhost:3001"
 
+transaction_status = "Ready to Collect"
 
 @app.route("/transaction_management", methods=['POST'])
 def create_transaction():
@@ -51,8 +52,41 @@ def create_transaction():
         "message": "Invalid JSON input: " + str(request.get_data())
     }), 400
 
+
+@app.route("/transaction_management/<int:transaction_id>", methods=['PUT'])
+def update_transaction(transaction_id, transaction_status):
+    # Simple check of input format and data of the request are JSON
+    if request.is_json:
+        try:
+            transaction = request.get_json()
+            print("\nJSON with details to update in transaction:", transaction)
+
+            # do the actual work
+            # 1. initiate update of transaction
+            result = processUpdateTransaction(transaction)
+            print('\n------------------------')
+            print('\nresult: ', result)
+            return jsonify(result)
+
+        except Exception as e:
+            # Unexpected error in code
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            ex_str = str(e) + " at " + str(exc_type) + ": " + fname + ": line " + str(exc_tb.tb_lineno)
+            print(ex_str)
+
+            return jsonify({
+                "code": 500,
+                "message": "transaction service internal error: " + ex_str
+            }), 500
+
+    # if reached here, not a JSON request.
+    return jsonify({
+        "code": 400,
+        "message": "Invalid JSON input: " + str(request.get_data())
+    }), 400
+
 def processCreateTransaction(transaction, quantityDeducted):
-    #assuming you get the token...
 
     # 2. Authenticate user
     # print('\n-----Authenticating user-----')
@@ -70,12 +104,21 @@ def processCreateTransaction(transaction, quantityDeducted):
     listing_id = transaction_result['listing_id'] #get listing_id of newly created transaction
 
     #4. Update listing quantity
-    #Get existing listing details
     print('\n-----Invoking listing management microservice-----')
+    #4a. Get existing listing details
     listing_management_URL_full = listing_management_URL + "/" + str(listing_id)
-    listing_result = invoke_http(listing_management_URL_full, method='PUT', json=None)
+    listing_result = invoke_http(listing_management_URL_full, method='GET', json=None)
     print('listing_result:', listing_result)
+    existing_quantity = listing_result["quantity"]
+    #4b. Deduct quantity from  listing
+    new_quantity = existing_quantity - quantityDeducted
+    new_listing = {"quantity": new_quantity}
+    if new_quantity >= 0:
+        listing_result = invoke_http(listing_management_URL_full, method='PUT', json=new_listing)  
 
+def processUpdateTransaction():
+    pass
+    #hmmm how do i... know which status im supposed to update the transaction to 
 
 if __name__ == "__main__":
     print("This is flask " + os.path.basename(__file__) + " for managing a transaction...")

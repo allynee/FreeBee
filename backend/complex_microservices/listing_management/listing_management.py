@@ -15,6 +15,7 @@ CORS(app)
 
 listing_URL = "http://localhost:8000/listing"
 geocoding_URL = "http://localhost:3000/"
+notification_URL = "http://localhost:3000/"
 
 @app.route("/listing_management", methods=['POST'])
 def create_listing():
@@ -93,6 +94,15 @@ def get_specific_listing(listing_id):
     print('listing_result:', listing_result)
     return jsonify(listing_result)
 
+@app.route("/listing_management/<int:listing_id>", methods=["DEL"])
+def delete_listing(listing_id):
+    listing_URL_full = listing_URL + "/" + str(listing_id)
+    #1. delete specific listing
+    print('\n-----Invoking listing microservice-----')
+    listing_result = invoke_http(listing_URL_full, method="DEL", json=None)
+    print('listing deleted')
+    return jsonify(listing_result)
+
 def processCreateListing(listing):
     #2. send address string from listing to geocoding API
     address = listing["address"]
@@ -117,8 +127,14 @@ def processCreateListing(listing):
     listing_result = invoke_http(listing_URL, method='POST', json=listing)
     print('listing_result:', listing_result)
 
-    #4. Send the notification to users
+    #4. Send the notification to users who are subscribed to the corporate
     ############  Publish to subscribe queue   #############
+    obj = {} #confirm with lixuen what the object is supposed to look like
+    message = json.dumps(obj)
+    amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="email.subscribers", 
+        body=message, properties=pika.BasicProperties(delivery_mode = 2))
+    print(f"sending message: {message} to queue 'subscribers'")
+
 
 def processUpdateListing(listing, listing_id):
     #2. Update listing info in the database
