@@ -100,6 +100,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 import AOS from 'aos'
 import Category from './Category.vue';
 import SearchBar from './SearchBar.vue';
@@ -110,6 +111,9 @@ import Listing from './Listing.vue';
         AOS.init({
             duration: 1600,
         });
+        axios
+        .get('http://0.0.0.0:5000/listing_management')
+        .then(response => (console.log(response)))
     },
     data() {
         return {
@@ -123,24 +127,9 @@ import Listing from './Listing.vue';
       document.querySelector(this.href).scrollIntoView({ behavior: "smooth" });
     },
     components: { SearchBar, Category, Listing},
-    methods:{
-      async fetchListings() {
-          const listing_URL = 'http://0.0.0.0:8000/listing'
-          const response =
-            fetch(listing_URL)
-                .then(response => response.json())
-                .then(data => {
-                    console.log(response);
-                })
-                .catch(error => {
-                    // Errors when calling the service; such as network error, 
-                    // service offline, etc
-                    console.log(this.message + error);
-                });
-      }
-    },
     created(){
-      this.fetchListings()
+
     }
+    
 } 
 </script>
