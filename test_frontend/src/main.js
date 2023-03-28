@@ -3,6 +3,8 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import vuetify from './plugins/vuetify'
+import axios from 'axios'
+import VueAxios from 'vue-axios'
 
 // Animation Library
 import AOS from 'aos'
@@ -16,6 +18,9 @@ import {getAuth, onAuthStateChanged} from 'firebase/auth'
 // } from 'firebase/firestore'
 
 //connecting to firebase 
+
+// Axios
+Vue.use(VueAxios, axios)
 
 // Geolocation
 import VueGeolocation from 'vue-browser-geolocation';

@@ -154,102 +154,102 @@
 <style src="../style/style.css"></style>
 
 <script>
-const axios = require("axios");
-export default {
-  name: "register",
-  data() {
-    return {
-      name: "",
-      email: "",
-      username: "",
-      password: "",
-      confirmpassword: "",
-      userid: "",
-      errorstatus: false,
-      value: String,
-      showPassword: String,
-      nameRules: [(v) => v.length >= 2 || "Minimum length is 2 characters"],
-      emailRules: [
-        (v) =>
-          !v ||
-          /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
-          "E-mail must be valid",
-      ],
-      userRules: [
-        (v) => v.length >= 8 || "Minimum length is 8 characters",
-        (v) => /[0-9]/.test(v) || "Must contain at least 1 digit",
-      ],
-      // pwdRules: [
-      //     v => !!v || 'Please type password.',
-      //     v => (v && v.length >= 6) || 'Minimum length is 6 characters',
-      //     v => /[a-z]/.test(v) || 'Must contain at least 1 lowercase letter',
-      //     v => /[A-Z]/.test(v) || 'Must contain at least 1 uppercase letter',
-      //     v => /[`!@#$%^&*()_+\-=[\]{};':"\\|,.<>?~]/.test(v) || 'Must contain at least 1 symbol'
-      // ],
-    };
-  },
-  computed: {
-    loading() {
-      return this.$store.getters.loading;
-    },
-    comparePasswords() {
-      return this.password != this.confirmpassword
-        ? "Passwords do not match!"
-        : "";
-    },
-    passwordLength() {
-      if (this.password.length < 6) {
-        return "Minimum length is 6 characters";
-      } else if (!this.password.match(/[a-z]/)) {
-        return "Must contain at least 1 lowercase letter";
-      } else if (!this.password.match(/[A-Z]/)) {
-        return "Must contain at least 1 uppercase letter";
-      } else if (!this.password.match(/[`!@#$%^&*()_+\-=[\]{};':"\\|,.<>?~]/)) {
-        return "Must contain at least 1 symbol";
-      } else {
-        return true;
-      }
-    },
-    formIsValid() {
-      return (
-        this.fullname != "" &&
-        this.email != "" &&
-        this.username != "" &&
-        this.password != "" &&
-        this.confirmpassword != "" &&
-        this.password == this.confirmpassword
-      );
-    },
-  },
-  methods: {
-    onRegister() {
-      axios
-        .post("http://localhost:3001/register", {
-          email: this.email,
-          password: this.password,
-          role: "beneficiary",
-        })
-        .then((response) => {
-          const response_data = response.data;
-          if (response_data.statusCode == "200") {
-            var expires = "";
-            var date = new Date();
-            date.setTime(date.getTime() + 10 * 60 * 1000);
-            expires = "; expires=" + date.toUTCString();
-            document.cookie =
-              "accessToken=" + response_data.accessToken + ";" + expires;
-            console.log("pass");
-          } else {
-            console.log("fail");
-          }
-        })
-        .catch((error) => {
-          console.log("error " + error);
-        });
-    },
-  },
-};
-</script>
+// const axios = require("axios");
+// export default {
+//   name: "register",
+//   data() {
+//     return {
+//       name: "",
+//       email: "",
+//       username: "",
+//       password: "",
+//       confirmpassword: "",
+//       userid: "",
+//       errorstatus: false,
+//       value: String,
+//       showPassword: String,
+//       nameRules: [(v) => v.length >= 2 || "Minimum length is 2 characters"],
+//       emailRules: [
+//         (v) =>
+//           !v ||
+//           /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
+//           "E-mail must be valid",
+//       ],
+//       userRules: [
+//         (v) => v.length >= 8 || "Minimum length is 8 characters",
+//         (v) => /[0-9]/.test(v) || "Must contain at least 1 digit",
+//       ],
+//       // pwdRules: [
+//       //     v => !!v || 'Please type password.',
+//       //     v => (v && v.length >= 6) || 'Minimum length is 6 characters',
+//       //     v => /[a-z]/.test(v) || 'Must contain at least 1 lowercase letter',
+//       //     v => /[A-Z]/.test(v) || 'Must contain at least 1 uppercase letter',
+//       //     v => /[`!@#$%^&*()_+\-=[\]{};':"\\|,.<>?~]/.test(v) || 'Must contain at least 1 symbol'
+//       // ],
+//     };
+//   },
+//   computed: {
+//     loading() {
+//       return this.$store.getters.loading;
+//     },
+//     comparePasswords() {
+//       return this.password != this.confirmpassword
+//         ? "Passwords do not match!"
+//         : "";
+//     },
+//     passwordLength() {
+//       if (this.password.length < 6) {
+//         return "Minimum length is 6 characters";
+//       } else if (!this.password.match(/[a-z]/)) {
+//         return "Must contain at least 1 lowercase letter";
+//       } else if (!this.password.match(/[A-Z]/)) {
+//         return "Must contain at least 1 uppercase letter";
+//       } else if (!this.password.match(/[`!@#$%^&*()_+\-=[\]{};':"\\|,.<>?~]/)) {
+//         return "Must contain at least 1 symbol";
+//       } else {
+//         return true;
+//       }
+//     },
+//     formIsValid() {
+//       return (
+//         this.fullname != "" &&
+//         this.email != "" &&
+//         this.username != "" &&
+//         this.password != "" &&
+//         this.confirmpassword != "" &&
+//         this.password == this.confirmpassword
+//       );
+//     },
+//   },
+//   methods: {
+//     onRegister() {
+//       axios
+//         .post("http://localhost:3001/register", {
+//           email: this.email,
+//           password: this.password,
+//           role: "beneficiary",
+//         })
+//         .then((response) => {
+//           const response_data = response.data;
+//           if (response_data.statusCode == "200") {
+//             var expires = "";
+//             var date = new Date();
+//             date.setTime(date.getTime() + 10 * 60 * 1000);
+//             expires = "; expires=" + date.toUTCString();
+//             document.cookie =
+//               "accessToken=" + response_data.accessToken + ";" + expires;
+//             console.log("pass");
+//           } else {
+//             console.log("fail");
+//           }
+//         })
+//         .catch((error) => {
+//           console.log("error " + error);
+//         });
+//     },
+//   },
+// };
+// </script>
 <style scoped>
 .bground {
   background: url("../assets/bg.png");
