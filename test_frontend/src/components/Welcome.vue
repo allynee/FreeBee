@@ -22,20 +22,26 @@
         </v-col>
       </v-row>
 
-      <v-row class="my-15">
-        <v-col cols="3">
-          <Category></Category>
-        </v-col>
-        <v-col cols="3">
-          <Category></Category>
-        </v-col>
-        <v-col cols="3">
-          <Category></Category>
-        </v-col>
-        <v-col cols="3">
-          <Category></Category>
+      <v-row class ="my-15">
+        <v-col cols='3' v-for="category in myCategories" :key="category.title">
+          <Category :title="category.title" :image="category.image"> </Category>
         </v-col>
       </v-row>
+
+      <!-- <v-row class="my-15">
+        <v-col cols="3">
+          <Category></Category>
+        </v-col>
+        <v-col cols="3">
+          <Category></Category>
+        </v-col>
+        <v-col cols="3">
+          <Category></Category>
+        </v-col>
+        <v-col cols="3">
+          <Category></Category>
+        </v-col>
+      </v-row> -->
       <v-row>
         <h1 class="text-h4 grey--text text--darken-3">Recommended for you</h1>
       </v-row>
@@ -51,6 +57,13 @@
       <v-row>
         <h1 class="text-h4 grey--text text--darken-3">All FreeBees</h1>
       </v-row>
+      
+      <!-- <v-row class ="my-15">
+        <v-col cols='3' v-for="listing in allListingsArray" :key="listing.title">
+          <Listing :title="listing.title" :image="listing.image" :desc="listing.desc"> </Listing>
+        </v-col>
+      </v-row> -->
+
       <v-row class="my-15">
         <v-col cols="4">
           <Listing></Listing>
@@ -99,6 +112,12 @@ import Listing from './Listing.vue';
     data() {
         return {
             fab: false,
+            myCategories: [
+                { title: 'Food and Beverage', image: 'Honey.png' },
+                { title: 'Apparel', image: 'yellowshirt.jpg' },
+                { title: 'Electronics', image: 'beeelectronic.jpg' },
+                { title: 'Furniture', image: 'beefurniture.jpg' },
+            ],
             //listings array retrieved from MS:
             allListingsArray:[],
         };

@@ -1,144 +1,221 @@
 <template>
     <div class="white pa-15 pt-5 bground">
         <v-container class="pl-10 pr-10 pb-10" style="width:45%;height:45%" data-aos="fade-down">
-            <span class="text-h6 text-capitalize grey--text">Create your account.</span><br/>
+            <span class="text-h6 text-capitalize orange--text">Create your account.</span><br/>
             <v-row class="mb-7 ml-1 mt-1">
-                <span class="text-h4 text-capitalize brown--text">Join thousands of pet lovers.</span>
+                <span class="text-h4 text-capitalize brown--text">Join our community.</span>
             </v-row>
-            <v-container>
-                <form @submit.prevent="onRegister">
-                    <v-layout row>
-                        <v-flex xs12>
-                            <v-text-field
-                            outlined
-                            name="fullname"
-                            label="Fullname*"
-                            id="fullname"
-                            v-model="fullname"
-                            type="text"
-                            :rules="nameRules"
-                            required>
-                            </v-text-field>
-                        </v-flex>
-                    </v-layout>
+            
+            <v-card>
+                <v-tabs v-model="tab" fixed-tabs color="orange" bg-color="white">
+                    <v-tab value="one">User</v-tab>
+                    <v-tab value="two">Corporate</v-tab>
+                </v-tabs>
+                <v-card-text>
+                    <v-window v-model="tab">
+                        <v-window-item value="one">
+                            <form @submit.prevent="onRegister">
+                                <v-container>
+                                    <v-text-field
+                                    outlined
+                                    rounded
+                                    name="fullname"
+                                    label="Fullname*"
+                                    id="fullname"
+                                    v-model="fullname"
+                                    type="text"
+                                    :rules="nameRules"
+                                    required>
+                                    </v-text-field>
+                                </v-container>
 
-                    <v-layout row>
-                        <v-flex xs12>
-                            <v-text-field
-                            outlined
-                            name="email"
-                            label="Email*"
-                            id="email"
-                            v-model="email"
-                            type="email"
-                            :rules="emailRules"
-                            required>
-                            </v-text-field>
-                        </v-flex>
-                    </v-layout>
+                                <v-container>
+                                    <v-text-field
+                                    outlined
+                                    rounded
+                                    name="email"
+                                    label="Email*"
+                                    id="email"
+                                    v-model="email"
+                                    type="email"
+                                    :rules="emailRules"
+                                    required>
+                                    </v-text-field>
+                                </v-container>
 
-                    <v-layout row>
-                        <v-flex xs12>
-                            <v-text-field
-                            outlined
-                            name="username"
-                            label="Username*"
-                            id="username"
-                            v-model="username"
-                            type="text"
-                            :rules="userRules"
-                            required>
-                            </v-text-field>
-                        </v-flex>
-                    </v-layout>
+                                <v-container>
+                                    <v-text-field
+                                    outlined
+                                    rounded
+                                    name="username"
+                                    label="Username*"
+                                    id="username"
+                                    v-model="username"
+                                    type="text"
+                                    :rules="userRules"
+                                    required>
+                                    </v-text-field>
+                                </v-container>
 
-                    <v-layout row>
-                        <v-flex xs12>
-                            <v-text-field
-                            outlined
-                            name="password"
-                            label="Password*"
-                            id="password"
-                            v-model="password"
-                            :append-icon="value ? 'mdi-eye-off' : 'mdi-eye'"
-                            @click:append="() => (value = !value)"
-                            :type="value ? 'password' : 'text'"
-                            :rules="[passwordLength]"
-                            >
-                            </v-text-field>
-                        </v-flex>
-                    </v-layout>
+                                <v-container>
+                                    <v-text-field
+                                    outlined
+                                    rounded
+                                    name="password"
+                                    label="Password*"
+                                    id="password"
+                                    v-model="password"
+                                    :append-icon="value ? 'mdi-eye-off' : 'mdi-eye'"
+                                    @click:append="() => (value = !value)"
+                                    :type="value ? 'password' : 'text'"
+                                    :rules="[passwordLength]"
+                                    >
+                                    </v-text-field>
+                                </v-container>
 
-                    <v-layout row>
-                        <v-flex xs12>
-                            <v-text-field
-                            outlined
-                            name="confirmpassword"
-                            label="Confirm Password*"
-                            id="confirmpassword"
-                            v-model="confirmpassword"
-                            :append-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
-                            @click:append="() => (showPassword = !showPassword)"
-                            :type="showPassword ? 'password' : 'text'"
-                            :rules="[comparePasswords]">
-                            </v-text-field>
-                        </v-flex>
-                    </v-layout>
-                    <span class>
-                        <v-checkbox>
-                            <template v-slot:label>
-                                I wish to receive emails regarding activities involving my account
-                            </template>
-                        </v-checkbox>
-                    </span>
+                                <v-container>
+                                    <v-text-field
+                                    outlined
+                                    rounded
+                                    name="confirmpassword"
+                                    label="Confirm Password*"
+                                    id="confirmpassword"
+                                    v-model="confirmpassword"
+                                    :append-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
+                                    @click:append="() => (showPassword = !showPassword)"
+                                    :type="showPassword ? 'password' : 'text'"
+                                    :rules="[comparePasswords]">
+                                    </v-text-field>
+                                </v-container>
+                                <span class>
+                                    <v-checkbox>
+                                        <template v-slot:label>
+                                            I wish to receive emails regarding activities involving my account
+                                        </template>
+                                    </v-checkbox>
+                                </span>
 
-                                <v-layout row>
-                                    <v-flex xs12>
-                                        <v-btn type="submit" block brown outlined :disabled="!formIsValid" :loading="loading">
-                                            Register
-                                            <!-- button loader -->
-                                            <template v-slot:loader>
-                                                <span class="custom-loader">
-                                                <v-icon light>mdi-cached</v-icon>
-                                                </span>
-                                            </template>
-                                        </v-btn>
-                                    </v-flex>
-                                </v-layout>
+                                <v-container>
+                                    <v-btn type="submit" block brown outlined :disabled="!formIsValid" :loading="loading">
+                                        Register
+                                        <!-- button loader -->
+                                        <template v-slot:loader>
+                                            <span class="custom-loader">
+                                            <v-icon light>mdi-cached</v-icon>
+                                            </span>
+                                        </template>
+                                    </v-btn>
+                                </v-container>
 
-                                <v-row >
-                                    <v-col class="my-3">
-                                
-                                    <v-alert type="error" v-if="errorstatus">
-                                    Email already in use!
-                                    </v-alert>
-                                    </v-col>
+                                            <v-row >
+                                                <v-col class="my-3">
+                                            
+                                                <v-alert type="error" v-if="errorstatus">
+                                                Email already in use!
+                                                </v-alert>
+                                                </v-col>
 
-                                </v-row>
+                                            </v-row>    
 
-                                <!-- Error Message -->
-                                <!-- <v-layout row>
-                                    <v-flex xs12>
-                                        <p v-if="errorstatus"></p>
-                                    </v-flex>
-                                </v-layout> -->
+                            <!-- Error Message -->
+                            <!-- <v-layout row>
+                                <v-flex xs12>
+                                    <p v-if="errorstatus"></p>
+                                </v-flex>
+                            </v-layout> -->
                             </form>
-                        </v-container>
-                        </v-container>
-                        </div>
-                      
+                        </v-window-item>
                         
-                    <!-- </v-card-text>
-                </v-card>
-            </v-flex>
-        </v-layout> -->
-    
+                        <v-window-item value="two">
+                            <form @submit.prevent="onRegister">
+                                <v-container>
+                                    <v-text-field
+                                    outlined
+                                    name="corporatename"
+                                    label="Corporate Name*"
+                                    id="corporatename"
+                                    v-model="corporatename"
+                                    type="text"
+                                    :rules="nameRules"
+                                    required>
+                                    </v-text-field>
+                                </v-container>
 
+                                <v-container>
+                                    <v-text-field
+                                    outlined
+                                    name="corporateEmail"
+                                    label="Corporate Email*"
+                                    id="corporateEmail"
+                                    v-model="corporateEmail"
+                                    type="email"
+                                    :rules="emailRules"
+                                    required>
+                                    </v-text-field>
+                                </v-container>
 
-   
+                                <v-container>
+                                    <v-text-field
+                                    outlined
+                                    name="password"
+                                    label="Password*"
+                                    id="password"
+                                    v-model="password"
+                                    :append-icon="value ? 'mdi-eye-off' : 'mdi-eye'"
+                                    @click:append="() => (value = !value)"
+                                    :type="value ? 'password' : 'text'"
+                                    :rules="[passwordLength]"
+                                    >
+                                    </v-text-field>
+                                </v-container>
 
+                                <v-container>
+                                    <v-text-field
+                                    outlined
+                                    name="confirmpassword"
+                                    label="Confirm Password*"
+                                    id="confirmpassword"
+                                    v-model="confirmpassword"
+                                    :append-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
+                                    @click:append="() => (showPassword = !showPassword)"
+                                    :type="showPassword ? 'password' : 'text'"
+                                    :rules="[comparePasswords]">
+                                    </v-text-field>
+                                </v-container>
 
-  </template>
+                                <v-container>
+                                    <v-btn type="submit" block brown outlined :disabled="!formIsValid" :loading="loading">
+                                        Register
+                                        <!-- button loader -->
+                                        <template v-slot:loader>
+                                            <span class="custom-loader">
+                                            <v-icon light>mdi-cached</v-icon>
+                                            </span>
+                                        </template>
+                                    </v-btn>
+                                </v-container>
+                                    
+                                            <v-row >
+                                                <v-col class="my-3">
+                                                <v-alert type="error" v-if="errorstatus">
+                                                Email already in use!
+                                                </v-alert>
+                                                </v-col>
+                                            </v-row>    
+                            <!-- Error Message -->
+                            <!-- <v-layout row>
+                                <v-flex xs12>
+                                    <p v-if="errorstatus"></p>
+                                </v-flex>
+                            </v-layout> -->
+                            </form>
+                        </v-window-item>
+                    </v-window>
+                </v-card-text>
+            </v-card>
+        </v-container>                    
+    </div>
+</template>
   
   <style src="../style/style.css">
 </style>
@@ -277,7 +354,6 @@
   </script>
   <style scoped>
   .bground {
-    background: url('../assets/bg.png');
     background-size: cover;
     height: 120vh;
     background-position: 20px;
