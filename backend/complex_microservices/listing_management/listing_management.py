@@ -16,6 +16,7 @@ CORS(app)
 listing_URL = "http://localhost:8000/listing"
 geocoding_URL = "http://localhost:3000/"
 notification_URL = "http://localhost:3000/"
+authentication_URL = "localhost:3001/"
 
 @app.route("/listing_management", methods=['POST'])
 def create_listing():
@@ -105,6 +106,10 @@ def delete_listing(listing_id):
 
 def processCreateListing(listing):
     #2. authenticate that this is a corporate user
+    print('\n-----Authenticating user-----')
+    authentication_URL_full = authentication_URL + "auth/checkaccess/:token" #need to get token from the front-end
+    authentication_result = invoke_http(authentication_URL_full, method="GET", json=None)
+    print('authentication_result:', authentication_result)
 
     #3. send address string from listing to geocoding API
     address = listing["address"]
@@ -131,7 +136,9 @@ def processCreateListing(listing):
 
     #5. Send the notification to users who are subscribed to the corporate
     ############  Publish to subscribe queue   #############
-    obj = {} #confirm with lixuen what the object is supposed to look like
+    obj = {'CompanyName': "Salvation Army" ,
+       'Subscribers': [{"email" : "lixuen.low.2021@scis.smu.edu.sg"}, {"email" : "llx16702@gmail.com"}]
+       }
     message = json.dumps(obj)
     amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="email.subscribers", 
         body=message, properties=pika.BasicProperties(delivery_mode = 2))

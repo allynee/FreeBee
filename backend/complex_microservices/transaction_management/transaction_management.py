@@ -15,7 +15,7 @@ CORS(app)
 
 transaction_URL = "http://localhost:9000/transaction"
 listing_management_URL = "http://localhost:5000/listing_management"
-authentication_URL = "localhost:3001"
+authentication_URL = "localhost:3001/"
 
 transaction_status = "Ready to Collect"
 
@@ -93,7 +93,7 @@ def processCreateTransaction(transaction, quantityDeducted):
     authentication_result = invoke_http(authentication_URL_full, method="GET", json=None)
     print('authentication_result:', authentication_result)
 
-    if authentication_result["code"] == 200:
+    if authentication_result["statusCode"] == 200:
 
         # 3. Create the transaction info
         # Invoke the transaction microservice
