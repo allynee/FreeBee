@@ -40,16 +40,16 @@ channel.exchange_declare(exchange=exchangename, exchange_type=exchangetype, dura
 # Here can be a place to set up all queues needed by the microservices,
 # - instead of setting up the queues using RabbitMQ UI.
 
-############   Special queue   #############
-#delcare Special queue
-queue_name = 'Collection'
+############   Cancel queue   #############
+#delcare Cancel queue
+queue_name = 'Cancel'
 channel.queue_declare(queue=queue_name, durable=True) 
     # 'durable' makes the queue survive broker restarts
 
 #bind Subscription queue
-channel.queue_bind(exchange=exchangename, queue=queue_name, routing_key='#.collect') 
+channel.queue_bind(exchange=exchangename, queue=queue_name, routing_key='#.cancel') 
     # bind the queue to the exchange via the key
-    # any routing_key ending with '.subscribers' will be matched
+    # any routing_key ending with '.cancel' will be matched
 
 
 ############   Subscription queue   #############

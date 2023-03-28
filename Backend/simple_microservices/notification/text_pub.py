@@ -35,4 +35,4 @@ amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="
 
 print(f"sending message: {message} to queue 'collection'")
 
-amqp_setup.connection.close()
+# amqp_setup.connection.close()

@@ -4,7 +4,7 @@ import HomeView from '../views/HomeView.vue'
 import ReportPet from '../views/ReportPet.vue'
 import Search from '../views/Dashboard.vue'
 import MyMap from '../views/MyMap.vue'
-import Register from '../views/Register.vue'
+// import Register from '../views/RegisterBeneficiary.vue'
 import Login from '../views/Login.vue'
 import authguard from './auth-guard.js'
 import MyFreeBees from '../views/MyFreeBees.vue'
@@ -13,7 +13,10 @@ import SignUp from '../views/SignUp.vue'
 import Account from '../views/Account.vue'
 import Onepet from '../views/Onepet.vue'
 import MatchedPets from '../views/MatchedPets.vue'
+import BeneficiarySignUp  from '../views/RegisterBeneficiary.vue'
+import CorporateSignUp  from '../views/RegisterCorporate.vue'
 
+import RegisterFilter from '../views/RegisterFilter.vue'
 Vue.use(VueRouter)
 
 const routes = [
@@ -66,11 +69,11 @@ const routes = [
     beforeEnter:authguard,
 
   },
-  {
-    path:'/register',
-    name:'register',
-    component:Register
-  },
+  // {
+  //   path:'/register',
+  //   name:'register',
+  //   component:Register
+  // },
   { 
     path:'/login',
     name:'/login',
@@ -81,6 +84,21 @@ const routes = [
     name: 'MatchedPets',
     component: MatchedPets,
     beforeEnter:authguard,
+  },
+  {
+    path: '/register',
+    name: 'Register Filter',
+    component: RegisterFilter,
+  },
+  {
+    path: '/beneficiary',
+    name: 'Register Beneficiary',
+    component: BeneficiarySignUp,
+  },
+  {
+    path: '/corporate',
+    name: 'Register Corporate',
+    component: CorporateSignUp,
   },
 ]
 

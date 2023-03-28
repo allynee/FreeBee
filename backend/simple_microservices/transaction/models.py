@@ -15,5 +15,6 @@ class Transaction(Base):
     corporate_id = Column(Integer, nullable=False, index=True)
     user_id = Column(Integer, nullable=False, index=True)
     status = Column(String(50), nullable=False)
+    quantity = Column(Integer, nullable=False, index=True)
     created = Column(DateTime(timezone=True), server_default=func.now())
     modified = Column(DateTime(timezone=True), onupdate=func.now())

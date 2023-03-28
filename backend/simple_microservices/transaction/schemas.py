@@ -7,6 +7,7 @@ class TransactionBase(BaseModel):
     corporate_id: int
     user_id: int
     status: str
+    quantity: int
 
 class Transaction(TransactionBase):
     transaction_id: int
