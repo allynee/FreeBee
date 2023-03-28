@@ -6,9 +6,9 @@ import os, sys
 import requests
 from invokes import invoke_http
 
-# import amqp_setup
-# import pika
-# import json
+import amqp_setup
+import pika
+import json
 
 app = Flask(__name__)
 CORS(app)
@@ -86,6 +86,36 @@ def update_transaction(transaction_id):
         "message": "Invalid JSON input: " + str(request.get_data())
     }), 400
 
+@app.route("/transaction_management/<int:user_id>", methods=['GET'])
+def view_transactions(user_id):
+    # Simple check of input format and data of the request are JSON
+    if request.is_json:
+        try:
+            # do the actual work
+            # 1. initiate view of all transactions associated with user id
+            result = processViewTransactions(user_id)
+            print('\n------------------------')
+            print('\nresult: ', result)
+            return jsonify(result)
+
+        except Exception as e:
+            # Unexpected error in code
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            ex_str = str(e) + " at " + str(exc_type) + ": " + fname + ": line " + str(exc_tb.tb_lineno)
+            print(ex_str)
+
+            return jsonify({
+                "code": 500,
+                "message": "transaction service internal error: " + ex_str
+            }), 500
+
+    # if reached here, not a JSON request.
+    return jsonify({
+        "code": 400,
+        "message": "Invalid JSON input: " + str(request.get_data())
+    }), 400
+
 def processCreateTransaction(transaction, quantityDeducted):
     # 2. Authenticate user
     print('\n-----Authenticating user-----')
@@ -115,12 +145,17 @@ def processCreateTransaction(transaction, quantityDeducted):
         new_quantity = existing_quantity - quantityDeducted
         new_listing = {"quantity": new_quantity}
         if new_quantity >= 0:
-            listing_result = invoke_http(listing_management_URL_full, method='PUT', json=new_listing)  
+            listing_result = invoke_http(listing_management_URL_full, method='PUT', json=new_listing) 
+        #return error if quantity is insufficient 
+        # TO BE IMPLEMENTED!!!!!!!!!!!!!!!!!!!!
 
 def processUpdateTransaction(transaction, transaction_id):
 
     #2. Authenticate user
-    #copy code from above. set conditional statement of code == 200
+    print('\n-----Authenticating user-----')
+    authentication_URL_full = authentication_URL + "auth/checkaccess/:token" #need to get token from the front-end
+    authentication_result = invoke_http(authentication_URL_full, method="GET", json=None)
+    print('authentication_result:', authentication_result)
 
     #3. Update transaction
     transaction_URL_full = transaction_URL + "/" + str(transaction_id)
@@ -132,15 +167,39 @@ def processUpdateTransaction(transaction, transaction_id):
 
     #4a. If transaction is Cancelled from Corporate
     if transaction_result["status"] == "Cancelled":
-        pass #notify beneficiaries
-
-    #4b. If transaction is Cancelled from Beneficiary
-    if transaction_result["status"] == "Cancelled":
-        pass #notify corporates
+        obj = {} 
+        message = json.dumps(obj)
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="email.cancel", 
+            body=message, properties=pika.BasicProperties(delivery_mode = 2))
+        print(f"sending message: {message} to queue 'cancel'")
 
     #4c. If items are Ready to Collect
     if transaction_result["status"] == "Ready to Collect":
-        pass #notify beneficiaries
+        obj = {} 
+        message = json.dumps(obj)
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="email.collect", 
+            body=message, properties=pika.BasicProperties(delivery_mode = 2))
+        print(f"sending message: {message} to queue 'collect'")
+                
+
+#create a function to display transaction 
+def processViewTransactions(user_id):
+    pass
+    #2. Authenticate user, retrieve user type
+    print('\n-----Authenticating user-----')
+    authentication_URL_full = authentication_URL + "auth/checkaccess/:token" #need to get token from the front-end
+    authentication_result = invoke_http(authentication_URL_full, method="GET", json=None)
+    print('authentication_result:', authentication_result)
+    #add code check
+
+    #3. Retrieve all transactions associated with user id, store status, ben id, corp id, listing id
+    #3a. Retrieve if corporate
+    #3b. Retrieve if beneficiary
+
+    #4. For each transaction
+    #4a. Retrieve associated beneficiary
+    #4b. Retrieve associated corporate
+    #4c. Retrieve associated listing & listing details
 
 if __name__ == "__main__":
     print("This is flask " + os.path.basename(__file__) + " for managing a transaction...")

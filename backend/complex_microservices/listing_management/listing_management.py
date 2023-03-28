@@ -136,14 +136,11 @@ def processCreateListing(listing):
 
     #5. Send the notification to users who are subscribed to the corporate
     ############  Publish to subscribe queue   #############
-    obj = {'CompanyName': "Salvation Army" ,
-       'Subscribers': [{"email" : "lixuen.low.2021@scis.smu.edu.sg"}, {"email" : "llx16702@gmail.com"}]
-       } 
+    obj = {} 
     message = json.dumps(obj)
     amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="email.subscribers", 
         body=message, properties=pika.BasicProperties(delivery_mode = 2))
     print(f"sending message: {message} to queue 'subscribers'")
-
 
 def processUpdateListing(listing, listing_id):
     #2. Update listing info in the database

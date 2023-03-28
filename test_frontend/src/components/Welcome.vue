@@ -93,6 +93,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 import AOS from 'aos'
 import Category from './Category.vue';
 import SearchBar from './SearchBar.vue';
@@ -103,6 +104,7 @@ export default {
         AOS.init({
             duration: 1600,
         });
+
   },
   
   data() {
@@ -144,6 +146,7 @@ export default {
           });
         })
         console.log(this.allListingsArray)
+
     },
     onScroll (e) {
       if (typeof window === 'undefined') return
