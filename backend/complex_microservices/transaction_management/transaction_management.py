@@ -14,7 +14,10 @@ app = Flask(__name__)
 CORS(app)
 
 transaction_URL = "http://localhost:9000/transaction"
-listing_URL = "http://localhost:8000/listing"
+listing_management_URL = "http://localhost:5000/listing_management"
+authentication_URL = "localhost:3001"
+
+transaction_status = "Ready to Collect"
 
 @app.route("/transaction_management", methods=['POST'])
 def create_transaction():
@@ -49,17 +52,18 @@ def create_transaction():
         "message": "Invalid JSON input: " + str(request.get_data())
     }), 400
 
-@app.route("/listing_update", methods=['PUT'])
-def update_listing(listing):
+
+@app.route("/transaction_management/<int:transaction_id>", methods=['PUT'])
+def update_transaction(transaction_id, transaction_status):
     # Simple check of input format and data of the request are JSON
     if request.is_json:
         try:
-            listing = request.get_json()
-            print("\nUpdated listing in JSON:", listing)
+            transaction = request.get_json()
+            print("\nJSON with details to update in transaction:", transaction)
 
             # do the actual work
-            # 1. initiate creation of listing
-            result = processUpdateListing(listing)
+            # 1. initiate update of transaction
+            result = processUpdateTransaction(transaction)
             print('\n------------------------')
             print('\nresult: ', result)
             return jsonify(result)
@@ -73,7 +77,7 @@ def update_listing(listing):
 
             return jsonify({
                 "code": 500,
-                "message": "create_transaction.py internal error: " + ex_str
+                "message": "transaction service internal error: " + ex_str
             }), 500
 
     # if reached here, not a JSON request.
@@ -82,20 +86,39 @@ def update_listing(listing):
         "message": "Invalid JSON input: " + str(request.get_data())
     }), 400
 
-def processCreateTransaction(transaction):
-    # 2. Send the transaction info
+def processCreateTransaction(transaction, quantityDeducted):
+
+    # 2. Authenticate user
+    # print('\n-----Authenticating user-----')
+    # authentication_URL_full = authentication_URL + "login/test@gmail.com/test1234" #this is currently HARDCODED!!
+    # authentication_result = invoke_http(authentication_URL_full, method="GET", json=None)
+    # print('authentication_result:', authentication_result)
+
+    # 3. Create the transaction info
     # Invoke the transaction microservice
     print('\n-----Invoking transaction microservice-----')
     transaction_result = invoke_http(transaction_URL, method='POST', json=transaction)
     print('transaction_result:', transaction_result)
+    print('listing_id', transaction_result['listing_id'])
 
-def processUpdateListing(listing):
-    # 2. Send the listing info
-    # Invoke the listing microservice
-    print('\n-----Invoking listing microservice-----')
-    listing_result = invoke_http(listing_URL, method='PUT', json=listing)
-    print('listing_result:', listing_result)    
+    listing_id = transaction_result['listing_id'] #get listing_id of newly created transaction
 
+    #4. Update listing quantity
+    print('\n-----Invoking listing management microservice-----')
+    #4a. Get existing listing details
+    listing_management_URL_full = listing_management_URL + "/" + str(listing_id)
+    listing_result = invoke_http(listing_management_URL_full, method='GET', json=None)
+    print('listing_result:', listing_result)
+    existing_quantity = listing_result["quantity"]
+    #4b. Deduct quantity from  listing
+    new_quantity = existing_quantity - quantityDeducted
+    new_listing = {"quantity": new_quantity}
+    if new_quantity >= 0:
+        listing_result = invoke_http(listing_management_URL_full, method='PUT', json=new_listing)  
+
+def processUpdateTransaction():
+    pass
+    #hmmm how do i... know which status im supposed to update the transaction to 
 
 if __name__ == "__main__":
     print("This is flask " + os.path.basename(__file__) + " for managing a transaction...")

@@ -4,8 +4,11 @@
   <div class="white darken-3">
     <v-container class="py-10">
       <v-row class="my-5 justify-center">
-        <h1 class="text-md-h3 text-sm-h2 grey--text text--darken-4 font-weight-light justify-center" data-aos="fade-down">
-              What FreeBee are you looking for?
+        <h1
+          class="text-md-h3 text-sm-h2 grey--text text--darken-4 font-weight-light justify-center"
+          data-aos="fade-down"
+        >
+          What FreeBee are you looking for?
         </h1>
       </v-row>
       <v-row class="my-15">
@@ -18,7 +21,8 @@
         </v-col>
         <v-col cols="2" class="justify-right">
           <v-btn plain depressed class="grey--text text--darken-4">
-            <v-icon small left>mdi-view-grid</v-icon>See all categories</v-btn>
+            <v-icon small left>mdi-view-grid</v-icon>See all categories</v-btn
+          >
         </v-col>
       </v-row>
 
@@ -43,7 +47,10 @@
       <v-row justify="center" class="my-5">
         <v-col cols="12" align="center" data-aos="fade-left">
           <!-- <div data-aos="fade-left"> -->
-          <video-background :src="require(`@/assets/test.mp4`)" style="height: 300px; width: 300px">
+          <video-background
+            :src="require(`@/assets/test.mp4`)"
+            style="height: 300px; width: 300px"
+          >
           </video-background>
           <!-- </div> -->
         </v-col>
@@ -62,7 +69,7 @@
           <Listing></Listing>
         </v-col>
       </v-row>
-      
+
       <!-- <v-row justify="center" class="">
         <v-col cols="8" align="center" >
         <h1 class="text-h4 brown--text text--darken-2 font-weight-bold">What categories are you looking for?</h1>
@@ -74,14 +81,22 @@
         </p>
         </v-col>
       </v-row> -->
-
     </v-container>
 
-<!-- scroll to top button -->
-<v-btn v-scroll="onScroll" v-show="fab" fab fixed bottom right color="green lighten-2" @click="toTop">
-  <v-icon>mdi-chevron-up</v-icon>
-</v-btn>
-</div>
+    <!-- scroll to top button -->
+    <v-btn
+      v-scroll="onScroll"
+      v-show="fab"
+      fab
+      fixed
+      bottom
+      right
+      color="green lighten-2"
+      @click="toTop"
+    >
+      <v-icon>mdi-chevron-up</v-icon>
+    </v-btn>
+  </div>
 </template>
 
 <script>
@@ -104,20 +119,8 @@ import Listing from './Listing.vue';
             allListingsArray:[],
         };
     },
-    methods: {
-        onScroll(e) {
-            if (typeof window === "undefined")
-                return;
-            const top = window.pageYOffset || e.target.scrollTop || 0;
-            this.fab = top > 20;
-        },
-        toTop() {
-            this.$vuetify.goTo(0);
-        },
-        scroll() {
-            document.querySelector(this.href)
-                .scrollIntoView({ behavior: "smooth" });
-        }
+    scroll() {
+      document.querySelector(this.href).scrollIntoView({ behavior: "smooth" });
     },
     components: { SearchBar, Category, Listing},
     created(){

@@ -1,3 +1,13 @@
+
+# from flask import Flask, request, jsonify
+# from flask_sqlalchemy import SQLAlchemy
+# from flask_cors import CORS
+# from os import environ
+
+# app = Flask(__name__)
+# app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
+# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 import pika
 
 # These module-level variables are initialized whenever a new instance of python interpreter imports the module;
@@ -20,7 +30,7 @@ connection = pika.BlockingConnection(
 channel = connection.channel()
 # Set up the exchange if the exchange doesn't exist
 # - use a 'topic' exchange to enable interaction
-exchangename="listing_topic"
+exchangename="transaction_topic"
 exchangetype="topic"
 channel.exchange_declare(exchange=exchangename, exchange_type=exchangetype, durable=True)
     # 'durable' makes the exchange survive broker restarts
@@ -28,16 +38,51 @@ channel.exchange_declare(exchange=exchangename, exchange_type=exchangetype, dura
 # Here can be a place to set up all queues needed by the microservices,
 # - instead of setting up the queues using RabbitMQ UI.
 
-############   Notification queue   #############
-#declare Notification queue
-queue_name = 'Notification'
+############   Cancel queue   #############
+#delcare Cancel queue
+queue_name = 'Cancel'
 channel.queue_declare(queue=queue_name, durable=True) 
     # 'durable' makes the queue survive broker restarts
 
-#bind Notification queue
-channel.queue_bind(exchange=exchangename, queue=queue_name, routing_key='*.notification') 
+#bind Subscription queue
+channel.queue_bind(exchange=exchangename, queue=queue_name, routing_key='#.cancel') 
     # bind the queue to the exchange via the key
-    # any routing_key with two words and ending with '.notification' will be matched
+    # any routing_key ending with '.cancel' will be matched
+
+
+############   Subscription queue   #############
+#delcare Subscription queue
+queue_name = 'Subscription'
+channel.queue_declare(queue=queue_name, durable=True) 
+    # 'durable' makes the queue survive broker restarts
+
+#bind Subscription queue
+channel.queue_bind(exchange=exchangename, queue=queue_name, routing_key='#.subscribers') 
+    # bind the queue to the exchange via the key
+    # any routing_key ending with '.subscribers' will be matched
+
+############   Company queue   #############
+#delcare company queue
+queue_name = 'ToCompany'
+channel.queue_declare(queue=queue_name, durable=True) 
+    # 'durable' makes the queue survive broker restarts
+
+#bind Subscription queue
+channel.queue_bind(exchange=exchangename, queue=queue_name, routing_key='#.company') 
+    # bind the queue to the exchange via the key
+    # any routing_key ending with '.subscribers' will be matched
+    
+############   Beneficiary queue   #############
+#delcare ToBeneficiary queue
+queue_name = 'ToBeneficiary'
+channel.queue_declare(queue=queue_name, durable=True) 
+    # 'durable' makes the queue survive broker restarts
+
+#bind ToBeneficiary queue
+channel.queue_bind(exchange=exchangename, queue=queue_name, routing_key='#.beneficiary') 
+    # bind the queue to the exchange via the key
+    # any routing_key ending with '.subscribers' will be matched
+
     
 
 """
