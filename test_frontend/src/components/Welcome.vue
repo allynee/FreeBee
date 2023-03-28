@@ -72,28 +72,21 @@
       </v-row> -->
 
       <v-row class="my-15">
-        <v-col cols="4">
+        <v-col cols="12" md="6" lg="4" v-for="aListing in allListingsArray" :key="aListing.listingID">
+          <Listing :aListing="aListing"></Listing>
+        </v-col>
+        <!-- <v-col cols="4">
           <Listing></Listing>
         </v-col>
         <v-col cols="4">
           <Listing></Listing>
-        </v-col>
-        <v-col cols="4">
-          <Listing></Listing>
-        </v-col>
+        </v-col> -->
       </v-row>
 
-      <!-- <v-row justify="center" class="">
-        <v-col cols="8" align="center" >
-        <h1 class="text-h4 brown--text text--darken-2 font-weight-bold">What categories are you looking for?</h1>
-        <br>
-        <p class="text-h6 font-weight-light brown--text text--darken-1 mb-11">
-          FindPetNOW is an online platform that supports you in your journey <br>of finding your lost pet. 
-          Report your lost dog, cat, terrapin and other pets<br> today to boost the chances
-          of finding your lost pet. 
-        </p>
-        </v-col>
-      </v-row> -->
+      <!-- <v-col cols="12" md="6" lg="4" v-for="aPet in myPets" :key="aPet.petid" align="center">
+      <PetCard :aPet="aPet"></PetCard>
+    </v-col> -->
+
     </v-container>
 
     <!-- scroll to top button -->
@@ -113,42 +106,74 @@
 </template>
 
 <script>
-import axios from 'axios'
 import AOS from 'aos'
 import Category from './Category.vue';
 import SearchBar from './SearchBar.vue';
 import Listing from './Listing.vue';
-  export default {
-    name: "HelloWorld",
-    mounted() {
+export default {
+  name: "HelloWorld",
+  mounted() {
         AOS.init({
             duration: 1600,
         });
-        axios
-        .get('http://0.0.0.0:5000/listing_management')
-        .then(response => (console.log(response)))
-    },
-    data() {
-        return {
-            fab: false,
-            myCategories: [
+  },
+  data(){
+    return{
+    fab: false,
+    myCategories: [
                 { title: 'Food and Beverage', image: 'Honey.png' },
                 { title: 'Apparel', image: 'yellowshirt.jpg' },
                 { title: 'Electronics', image: 'beeelectronic.jpg' },
                 { title: 'Furniture', image: 'beefurniture.jpg' },
             ],
-            //listings array retrieved from MS:
-            categories: ["Food and Beverage",""],
-            allListingsArray:[],
-        };
-    },
-    scroll() {
-      document.querySelector(this.href).scrollIntoView({ behavior: "smooth" });
-    },
-    components: { SearchBar, Category, Listing},
-    created(){
+      //listings array retrieved from MS:
+      categories: ["Food and Beverage",""],
+      allListingsArray:[],
+  };
+  },
 
-    }
-    
+  components: { SearchBar, Category, Listing},
+
+  methods:{
+      // async fetchListings() {
+      //     const listing_URL = 'http://0.0.0.0:8000/listing'
+      //     const response =
+      //       fetch(listing_URL)
+      //           .then(response => response.json())
+      //           .then(data => {
+      //               console.log(response);
+      //           })
+      //           .catch(error => {
+      //               // Errors when calling the service; such as network error, 
+      //               // service offline, etc
+      //               console.log(this.message + error);
+      //           });
+      // }
+    async fetchListings() {
+        const listing_URL = 'http://0.0.0.0:8000/listing'
+        this.axios.get(listing_URL).then((response) => {
+          // console.log("hello")
+          // console.log(response.data)
+          response.data.forEach(element => {
+            // console.log("An ELeemnt")
+            // console.log(element)
+            this.allListingsArray.push(element)
+          });
+        })
+        console.log(this.allListingsArray)
+
+    },
+    onScroll (e) {
+      if (typeof window === 'undefined') return
+      const top = window.pageYOffset ||   e.target.scrollTop || 0
+      this.fab = top > 20
+    },
+    toTop () {
+      this.$vuetify.goTo(0)
+    },
+  },
+  created(){
+    this.fetchListings()
+  }
 } 
 </script>

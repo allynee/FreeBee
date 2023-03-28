@@ -6,21 +6,19 @@
   <v-avatar color="grey lighten-2" class="my-1 mx-3">
     <v-img :src="require('../assets/OrangeCat.png')" max-width="30"></v-img>
   </v-avatar>
-  <span>Company Name</span>
+  <span>{{aListing.corporate_name}}</span>
 
   <v-img :src="require('../assets/BlackCat.png')" class="mx-auto" max-height="300" max-width="300" contain/>
   
-  <v-card-title class="">Name</v-card-title>
+  <v-card-title class="">{{aListing.name}}</v-card-title>
   <v-card-text>
-    DescriptionDescriptionDescription
-    DescriptionDescriptionDescription
-    DescriptionDescriptionDescription
+    {{aListing.description}}
   </v-card-text>
 
 
   <v-btn density="compact" depressed plain>
       <v-icon left color="green darken-4">mdi-map-marker</v-icon>
-      <span class="subheading me-2">Dobby Got</span>
+      <span class="subheading me-2">{{aListing.address}}</span>
   </v-btn>
 
   <v-btn density="compact" depressed plain class="ml-20">
@@ -35,7 +33,30 @@
 </template>
 
 <script>
-
+import AOS from 'aos'
+export default {
+    props: {
+      aListing: Object,
+    },
+    mounted() {
+      AOS.init({
+        duration: 1600,
+      })
+    },
+    data(){
+        return{ 
+           
+        }
+    },
+    methods: {
+       // redirecting function below
+        // redirect(petid){
+        //     console.log(petid)
+        //     this.$store.dispatch('loadedPet', petid)
+        //     this.$router.push('/SearchAllPets/'+ petid)
+        // }
+    },
+}
 </script>
 
 <style scoped>

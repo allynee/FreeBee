@@ -153,7 +153,7 @@
 
 <style src="../style/style.css"></style>
 
-<script>
+<!-- <script>
 const axios = require("axios");
 export default {
   name: "register",
@@ -249,7 +249,7 @@ export default {
     },
   },
 };
-</script>
+</script> -->
 <style scoped>
 .bground {
   background: url("../assets/bg.png");
