@@ -104,7 +104,9 @@ def delete_listing(listing_id):
     return jsonify(listing_result)
 
 def processCreateListing(listing):
-    #2. send address string from listing to geocoding API
+    #2. authenticate that this is a corporate user
+
+    #3. send address string from listing to geocoding API
     address = listing["address"]
     geocoding_URL_full = geocoding_URL + address
     #Invoke the geocoding microservice
@@ -121,13 +123,13 @@ def processCreateListing(listing):
 
     print(listing) #check if area district and postal code was added to listing object
 
-    #3. Send the listing info to database
+    #4. Send the listing info to database
     #Invoke the listing microservice
     print('\n-----Invoking listing microservice-----')
     listing_result = invoke_http(listing_URL, method='POST', json=listing)
     print('listing_result:', listing_result)
 
-    #4. Send the notification to users who are subscribed to the corporate
+    #5. Send the notification to users who are subscribed to the corporate
     ############  Publish to subscribe queue   #############
     obj = {} #confirm with lixuen what the object is supposed to look like
     message = json.dumps(obj)

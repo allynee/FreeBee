@@ -54,7 +54,7 @@ def create_transaction():
 
 
 @app.route("/transaction_management/<int:transaction_id>", methods=['PUT'])
-def update_transaction(transaction_id, transaction_status):
+def update_transaction(transaction_id):
     # Simple check of input format and data of the request are JSON
     if request.is_json:
         try:
@@ -63,7 +63,7 @@ def update_transaction(transaction_id, transaction_status):
 
             # do the actual work
             # 1. initiate update of transaction
-            result = processUpdateTransaction(transaction)
+            result = processUpdateTransaction(transaction, transaction_id)
             print('\n------------------------')
             print('\nresult: ', result)
             return jsonify(result)
@@ -87,38 +87,60 @@ def update_transaction(transaction_id, transaction_status):
     }), 400
 
 def processCreateTransaction(transaction, quantityDeducted):
-
     # 2. Authenticate user
-    # print('\n-----Authenticating user-----')
-    # authentication_URL_full = authentication_URL + "login/test@gmail.com/test1234" #this is currently HARDCODED!!
-    # authentication_result = invoke_http(authentication_URL_full, method="GET", json=None)
-    # print('authentication_result:', authentication_result)
+    print('\n-----Authenticating user-----')
+    authentication_URL_full = authentication_URL + "auth/checkaccess/:token" #need to get token from the front-end
+    authentication_result = invoke_http(authentication_URL_full, method="GET", json=None)
+    print('authentication_result:', authentication_result)
 
-    # 3. Create the transaction info
-    # Invoke the transaction microservice
+    if authentication_result["code"] == 200:
+
+        # 3. Create the transaction info
+        # Invoke the transaction microservice
+        print('\n-----Invoking transaction microservice-----')
+        transaction_result = invoke_http(transaction_URL, method='POST', json=transaction)
+        print('transaction_result:', transaction_result)
+        print('listing_id', transaction_result['listing_id'])
+
+        listing_id = transaction_result['listing_id'] #get listing_id of newly created transaction
+
+        #4. Update listing quantity
+        print('\n-----Invoking listing management microservice-----')
+        #4a. Get existing listing details
+        listing_management_URL_full = listing_management_URL + "/" + str(listing_id)
+        listing_result = invoke_http(listing_management_URL_full, method='GET', json=None)
+        print('listing_result:', listing_result)
+        existing_quantity = listing_result["quantity"]
+        #4b. Deduct quantity from  listing
+        new_quantity = existing_quantity - quantityDeducted
+        new_listing = {"quantity": new_quantity}
+        if new_quantity >= 0:
+            listing_result = invoke_http(listing_management_URL_full, method='PUT', json=new_listing)  
+
+def processUpdateTransaction(transaction, transaction_id):
+
+    #2. Authenticate user
+    #copy code from above. set conditional statement of code == 200
+
+    #3. Update transaction
+    transaction_URL_full = transaction_URL + "/" + str(transaction_id)
     print('\n-----Invoking transaction microservice-----')
-    transaction_result = invoke_http(transaction_URL, method='POST', json=transaction)
-    print('transaction_result:', transaction_result)
-    print('listing_id', transaction_result['listing_id'])
+    transaction_result = invoke_http(transaction_URL_full, method='PUT', json=transaction)
+    print('transaction_result:', transaction_result)    
 
-    listing_id = transaction_result['listing_id'] #get listing_id of newly created transaction
+    #4. Notify users if theres is a change in the status of the transaction
 
-    #4. Update listing quantity
-    print('\n-----Invoking listing management microservice-----')
-    #4a. Get existing listing details
-    listing_management_URL_full = listing_management_URL + "/" + str(listing_id)
-    listing_result = invoke_http(listing_management_URL_full, method='GET', json=None)
-    print('listing_result:', listing_result)
-    existing_quantity = listing_result["quantity"]
-    #4b. Deduct quantity from  listing
-    new_quantity = existing_quantity - quantityDeducted
-    new_listing = {"quantity": new_quantity}
-    if new_quantity >= 0:
-        listing_result = invoke_http(listing_management_URL_full, method='PUT', json=new_listing)  
+    #4a. If transaction is Cancelled from Corporate
+    if transaction_result["status"] == "Cancelled":
+        pass #notify beneficiaries
 
-def processUpdateTransaction():
-    pass
-    #hmmm how do i... know which status im supposed to update the transaction to 
+    #4b. If transaction is Cancelled from Beneficiary
+    if transaction_result["status"] == "Cancelled":
+        pass #notify corporates
+
+    #4c. If items are Ready to Collect
+    if transaction_result["status"] == "Ready to Collect":
+        pass #notify beneficiaries
 
 if __name__ == "__main__":
     print("This is flask " + os.path.basename(__file__) + " for managing a transaction...")
