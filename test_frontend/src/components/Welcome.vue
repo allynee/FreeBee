@@ -123,8 +123,24 @@ import Listing from './Listing.vue';
       document.querySelector(this.href).scrollIntoView({ behavior: "smooth" });
     },
     components: { SearchBar, Category, Listing},
+    methods:{
+      async fetchListings() {
+          const listing_URL = 'http://0.0.0.0:8000/listing'
+          const response =
+            fetch(listing_URL)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(response);
+                })
+                .catch(error => {
+                    // Errors when calling the service; such as network error, 
+                    // service offline, etc
+                    console.log(this.message + error);
+                });
+      }
+    },
     created(){
-    //Get from Listing MS. Then for each listing, this.allListingsArray.push()  
+      this.fetchListings()
     }
 } 
 </script>

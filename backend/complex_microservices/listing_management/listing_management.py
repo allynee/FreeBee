@@ -138,7 +138,7 @@ def processCreateListing(listing):
     ############  Publish to subscribe queue   #############
     obj = {'CompanyName': "Salvation Army" ,
        'Subscribers': [{"email" : "lixuen.low.2021@scis.smu.edu.sg"}, {"email" : "llx16702@gmail.com"}]
-       }
+       } 
     message = json.dumps(obj)
     amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="email.subscribers", 
         body=message, properties=pika.BasicProperties(delivery_mode = 2))
