@@ -4,12 +4,26 @@
   <div class="white darken-3">
     <v-container class="py-10">
       <v-row class="my-5 justify-center">
+        <span data-aos="fade-right" class="mr-15">
+          <video-background
+            :src="require(`@/assets/flipbee.mp4`)"
+            style="height: 85px; width: 60px"
+          >
+          </video-background>
+        </span>
         <h1
           class="text-md-h3 text-sm-h2 grey--text text--darken-4 font-weight-light justify-center"
           data-aos="fade-down"
         >
           What FreeBee are you looking for?
         </h1>
+        <span data-aos="fade-left" class="ml-15">
+          <video-background
+            :src="require(`@/assets/bee.mp4`)"
+            style="height: 85px; width: 60px"
+          >
+          </video-background>
+        </span>
       </v-row>
       <v-row class="my-15">
         <SearchBar></SearchBar>
@@ -54,8 +68,8 @@
         <v-col cols="12" align="center" data-aos="fade-left">
           <!-- <div data-aos="fade-left"> -->
           <video-background
-            :src="require(`@/assets/test.mp4`)"
-            style="height: 300px; width: 300px"
+            :src="require(`@/assets/bee.mp4`)"
+            style="height: 250px; width: 180px"
           >
           </video-background>
           <!-- </div> -->
@@ -97,7 +111,7 @@
       fixed
       bottom
       right
-      color="green lighten-2"
+      color="amber"
       @click="toTop"
     >
       <v-icon>mdi-chevron-up</v-icon>
