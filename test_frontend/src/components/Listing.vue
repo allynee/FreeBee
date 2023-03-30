@@ -1,7 +1,7 @@
 <template>
 <div>
 <v-hover v-slot="{ hover }">
-  <v-card flat :elevation="hover ? 10 : 2" :class="{ 'on-hover': hover }" style="max-width:500px" outlined class="pa-2"> 
+  <v-card flat :elevation="hover ? 10 : 2" :class="{ 'on-hover': hover }" style="width:350px; height:500px" outlined class="pa-2"> 
 
   <v-avatar color="grey lighten-2" class="my-1 mx-3">
     <v-img :src="require('../assets/OrangeCat.png')" max-width="30"></v-img>

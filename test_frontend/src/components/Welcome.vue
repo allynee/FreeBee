@@ -1,9 +1,10 @@
 <!-- Welcome page -->
 
 <template>
+  <!-- First Segment -->
   <div class="white darken-3">
-    <v-container class="py-10">
-      <v-row class="my-5 justify-center">
+    <v-container-fluid class="py-10">
+      <v-row class="my-15 justify-center">
         <span data-aos="fade-right" class="mr-15">
           <video-background
             :src="require(`@/assets/flipbee.mp4`)"
@@ -28,80 +29,47 @@
       <v-row class="my-15">
         <SearchBar></SearchBar>
       </v-row>
+    </v-container-fluid>
 
-      <v-row>
-        <v-col cols="10">
-          <h1 class="text-h4 grey--text text--darken-3">Categories</h1>
-        </v-col>
-        <v-col cols="2" class="justify-right">
+    <div class="mx-15 px-15">
+
+     <!-- Categories -->
+      <v-row class="">
+        <span class="text-h4 grey--text text--darken-3">Categories</span>
+        <!-- <span style="width:80%" class="justify-right">
           <v-btn plain depressed class="grey--text text--darken-4">
-            <v-icon small left>mdi-view-grid</v-icon>See all categories</v-btn
-          >
-        </v-col>
-      </v-row>
+          <v-icon small left>mdi-view-grid</v-icon>See all categories</v-btn>
+        </span> -->
+    </v-row>
 
-      <v-row class ="my-15">
-        <v-col cols='3' v-for="category in myCategories" :key="category.title">
+      <v-row class ="my-15 justify-center">
+        <v-col cols='2' v-for="category in myCategories" :key="category.title">
           <Category :title="category.title" :image="category.image"> </Category>
         </v-col>
       </v-row>
 
-      <!-- <v-row class="my-15">
-        <v-col cols="3">
-          <Category></Category>
-        </v-col>
-        <v-col cols="3">
-          <Category></Category>
-        </v-col>
-        <v-col cols="3">
-          <Category></Category>
-        </v-col>
-        <v-col cols="3">
-          <Category></Category>
-        </v-col>
-      </v-row> -->
-      <v-row>
+      <v-row class="">
         <h1 class="text-h4 grey--text text--darken-3">Recommended for you</h1>
       </v-row>
 
-      <v-row justify="center" class="my-5">
+
+      <v-row justify="center" class="my-15">
         <v-col cols="12" align="center" data-aos="fade-left">
-          <!-- <div data-aos="fade-left"> -->
-          <video-background
-            :src="require(`@/assets/bee.mp4`)"
-            style="height: 250px; width: 180px"
-          >
+          <video-background :src="require(`@/assets/bee.mp4`)" style="height: 250px; width: 180px">
           </video-background>
-          <!-- </div> -->
         </v-col>
       </v-row>
-      <v-row>
+
+      <v-row class="">
         <h1 class="text-h4 grey--text text--darken-3">All FreeBees</h1>
       </v-row>
-      
-      <!-- <v-row class ="my-15">
-        <v-col cols='3' v-for="listing in allListingsArray" :key="listing.title">
-          <Listing :title="listing.title" :image="listing.image" :desc="listing.desc"> </Listing>
-        </v-col>
-      </v-row> -->
 
       <v-row class="my-15">
-        <v-col cols="12" md="6" lg="4" v-for="aListing in allListingsArray" :key="aListing.listingID">
+        <v-col cols="12" md="4" lg="3" v-for="aListing in allListingsArray" :key="aListing.listingID">
           <Listing :aListing="aListing"></Listing>
         </v-col>
-        <!-- <v-col cols="4">
-          <Listing></Listing>
-        </v-col>
-        <v-col cols="4">
-          <Listing></Listing>
-        </v-col> -->
       </v-row>
-
-      <!-- <v-col cols="12" md="6" lg="4" v-for="aPet in myPets" :key="aPet.petid" align="center">
-      <PetCard :aPet="aPet"></PetCard>
-    </v-col> -->
-
-    </v-container>
+  </div>
 
     <!-- scroll to top button -->
     <v-btn
@@ -136,8 +104,10 @@ export default {
     fab: false,
     myCategories: [
                 { title: 'Food and Beverage', image: 'Honey.png' },
+                { title: 'Food and Beverage', image: 'Honey.png' },
                 { title: 'Apparel', image: 'yellowshirt.jpg' },
                 { title: 'Electronics', image: 'beeelectronic.jpg' },
+                { title: 'Furniture', image: 'beefurniture.jpg' },
                 { title: 'Furniture', image: 'beefurniture.jpg' },
             ],
       //listings array retrieved from MS:
