@@ -3,7 +3,7 @@
 <template>
   <!-- First Segment -->
   <div class="white darken-3">
-    <v-container-fluid class="py-10">
+    <div class="py-5">
       <v-row class="my-15 justify-center">
         <span data-aos="fade-right" class="mr-15">
           <video-background
@@ -29,7 +29,7 @@
       <v-row class="my-15">
         <SearchBar></SearchBar>
       </v-row>
-    </v-container-fluid>
+    </div>
 
     <div class="mx-15 px-15">
 
@@ -42,7 +42,7 @@
         </span> -->
     </v-row>
 
-      <v-row class ="my-15 justify-center">
+      <v-row class ="my-8 justify-center">
         <v-col cols='2' v-for="category in myCategories" :key="category.title">
           <Category :title="category.title" :image="category.image"> </Category>
         </v-col>
@@ -103,8 +103,8 @@ export default {
     return{
     fab: false,
     myCategories: [
-                { title: 'Food and Beverage', image: 'Honey.png' },
-                { title: 'Food and Beverage', image: 'Honey.png' },
+                { title: 'Food & Drinks', image: 'Honey.png' },
+                { title: 'Food & Drinks', image: 'Honey.png' },
                 { title: 'Apparel', image: 'yellowshirt.jpg' },
                 { title: 'Electronics', image: 'beeelectronic.jpg' },
                 { title: 'Furniture', image: 'beefurniture.jpg' },
