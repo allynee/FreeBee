@@ -196,7 +196,11 @@ def processViewTransactions(user_id):
     #3a. Retrieve if corporate
     #3b. Retrieve if beneficiary
 
+    transactions = ["transaction 1"]
+
     #4. For each transaction
+    for transaction in transactions:
+        pass
     #4a. Retrieve associated beneficiary
     #4b. Retrieve associated corporate
     #4c. Retrieve associated listing & listing details

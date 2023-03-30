@@ -40,7 +40,7 @@ def create_listing():
 
             return jsonify({
                 "code": 500,
-                "message": "place_order.py internal error: " + ex_str
+                "message": "listing_management.py internal error: " + ex_str
             }), 500
     # if reached here, not a JSON request.
     return jsonify({
