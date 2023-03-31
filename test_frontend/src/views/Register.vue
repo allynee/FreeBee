@@ -1,6 +1,6 @@
 <template>
-    <div class="white mb-15 pa-15 bground">
-        <v-container class="pb-15" style="width:50%;height:10%" data-aos="fade-down">
+    <div class="white pa-5 bground" style="height:25%">
+        <v-container class="pb-15" style="width:50%;" data-aos="fade-down">
             <span class="text-h6 text-capitalize orange--text">Create your account.</span><br/>
             <v-row class="mb-7 ml-1 mt-1">
                 <span class="text-h4 text-capitalize brown--text">Join our community.</span>
