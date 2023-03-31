@@ -17,6 +17,8 @@ import Register from '../views/Register.vue'
 import BeneficiarySignUp  from '../views/RegisterBeneficiary.vue'
 import CorporateSignUp  from '../views/RegisterCorporate.vue'
 
+import indivlisting from '../views/IndividualListing.vue'
+
 // import RegisterFilter from '../views/RegisterFilter.vue'
 Vue.use(VueRouter)
 
@@ -107,6 +109,11 @@ const routes = [
     path: '/corporate',
     name: 'Register Corporate',
     component: CorporateSignUp,
+  },
+  {
+    path: '/indivlisting',
+    name: 'indivlisting',
+    component: indivlisting,
   },
 ]
 
