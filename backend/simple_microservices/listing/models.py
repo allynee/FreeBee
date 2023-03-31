@@ -10,7 +10,7 @@ from database import Base
 
 class Listing(Base):
     __tablename__ = 'listing'
-    listing_id = Column(Integer, primary_key=True, autoincrement=True, index=True)
+    listing_id = Column(Integer, primary_key=True, index=True)
     corporate_id = Column(Integer, nullable=False, index=True)
     corporate_name = Column(String(50), nullable=False, index=True)
     name = Column(String(50), nullable=False)
@@ -23,6 +23,7 @@ class Listing(Base):
     category = Column(String(50), nullable=False, index=True)
     quantity = Column(Integer, nullable=False, index=True)
     status = Column(String(50), nullable=False)
+    img_ext = Column(String(50))
 
     created = Column(DateTime(timezone=True), server_default=func.now())
     modified = Column(DateTime(timezone=True),  onupdate=func.now())
