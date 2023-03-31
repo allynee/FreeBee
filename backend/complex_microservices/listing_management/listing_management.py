@@ -93,14 +93,23 @@ def processCreateListing(listing, token):
     authentication_result = authenticateUser(token) 
     print(authentication_result)
 
-    if (authentication_result["statusCode"] == 200):
+    if (authentication_result["statusCode"] == '200'):
         if (authentication_result['role'] == "corporate"):
             # #3. send address string from listing to geocoding API
-            # address = listing["address"]
-            # geocoding_URL_full = geocoding_URL + address
-            # #Invoke the geocoding microservice
-            # print('\n-----Invoking geocoding microservice-----')
-            # geocoding_result = invoke_http(geocoding_URL_full, method='GET', json=listing)
+            print('\n-----Invoking geocoding microservice-----')
+            address = listing["address"]
+            geocoding_URL_full = "http://localhost:3000/graphql"
+            query = f'''query {{
+                address(address: "{address}") {{
+                    address
+                    postal_code
+                    area
+                    district
+                }}
+            }}
+            '''
+            r = requests.post(geocoding_URL_full, json={'query': query})
+            print(json.dumps(r.json()))
 
             # area = geocoding_result["area"]
             # district = geocoding_result["district"]
