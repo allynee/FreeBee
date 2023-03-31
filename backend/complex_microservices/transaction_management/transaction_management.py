@@ -135,7 +135,7 @@ def processCreateTransaction(transaction, quantityDeducted):
         listing_id = transaction_result['listing_id'] #get listing_id of newly created transaction
 
         #4. Update listing quantity
-        print('\n-----Invoking listing management microservice-----')
+        print('\n-----Invoking listing management microservice-----') # access listing straight
         #4a. Get existing listing details
         listing_management_URL_full = listing_management_URL + "/" + str(listing_id)
         listing_result = invoke_http(listing_management_URL_full, method='GET', json=None)

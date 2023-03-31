@@ -16,7 +16,9 @@ CORS(app)
 listing_URL = "http://localhost:8000/listing"
 geocoding_URL = "http://localhost:3000/"
 notification_URL = "http://localhost:3000/"
-authentication_URL = "localhost:3001/"
+authentication_URL = "localhost:3001/auth/checkaccess/"
+
+token = "eyJhbGciOiJSUzI1NiIsImtpZCI6Ijk3OWVkMTU1OTdhYjM1Zjc4MjljZTc0NDMwN2I3OTNiN2ViZWIyZjAiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vZXNkZWV6bnV0eiIsImF1ZCI6ImVzZGVlem51dHoiLCJhdXRoX3RpbWUiOjE2Nzk5MzgxNTIsInVzZXJfaWQiOiI3TE5vaHMwWjBEVFYzWEo4VWJvNmtxR09GaXoxIiwic3ViIjoiN0xOb2hzMFowRFRWM1hKOFVibzZrcUdPRml6MSIsImlhdCI6MTY3OTkzODE1MiwiZXhwIjoxNjc5OTQxNzUyLCJlbWFpbCI6Ind0ZkBnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsid3RmQGdtYWlsLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.VoTsaM6gT-KeX7PRwtS3GdaMOjDp3SzXXhYeZjbw5l3h0x82IOiLjGN1cIZI9GYx_RfLtvrRi2dcpENI_H8QHAXdkMypfwm04H3f2fV5-q2ICpAYBCOdJt4C6kiMmq7wVXGKpNivCISSDl3cQRwfsNDJSPx4AUkLzMbKZZyEoxe26f0ubUbdkkj0GowW8qgLwlLgz4WsAeXOD7-WAIQgcuxZIVPUXLvdKV9bJee2Om9y19aHbjatiHNfrBKD4ZwouNc-6fGFVqwjd-WMbl7vTSFkNN9gQ4bCMff0vCuO5z6l-s-EB2ZT7WVCmYPPQMFfNxeIGSjs3GKC81WIxU_9UA"
 
 @app.route("/listing_management", methods=['POST'])
 def create_listing():
@@ -28,7 +30,7 @@ def create_listing():
          
             # do the actual work
             # 1. Create listing info 
-            result = processCreateListing(listing)
+            result = processCreateListing(listing, token)
             return jsonify(result)
 
         except Exception as e:
@@ -78,69 +80,62 @@ def update_listing(listing_id):
         "message": "Invalid JSON input: " + str(request.get_data())
     }), 400
 
-@app.route("/listing_management", methods=['GET'])
-def get_listing():
-    #1. get all listings
-    print('\n-----Invoking listing microservice-----')
-    listing_result = invoke_http(listing_URL, method='GET', json=None)
-    print('listing_result:', listing_result)
-    return jsonify(listing_result)
 
-@app.route("/listing_management/<int:listing_id>", methods=['GET'])
-def get_specific_listing(listing_id):
-    listing_URL_full = listing_URL + "/" + str(listing_id)
-    #1. get specific listing
-    print('\n-----Invoking listing microservice-----')
-    listing_result = invoke_http(listing_URL_full, method='GET', json=None)
-    print('listing_result:', listing_result)
-    return jsonify(listing_result)
-
-@app.route("/listing_management/<int:listing_id>", methods=["DEL"])
-def delete_listing(listing_id):
-    listing_URL_full = listing_URL + "/" + str(listing_id)
-    #1. delete specific listing
-    print('\n-----Invoking listing microservice-----')
-    listing_result = invoke_http(listing_URL_full, method="DEL", json=None)
-    print('listing deleted')
-    return jsonify(listing_result)
-
-def processCreateListing(listing):
+def processCreateListing(listing, token):
     #2. authenticate that this is a corporate user
-    print('\n-----Authenticating user-----')
-    authentication_URL_full = authentication_URL + "auth/checkaccess/:token" #need to get token from the front-end
-    authentication_result = invoke_http(authentication_URL_full, method="GET", json=None)
-    print('authentication_result:', authentication_result)
 
-    #3. send address string from listing to geocoding API
-    address = listing["address"]
-    geocoding_URL_full = geocoding_URL + address
-    #Invoke the geocoding microservice
-    print('\n-----Invoking geocoding microservice-----')
-    geocoding_result = invoke_http(geocoding_URL_full, method='GET', json=listing)
+    authentication_result = authenticateUser(token) 
+    print(authentication_result)
 
-    area = geocoding_result["area"]
-    district = geocoding_result["district"]
-    postal_code = geocoding_result["postal_code"]
+    if authentication_result == "corporate":
 
-    listing["area"] = area
-    listing["district"] = district
-    listing["postal"] = postal_code
+        #3. send address string from listing to geocoding API
+        address = listing["address"]
+        geocoding_URL_full = geocoding_URL + address
+        #Invoke the geocoding microservice
+        print('\n-----Invoking geocoding microservice-----')
+        geocoding_result = invoke_http(geocoding_URL_full, method='GET', json=listing)
 
-    print(listing) #check if area district and postal code was added to listing object
+        area = geocoding_result["area"]
+        district = geocoding_result["district"]
+        postal_code = geocoding_result["postal_code"]
 
-    #4. Send the listing info to database
-    #Invoke the listing microservice
-    print('\n-----Invoking listing microservice-----')
-    listing_result = invoke_http(listing_URL, method='POST', json=listing)
-    print('listing_result:', listing_result)
+        listing["area"] = area
+        listing["district"] = district
+        listing["postal"] = postal_code
 
-    #5. Send the notification to users who are subscribed to the corporate
-    ############  Publish to subscribe queue   #############
-    obj = {} 
-    message = json.dumps(obj)
-    amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="email.subscribers", 
-        body=message, properties=pika.BasicProperties(delivery_mode = 2))
-    print(f"sending message: {message} to queue 'subscribers'")
+        print(listing) #check if area district and postal code was added to listing object
+
+        #still need to implement logic check for whether geocoding was successful or not
+
+        #4. Send the listing info to database
+        #Invoke the listing microservice
+        print('\n-----Invoking listing microservice-----')
+        listing_result = invoke_http(listing_URL, method='POST', json=listing)
+        print('listing_result:', listing_result)
+
+        if "details" not in listing_result: 
+
+            #5. Send the notification to users who are subscribed to the corporate
+            ############  Publish to subscribe queue   #############
+            obj = {
+                "listing_result": listing_result
+            } 
+            message = json.dumps(obj)
+            amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="email.subscribers", 
+                body=message, properties=pika.BasicProperties(delivery_mode = 2))
+            print(f"sending message: {message} to queue 'subscribers' in Notification complex MS")
+        else:
+            return {
+                "code": 500,
+                "message": "Creation of listing failed. Check if listing service is running."
+            }
+
+    else:
+        return {
+            "code": 404,
+            "message": "Unauthenticated user. User needs to be logged into a corporate account."
+        }
 
 def processUpdateListing(listing, listing_id):
     #2. Update listing info in the database
@@ -149,6 +144,14 @@ def processUpdateListing(listing, listing_id):
     print('\n-----Invoking listing microservice-----')
     listing_result = invoke_http(listing_URL_full, method='PUT', json=listing)
     print('listing_result:', listing_result)
+
+def authenticateUser(token_input):
+    print('\n-----Authenticating user-----')
+    authentication_URL_full = authentication_URL + token_input #need to get token from the front-end, currently HARDCODED
+    authentication_result = invoke_http(authentication_URL_full, method="GET", json=None)
+    print('authentication_result:', authentication_result)
+    return authentication_result
+
 
 if __name__ == "__main__":
     print("This is flask " + os.path.basename(__file__) + " for managing a listing...")
