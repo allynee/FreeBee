@@ -15,9 +15,11 @@ CORS(app)
 
 transaction_URL = "http://localhost:9000/transaction"
 listing_management_URL = "http://localhost:5000/listing_management"
-authentication_URL = "localhost:3001/"
+authentication_URL = "http://localhost:3001/auth/checkaccess/"
 
 transaction_status = "Ready to Collect"
+token = "eyJhbGciOiJSUzI1NiIsImtpZCI6Ijk3OWVkMTU1OTdhYjM1Zjc4MjljZTc0NDMwN2I3OTNiN2ViZWIyZjAiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vZXNkZWV6bnV0eiIsImF1ZCI6ImVzZGVlem51dHoiLCJhdXRoX3RpbWUiOjE2ODAyMzM5MzUsInVzZXJfaWQiOiIwdmJYemdGNW84U3pMWkxsS25WSGx0YTZyMVAyIiwic3ViIjoiMHZiWHpnRjVvOFN6TFpMbEtuVkhsdGE2cjFQMiIsImlhdCI6MTY4MDIzMzkzNSwiZXhwIjoxNjgwMjM3NTM1LCJlbWFpbCI6InRlc3QxQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJ0ZXN0MUBnbWFpbC5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.etKySBOU7E53MmkhwrN9LcttQJ_2_1oSx9dzN0FmaEZrDDU_vz8i1OclcN_hfVjzoQHg1V9wMHAvEmwrriCi0r_hfPZzX4e4RuMLOSZb5ClHQyhCSujtKzKQncGOYlVH9nX9EjUkPqYdFoaN1jaTYhIXAbOb8tEGmWs44KvuL3_WQMiEb3aIcF_4TtmRiXLaijTR2o2bSvIVZJ360eyqrTXzUjHY2HPcW3t2gOthfyMswWPnhkROlLx8kzaprvOfN8kcoI1WAhRemrMHGVmNAoiUoaB6X69-pGy7fUgCD1lnIndUw1Nm9zblCHohy7oQZ9qb3KX0D-tIPPlRh0i1jg"
+
 
 @app.route("/transaction_management", methods=['POST'])
 def create_transaction():
@@ -87,7 +89,7 @@ def update_transaction(transaction_id):
     }), 400
 
 @app.route("/transaction_management/<int:user_id>", methods=['GET'])
-def view_transactions(user_id):
+def display_transactions(user_id):
     # Simple check of input format and data of the request are JSON
     if request.is_json:
         try:
@@ -204,6 +206,13 @@ def processViewTransactions(user_id):
     #4a. Retrieve associated beneficiary
     #4b. Retrieve associated corporate
     #4c. Retrieve associated listing & listing details
+
+def authenticateUser(token_input):
+    print('\n-----Authenticating user-----')
+    authentication_URL_full = authentication_URL + token_input #need to get token from the front-end, currently HARDCODED
+    authentication_result = invoke_http(authentication_URL_full, method="GET", json=None)
+    print('authentication_result:', authentication_result)
+    return authentication_result
 
 if __name__ == "__main__":
     print("This is flask " + os.path.basename(__file__) + " for managing a transaction...")

@@ -18,7 +18,7 @@ geocoding_URL = "http://localhost:3000/"
 notification_URL = "http://localhost:3000/"
 authentication_URL = "http://localhost:3001/auth/checkaccess/"
 
-token = "eyJhbGciOiJSUzI1NiIsImtpZCI6Ijk3OWVkMTU1OTdhYjM1Zjc4MjljZTc0NDMwN2I3OTNiN2ViZWIyZjAiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vZXNkZWV6bnV0eiIsImF1ZCI6ImVzZGVlem51dHoiLCJhdXRoX3RpbWUiOjE2Nzk5MzgxNTIsInVzZXJfaWQiOiI3TE5vaHMwWjBEVFYzWEo4VWJvNmtxR09GaXoxIiwic3ViIjoiN0xOb2hzMFowRFRWM1hKOFVibzZrcUdPRml6MSIsImlhdCI6MTY3OTkzODE1MiwiZXhwIjoxNjc5OTQxNzUyLCJlbWFpbCI6Ind0ZkBnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsid3RmQGdtYWlsLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.VoTsaM6gT-KeX7PRwtS3GdaMOjDp3SzXXhYeZjbw5l3h0x82IOiLjGN1cIZI9GYx_RfLtvrRi2dcpENI_H8QHAXdkMypfwm04H3f2fV5-q2ICpAYBCOdJt4C6kiMmq7wVXGKpNivCISSDl3cQRwfsNDJSPx4AUkLzMbKZZyEoxe26f0ubUbdkkj0GowW8qgLwlLgz4WsAeXOD7-WAIQgcuxZIVPUXLvdKV9bJee2Om9y19aHbjatiHNfrBKD4ZwouNc-6fGFVqwjd-WMbl7vTSFkNN9gQ4bCMff0vCuO5z6l-s-EB2ZT7WVCmYPPQMFfNxeIGSjs3GKC81WIxU_9UA"
+token = "eyJhbGciOiJSUzI1NiIsImtpZCI6Ijk3OWVkMTU1OTdhYjM1Zjc4MjljZTc0NDMwN2I3OTNiN2ViZWIyZjAiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vZXNkZWV6bnV0eiIsImF1ZCI6ImVzZGVlem51dHoiLCJhdXRoX3RpbWUiOjE2ODAyMzM5MzUsInVzZXJfaWQiOiIwdmJYemdGNW84U3pMWkxsS25WSGx0YTZyMVAyIiwic3ViIjoiMHZiWHpnRjVvOFN6TFpMbEtuVkhsdGE2cjFQMiIsImlhdCI6MTY4MDIzMzkzNSwiZXhwIjoxNjgwMjM3NTM1LCJlbWFpbCI6InRlc3QxQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJ0ZXN0MUBnbWFpbC5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.etKySBOU7E53MmkhwrN9LcttQJ_2_1oSx9dzN0FmaEZrDDU_vz8i1OclcN_hfVjzoQHg1V9wMHAvEmwrriCi0r_hfPZzX4e4RuMLOSZb5ClHQyhCSujtKzKQncGOYlVH9nX9EjUkPqYdFoaN1jaTYhIXAbOb8tEGmWs44KvuL3_WQMiEb3aIcF_4TtmRiXLaijTR2o2bSvIVZJ360eyqrTXzUjHY2HPcW3t2gOthfyMswWPnhkROlLx8kzaprvOfN8kcoI1WAhRemrMHGVmNAoiUoaB6X69-pGy7fUgCD1lnIndUw1Nm9zblCHohy7oQZ9qb3KX0D-tIPPlRh0i1jg"
 
 @app.route("/listing_management", methods=['POST'])
 def create_listing():
@@ -80,6 +80,12 @@ def update_listing(listing_id):
         "message": "Invalid JSON input: " + str(request.get_data())
     }), 400
 
+@app.route("/listing_management/", methods=['GET'])
+def display_listings():
+    pass
+    #1. Retrieve all listings
+    
+        #2. Retrieve associated image
 
 def processCreateListing(listing, token):
     #2. authenticate that this is a corporate user
@@ -87,50 +93,48 @@ def processCreateListing(listing, token):
     authentication_result = authenticateUser(token) 
     print(authentication_result)
 
-    if ("role" in authentication_result) and (authentication_result['role'] == "corporate"):
-        # #3. send address string from listing to geocoding API
-        # address = listing["address"]
-        # geocoding_URL_full = geocoding_URL + address
-        # #Invoke the geocoding microservice
-        # print('\n-----Invoking geocoding microservice-----')
-        # geocoding_result = invoke_http(geocoding_URL_full, method='GET', json=listing)
+    if (authentication_result["statusCode"] == 200):
+        if (authentication_result['role'] == "corporate"):
+            # #3. send address string from listing to geocoding API
+            # address = listing["address"]
+            # geocoding_URL_full = geocoding_URL + address
+            # #Invoke the geocoding microservice
+            # print('\n-----Invoking geocoding microservice-----')
+            # geocoding_result = invoke_http(geocoding_URL_full, method='GET', json=listing)
 
-        # area = geocoding_result["area"]
-        # district = geocoding_result["district"]
-        # postal_code = geocoding_result["postal_code"]
+            # area = geocoding_result["area"]
+            # district = geocoding_result["district"]
+            # postal_code = geocoding_result["postal_code"]
 
-        # listing["area"] = area
-        # listing["district"] = district
-        # listing["postal"] = postal_code
+            # listing["area"] = area
+            # listing["district"] = district
+            # listing["postal"] = postal_code
 
-        print(listing) #check if area district and postal code was added to listing object
+            print(listing) #check if area district and postal code was added to listing object
 
-        #still need to implement logic check for whether geocoding was successful or not
+            #still need to implement logic check for whether geocoding was successful or not
 
-        #4. Send the listing info to database
-        #Invoke the listing microservice
-        print('\n-----Invoking listing microservice-----')
-        listing_result = invoke_http(listing_URL, method='POST', json=listing)
-        print('listing_result:', listing_result)
+            #4. Send the listing info to database
+            #Invoke the listing microservice
+            print('\n-----Invoking listing microservice-----')
+            listing_result = invoke_http(listing_URL, method='POST', json=listing)
+            print('listing_result:', listing_result)
 
-        if "detail" not in listing_result: 
-
-            #5. Send the notification to users who are subscribed to the corporate
-            ############  Publish to subscribe queue   #############
-            obj = {
-                "listing_result": listing_result
-            } 
-            message = json.dumps(obj)
-            amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="email.subscribers", 
-                body=message, properties=pika.BasicProperties(delivery_mode = 2))
-            print(f"sending message: {message} to queue 'subscribers' in Notification complex MS")
-
-        else:
-            print("failed creation of service")
-            return {
-                "code": 500,
-                "message": "Creation of listing failed. Check if listing service is running."
-            }, 500
+            if "detail" not in listing_result: 
+                #5. Send the notification to users who are subscribed to the corporate
+                ############  Publish to subscribe queue   #############
+                obj = {
+                    "listing_result": listing_result
+                } 
+                message = json.dumps(obj)
+                amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="email.subscribers", 
+                    body=message, properties=pika.BasicProperties(delivery_mode = 2))
+                print(f"sending message: {message} to queue 'subscribers' in Notification complex MS")
+            else:
+                return {
+                    "code": 500,
+                    "message": "Creation of listing failed. Check if listing service is running."
+                }, 500
     else:
         return {
             "code": 404,
