@@ -16,6 +16,7 @@ import MatchedPets from '../views/MatchedPets.vue'
 import BeneficiarySignUp  from '../views/RegisterBeneficiary.vue'
 import CorporateSignUp  from '../views/RegisterCorporate.vue'
 
+import Image from '../views/Image.vue'
 import RegisterFilter from '../views/RegisterFilter.vue'
 Vue.use(VueRouter)
 
@@ -100,6 +101,11 @@ const routes = [
     name: 'Register Corporate',
     component: CorporateSignUp,
   },
+  {
+    path:'/image',
+    name: 'Image',
+    component: Image
+  }
 ]
 
 const router = new VueRouter({

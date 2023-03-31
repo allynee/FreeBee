@@ -84,8 +84,8 @@
     </v-container>
 
     <!-- scroll to top button -->
-    <v-btn
-      v-scroll="onScroll"
+    <!-- <v-btn
+      v-scroll="scroll"
       v-show="fab"
       fab
       fixed
@@ -95,7 +95,7 @@
       @click="toTop"
     >
       <v-icon>mdi-chevron-up</v-icon>
-    </v-btn>
+    </v-btn> -->
   </div>
 </template>
 
