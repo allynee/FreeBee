@@ -47,15 +47,15 @@ const schema = new GraphQLSchema({
   query: RootQueryType,
 });
 
-const getAddressData = async (address) => {
-  const response = await fetch(`/graphql/${address}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ query: `{ address(address: "${address}") { address, postal_code, area, district } }` }),
-  });
-  const { data } = await response.json();
-  return data.address;
-}
+// const getAddressData = async (address) => {
+//   const response = await fetch(`/graphql/${address}`, {
+//     method: 'POST',
+//     headers: { 'Content-Type': 'application/json' },
+//     body: JSON.stringify({ query: `{ address(address: "${address}") { address, postal_code, area, district } }` }),
+//   });
+//   const { data } = await response.json();
+//   return data.address;
+// }
 // const schema = new GraphQLSchema({
 //   query: new GraphQLObjectType({
 //     name: 'Query',

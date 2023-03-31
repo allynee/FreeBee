@@ -101,7 +101,7 @@
 <style src="../style/style.css"></style>
 
 <script>
-const axios = require("axios");
+// const axios = require("axios");
 
 export default {
   name: "login",
@@ -133,35 +133,35 @@ export default {
     },
   },
   methods: {
-    sampleLogin() {
-      let data = "";
+    // sampleLogin() {
+    //   let data = "";
 
-      let config = {
-        method: "get",
-        maxBodyLength: Infinity,
-        url: `http://localhost:3001/login/${this.email}/${this.password}`,
-        headers: {},
-        data: data,
-      };
+    //   let config = {
+    //     method: "get",
+    //     maxBodyLength: Infinity,
+    //     url: `http://localhost:3001/login/${this.email}/${this.password}`,
+    //     headers: {},
+    //     data: data,
+    //   };
 
-      axios
-        .request(config)
-        .then((response) => {
+    //   axios
+    //     .request(config)
+    //     .then((response) => {
           
-          var expires = "";
-          var date = new Date();
-          date.setTime(date.getTime() + 10 * 60 * 1000);
-          expires = "; expires=" + date.toUTCString();
-          document.cookie =
-            "accessToken=" + response.data.accessToken + ";" + expires;
-          console.log("Logged in");
-          this.$router.push('/')
-        })
+    //       var expires = "";
+    //       var date = new Date();
+    //       date.setTime(date.getTime() + 10 * 60 * 1000);
+    //       expires = "; expires=" + date.toUTCString();
+    //       document.cookie =
+    //         "accessToken=" + response.data.accessToken + ";" + expires;
+    //       console.log("Logged in");
+    //       this.$router.push('/')
+    //     })
 
-        .catch((error) => {
-          console.log(error);
-        });
-    },
+    //     .catch((error) => {
+    //       console.log(error);
+    //     });
+    // },
   //  checkAccess() {
   //     let accessToken = null;
   //     var nameEQ = "accessToken=";
@@ -195,6 +195,26 @@ export default {
   //         });
   //     }
   //   },
+    //   axios
+    //     .request(config)
+    //     .then((response) => {
+    //       if (response.data.statusCode == "200") {
+    //         var expires = "";
+    //         var date = new Date();
+    //         date.setTime(date.getTime() + 10 * 60 * 1000);
+    //         expires = "; expires=" + date.toUTCString();
+    //         document.cookie =
+    //           "accessToken=" + response.data.accessToken + ";" + expires;
+    //         console.log("Logged in");
+    //       } else {
+    //         console.log("Unsuccessful");
+    //       }
+    //     })
+
+    //     .catch((error) => {
+    //       console.log(error);
+    //     });
+    // },
   },
 };
 </script>

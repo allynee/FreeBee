@@ -9,7 +9,7 @@ const { google } = require('googleapis');
 const CLIENT_ID = '406765810173-lial73q96ehf1bm3c2num3q4870df64l.apps.googleusercontent.com';
 const CLIENT_SECRET = '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';
 const REDIRECT_URI = 'https://developers.google.com/oauthplayground';
-const REFRESH_TOKEN = '1//04uU3zbcjZsvBCgYIARAAGAQSNwF-L9IrUDZwqKk3Gma0g7cTVaDg2VUkGEx8XkzoXEXdweTruHFXuhUYMkpLKmWzWdzvoBVyB3Y';
+const REFRESH_TOKEN = '1//048RzrRvfYjrtCgYIARAAGAQSNwF-L9IrdpTersFVRvUgwuKW82W-JWICFsPStrImhWOlbNhPX7iKJW-QrnV3zQtt_YXD8lspshQ';
 // const OAuth2 = google.auth.OAuth2;
 
 //access token will expire aft awhile so have to recreate it
@@ -23,7 +23,7 @@ oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
 // html = '<h1>This is a sample email from FreeBeeSg</h1> \n <h2>Please do not reply to this email.</h2> \n <p>Thank you for using FreeBeeSg!</p>'
 
 // can pass in parameters to sendMail function
-async function sendMail(toMail){
+async function sendMail(toMail, subject, content){
     try{
         const accessToken = await oAuth2Client.getAccessToken();
         const transport = nodemailer.createTransport({
@@ -41,15 +41,15 @@ async function sendMail(toMail){
         const mailOptions = {
             from: 'FreeBeeSg <FreeBeeDoNotReply@gmail.com>',
             to: toMail,
-            subject: 'SAMPLE EMAIL from FreeBeeSg2',
-            text: 'This is a sample email from FreeBeeSg \n Please do not reply to this email. \n Thank you for using FreeBeeSg!',
-            html: '<h1>This is a sample email from FreeBeeSg</h1> \n <h2>Please do not reply to this email.</h2> \n <p>Thank you for using FreeBeeSg!</p>'
+            subject: subject,
+            text: content,
+            // html: '<h1>This is a sample email from FreeBeeSg</h1> \n <h2>Please do not reply to this email.</h2> \n <p>Thank you for using FreeBeeSg!</p>'
         };
 
         //this returns a promise
         // const result = await transport.sendMail(mailOptions)
         const result = await transport.sendMail(mailOptions)
-        console.log(result);
+        // console.log(result);
         return result;
 
         

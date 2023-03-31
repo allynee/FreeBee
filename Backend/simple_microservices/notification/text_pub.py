@@ -30,7 +30,7 @@ obj = {'ListingID': "2324" ,
 # channel.basic_publish(exchange='', routing_key='letterbox', body=message)
 
 message = json.dumps(obj)
-amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="test.collect", 
+amqp_setup.channel.basic_publish(exchange="Notification_topic", routing_key="test.notif", 
     body=message, properties=pika.BasicProperties(delivery_mode = 2))
 
 print(f"sending message: {message} to queue 'collection'")

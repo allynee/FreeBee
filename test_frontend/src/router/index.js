@@ -13,11 +13,13 @@ import SignUp from '../views/SignUp.vue'
 import Account from '../views/Account.vue'
 import Onepet from '../views/Onepet.vue'
 import MatchedPets from '../views/MatchedPets.vue'
+import Register from '../views/Register.vue'
 import BeneficiarySignUp  from '../views/RegisterBeneficiary.vue'
 import CorporateSignUp  from '../views/RegisterCorporate.vue'
 
 import Image from '../views/Image.vue'
-import RegisterFilter from '../views/RegisterFilter.vue'
+// import RegisterFilter from '../views/RegisterFilter.vue'
+// import RegisterFilter from '../views/RegisterFilter.vue'
 Vue.use(VueRouter)
 
 const routes = [
@@ -45,6 +47,13 @@ const routes = [
     component:Onepet,
     // beforeEnter:authguard
   },
+  // Card 
+  // {
+  //   path:'/FindFreeBee/:listingid',
+  //   props: true,
+  //   name:'ListingPage',
+  //   component: Listing,
+  // },
   {
     path: '/signup',
     name: 'signup',
@@ -88,8 +97,8 @@ const routes = [
   },
   {
     path: '/register',
-    name: 'Register Filter',
-    component: RegisterFilter,
+    name: 'Register',
+    component: Register,
   },
   {
     path: '/beneficiary',

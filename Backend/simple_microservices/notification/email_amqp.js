@@ -15,7 +15,7 @@ amqp.connect('amqp://127.0.0.1', (err, connection) => {
         if (err){
             throw err;
         }
-        let queueName = "Subscription";
+        let queueName = "Subscribers";
         channel.assertQueue(queueName, { durable: true });
         channel.consume(queueName, (msg) => {
             console.log("receieved :" + msg.content.toString())
