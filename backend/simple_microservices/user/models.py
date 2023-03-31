@@ -12,7 +12,7 @@ class Beneficiary(Base):
     __tablename__ = 'beneficiary'
     beneficiary_id = Column(Integer, primary_key=True, index=True)
     email = Column(String(50), nullable=False, index=True)
-    name = Column(String(50), nullable=False, index=True)
+    username = Column(String(50), nullable=False, index=True)
     phone= Column(Integer, index=True)
     address = Column(String(200), index=True)
     postal= Column(Integer)
