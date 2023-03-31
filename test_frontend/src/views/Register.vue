@@ -8,21 +8,21 @@
             
             <v-card>
                 <v-tabs v-model="tab" fixed-tabs color="orange" bg-color="white">
-                    <v-tab value="one">User</v-tab>
-                    <v-tab value="two">Corporate</v-tab>
+                    <v-tab>User</v-tab>
+                    <v-tab>Corporate</v-tab>
                 </v-tabs>
-                <v-card-text>
-                    <v-window v-model="tab">
-                        <v-window-item value="one">
+                <v-tabs-items v-model="tab">
+                    <v-tab-item :value="0">
+                        <v-card-text>
                             <form @submit.prevent="onRegister">
                                 <v-container>
                                     <v-text-field
                                     outlined
                                     rounded
-                                    name="fullname"
-                                    label="Fullname*"
-                                    id="fullname"
-                                    v-model="fullname"
+                                    name="username"
+                                    label="Username"
+                                    id="username"
+                                    v-model="username"
                                     type="text"
                                     :rules="nameRules"
                                     required>
@@ -34,7 +34,7 @@
                                     outlined
                                     rounded
                                     name="email"
-                                    label="Email*"
+                                    label="Email"
                                     id="email"
                                     v-model="email"
                                     type="email"
@@ -47,12 +47,27 @@
                                     <v-text-field
                                     outlined
                                     rounded
-                                    name="username"
-                                    label="Username*"
-                                    id="username"
-                                    v-model="username"
+                                    name="phone"
+                                    label="Mobile Number"
+                                    id="phone"
+                                    v-model="phone"
+                                    type="number"
+                                    hide-spin-buttons
+                                    :rules="phoneRules"
+                                    required>
+                                    </v-text-field>
+                                </v-container>
+
+                                <v-container>
+                                    <v-text-field
+                                    outlined
+                                    rounded
+                                    name="address"
+                                    label="Street Address"
+                                    id="address"
+                                    v-model="address"
                                     type="text"
-                                    :rules="userRules"
+                                    :rules="addressRules"
                                     required>
                                     </v-text-field>
                                 </v-container>
@@ -62,7 +77,7 @@
                                     outlined
                                     rounded
                                     name="password"
-                                    label="Password*"
+                                    label="Password"
                                     id="password"
                                     v-model="password"
                                     :append-icon="value ? 'mdi-eye-off' : 'mdi-eye'"
@@ -78,7 +93,7 @@
                                     outlined
                                     rounded
                                     name="confirmpassword"
-                                    label="Confirm Password*"
+                                    label="Confirm Password"
                                     id="confirmpassword"
                                     v-model="confirmpassword"
                                     :append-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
@@ -124,94 +139,109 @@
                                 </v-flex>
                             </v-layout> -->
                             </form>
-                        </v-window-item>
+                        </v-card-text>
+                    </v-tab-item>
                         
-                        <v-window-item value="two">
-                            <form @submit.prevent="onRegister">
-                                <v-container>
-                                    <v-text-field
-                                    outlined
-                                    name="corporatename"
-                                    label="Corporate Name*"
-                                    id="corporatename"
-                                    v-model="corporatename"
-                                    type="text"
-                                    :rules="nameRules"
-                                    required>
-                                    </v-text-field>
-                                </v-container>
+                        <v-tab-item :value="1">
+                            <v-card-text>
+                                <form @submit.prevent="onRegister">
+                                    <v-container>
+                                        <v-text-field
+                                        outlined
+                                        name="corporatename"
+                                        label="Corporate Name"
+                                        id="corporatename"
+                                        v-model="corporatename"
+                                        type="text"
+                                        :rules="nameRules"
+                                        required>
+                                        </v-text-field>
+                                    </v-container>
 
-                                <v-container>
-                                    <v-text-field
-                                    outlined
-                                    name="corporateEmail"
-                                    label="Corporate Email*"
-                                    id="corporateEmail"
-                                    v-model="corporateEmail"
-                                    type="email"
-                                    :rules="emailRules"
-                                    required>
-                                    </v-text-field>
-                                </v-container>
+                                    <v-container>
+                                        <v-text-field
+                                        outlined
+                                        name="corporateEmail"
+                                        label="Corporate Email"
+                                        id="corporateEmail"
+                                        v-model="corporateEmail"
+                                        type="email"
+                                        :rules="emailRules"
+                                        required>
+                                        </v-text-field>
+                                    </v-container>
 
-                                <v-container>
-                                    <v-text-field
-                                    outlined
-                                    name="password"
-                                    label="Password*"
-                                    id="password"
-                                    v-model="password"
-                                    :append-icon="value ? 'mdi-eye-off' : 'mdi-eye'"
-                                    @click:append="() => (value = !value)"
-                                    :type="value ? 'password' : 'text'"
-                                    :rules="[passwordLength]"
-                                    >
-                                    </v-text-field>
-                                </v-container>
+                                    <v-container>
+                                        <v-text-field
+                                        outlined
+                                        name="description"
+                                        label="Description"
+                                        id="description"
+                                        v-model="description"
+                                        type="text"
+                                        :rules="descriptionRules"
+                                        required>
+                                        </v-text-field>
+                                    </v-container>
 
-                                <v-container>
-                                    <v-text-field
-                                    outlined
-                                    name="confirmpassword"
-                                    label="Confirm Password*"
-                                    id="confirmpassword"
-                                    v-model="confirmpassword"
-                                    :append-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
-                                    @click:append="() => (showPassword = !showPassword)"
-                                    :type="showPassword ? 'password' : 'text'"
-                                    :rules="[comparePasswords]">
-                                    </v-text-field>
-                                </v-container>
+                                    <v-container>
+                                        <v-text-field
+                                        outlined
+                                        name="password"
+                                        label="Password"
+                                        id="password"
+                                        v-model="password"
+                                        :append-icon="value ? 'mdi-eye-off' : 'mdi-eye'"
+                                        @click:append="() => (value = !value)"
+                                        :type="value ? 'password' : 'text'"
+                                        :rules="[passwordLength]"
+                                        >
+                                        </v-text-field>
+                                    </v-container>
 
-                                <v-container>
-                                    <v-btn type="submit" block brown outlined :disabled="!formIsValid" :loading="loading">
-                                        Register
-                                        <!-- button loader -->
-                                        <template v-slot:loader>
-                                            <span class="custom-loader">
-                                            <v-icon light>mdi-cached</v-icon>
-                                            </span>
-                                        </template>
-                                    </v-btn>
-                                </v-container>
-                                    
-                                            <v-row >
-                                                <v-col class="my-3">
-                                                <v-alert type="error" v-if="errorstatus">
-                                                Email already in use!
-                                                </v-alert>
-                                                </v-col>
-                                            </v-row>    
-                            <!-- Error Message -->
-                            <!-- <v-layout row>
-                                <v-flex xs12>
-                                    <p v-if="errorstatus"></p>
-                                </v-flex>
-                            </v-layout> -->
-                            </form>
-                        </v-window-item>
-                    </v-window>
-                </v-card-text>
+                                    <v-container>
+                                        <v-text-field
+                                        outlined
+                                        name="confirmpassword"
+                                        label="Confirm Password"
+                                        id="confirmpassword"
+                                        v-model="confirmpassword"
+                                        :append-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
+                                        @click:append="() => (showPassword = !showPassword)"
+                                        :type="showPassword ? 'password' : 'text'"
+                                        :rules="[comparePasswords]">
+                                        </v-text-field>
+                                    </v-container>
+
+                                    <v-container>
+                                        <v-btn type="submit" block brown outlined :disabled="!formIsValid" :loading="loading">
+                                            Register
+                                            <!-- button loader -->
+                                            <template v-slot:loader>
+                                                <span class="custom-loader">
+                                                <v-icon light>mdi-cached</v-icon>
+                                                </span>
+                                            </template>
+                                        </v-btn>
+                                    </v-container>
+                                        
+                                                <v-row >
+                                                    <v-col class="my-3">
+                                                    <v-alert type="error" v-if="errorstatus">
+                                                    Email already in use!
+                                                    </v-alert>
+                                                    </v-col>
+                                                </v-row>    
+                                <!-- Error Message -->
+                                <!-- <v-layout row>
+                                    <v-flex xs12>
+                                        <p v-if="errorstatus"></p>
+                                    </v-flex>
+                                </v-layout> -->
+                                </form>
+                            </v-card-text>
+                        </v-tab-item>
+                    </v-tabs-items>
             </v-card>
         </v-container>                    
     </div>
@@ -231,12 +261,17 @@
       name: 'register',
       data(){
         return{
-            fullname:'',
-            email:'',
             username:'',
+            email:'',
+            phone:'',
+            address: '',
+            corporatename:'',
+            corporateEmail:'',
+            description:'',
             password:'',
             confirmpassword:'',
             userid:'',
+            corporateid:'',
             errorstatus:false,
             value: String,
             showPassword: String,

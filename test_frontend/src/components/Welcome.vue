@@ -104,11 +104,11 @@ export default {
     fab: false,
     myCategories: [
                 { title: 'Food & Drinks', image: 'Honey.png' },
-                { title: 'Food & Drinks', image: 'Honey.png' },
                 { title: 'Apparel', image: 'yellowshirt.jpg' },
                 { title: 'Electronics', image: 'beeelectronic.jpg' },
                 { title: 'Furniture', image: 'beefurniture.jpg' },
-                { title: 'Furniture', image: 'beefurniture.jpg' },
+                { title: 'Toys & Hobbies', image: 'pigbee.jpg' },
+                { title: 'Everything Else', image: 'manybees.jpg' },
             ],
       //listings array retrieved from MS:
       categories: ["Food and Beverage",""],
