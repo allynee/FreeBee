@@ -1,6 +1,6 @@
 <template>
-    <div class="white pa-15 pt-5 bground">
-        <v-container class="pl-10 pr-10 pb-10" style="width:45%;height:45%" data-aos="fade-down">
+    <div class="white mb-15 pa-15 bground">
+        <v-container class="pb-15" style="width:50%;height:10%" data-aos="fade-down">
             <span class="text-h6 text-capitalize orange--text">Create your account.</span><br/>
             <v-row class="mb-7 ml-1 mt-1">
                 <span class="text-h4 text-capitalize brown--text">Join our community.</span>
@@ -261,6 +261,7 @@
       name: 'register',
       data(){
         return{
+            tab: null, 
             username:'',
             email:'',
             phone:'',

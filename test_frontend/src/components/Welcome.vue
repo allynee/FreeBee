@@ -106,7 +106,6 @@ export default {
                 { title: 'Food & Drinks', image: 'Honey.png' },
                 { title: 'Apparel', image: 'yellowshirt.jpg' },
                 { title: 'Electronics', image: 'beeelectronic.jpg' },
-                { title: 'Hobbies & Toys', image: 'Honey.png' },
                 { title: 'Furniture', image: 'beefurniture.jpg' },
                 { title: 'Toys & Hobbies', image: 'pigbee.jpg' },
                 { title: 'Everything Else', image: 'manybees.jpg' },
