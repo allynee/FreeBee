@@ -46,7 +46,7 @@ export default {
       const formData = new FormData();
       formData.append("image", this.image, this.image.name);
       // let ext = filename.slice(filename.lastIndexOf('.'));
-      axios.post(`http://localhost:3001/image`, formData).then((response) => {
+      axios.post(`http://localhost:3002/image`, formData).then((response) => {
         let listingid = response.data.listingid;
         let ext =response.data.extension
         this.imagePost = `https://firebasestorage.googleapis.com/v0/b/esdeeznutz.appspot.com/o/listings%2F${listingid + ext}?alt=media&token=d96a1b6f-e4a2-42d1-a06b-c9331d4490a4`;

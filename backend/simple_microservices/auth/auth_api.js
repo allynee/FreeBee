@@ -39,13 +39,6 @@ app.get("/signout", async (req, res) => {
   res.json(authStatus);
 });
 
-app.post("/image", upload.single('image'), async (req, res) => {
-  const image = req.file
-  console.log(image)
-  const authStatus = await authentication.createListingFirebase(image);
-  res.json(authStatus);
-});
-
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
