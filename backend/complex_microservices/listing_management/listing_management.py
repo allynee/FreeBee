@@ -87,21 +87,21 @@ def processCreateListing(listing, token):
     authentication_result = authenticateUser(token) 
     print(authentication_result)
 
-    if authentication_result['role'] == "corporate":
-        #3. send address string from listing to geocoding API
-        address = listing["address"]
-        geocoding_URL_full = geocoding_URL + address
-        #Invoke the geocoding microservice
-        print('\n-----Invoking geocoding microservice-----')
-        geocoding_result = invoke_http(geocoding_URL_full, method='GET', json=listing)
+    if authentication_result['role'] == "beneficiary":
+        # #3. send address string from listing to geocoding API
+        # address = listing["address"]
+        # geocoding_URL_full = geocoding_URL + address
+        # #Invoke the geocoding microservice
+        # print('\n-----Invoking geocoding microservice-----')
+        # geocoding_result = invoke_http(geocoding_URL_full, method='GET', json=listing)
 
-        area = geocoding_result["area"]
-        district = geocoding_result["district"]
-        postal_code = geocoding_result["postal_code"]
+        # area = geocoding_result["area"]
+        # district = geocoding_result["district"]
+        # postal_code = geocoding_result["postal_code"]
 
-        listing["area"] = area
-        listing["district"] = district
-        listing["postal"] = postal_code
+        # listing["area"] = area
+        # listing["district"] = district
+        # listing["postal"] = postal_code
 
         print(listing) #check if area district and postal code was added to listing object
 
@@ -113,7 +113,7 @@ def processCreateListing(listing, token):
         listing_result = invoke_http(listing_URL, method='POST', json=listing)
         print('listing_result:', listing_result)
 
-        if "details" not in listing_result: 
+        if "detail" not in listing_result: 
 
             #5. Send the notification to users who are subscribed to the corporate
             ############  Publish to subscribe queue   #############
@@ -124,16 +124,18 @@ def processCreateListing(listing, token):
             amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="email.subscribers", 
                 body=message, properties=pika.BasicProperties(delivery_mode = 2))
             print(f"sending message: {message} to queue 'subscribers' in Notification complex MS")
+
         else:
+            print("failed creation of service")
             return {
                 "code": 500,
                 "message": "Creation of listing failed. Check if listing service is running."
-            }
+            }, 500
     else:
         return {
             "code": 404,
             "message": "Unauthenticated user. User needs to be logged into a corporate account."
-        }
+        }, 404
 
 def processUpdateListing(listing, listing_id):
     #2. Update listing info in the database
