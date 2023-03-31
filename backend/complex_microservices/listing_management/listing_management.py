@@ -16,7 +16,7 @@ CORS(app)
 listing_URL = "http://localhost:8000/listing"
 geocoding_URL = "http://localhost:3000/"
 notification_URL = "http://localhost:3000/"
-authentication_URL = "localhost:3001/auth/checkaccess/"
+authentication_URL = "http://localhost:3001/auth/checkaccess/"
 
 token = "eyJhbGciOiJSUzI1NiIsImtpZCI6Ijk3OWVkMTU1OTdhYjM1Zjc4MjljZTc0NDMwN2I3OTNiN2ViZWIyZjAiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vZXNkZWV6bnV0eiIsImF1ZCI6ImVzZGVlem51dHoiLCJhdXRoX3RpbWUiOjE2Nzk5MzgxNTIsInVzZXJfaWQiOiI3TE5vaHMwWjBEVFYzWEo4VWJvNmtxR09GaXoxIiwic3ViIjoiN0xOb2hzMFowRFRWM1hKOFVibzZrcUdPRml6MSIsImlhdCI6MTY3OTkzODE1MiwiZXhwIjoxNjc5OTQxNzUyLCJlbWFpbCI6Ind0ZkBnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsid3RmQGdtYWlsLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.VoTsaM6gT-KeX7PRwtS3GdaMOjDp3SzXXhYeZjbw5l3h0x82IOiLjGN1cIZI9GYx_RfLtvrRi2dcpENI_H8QHAXdkMypfwm04H3f2fV5-q2ICpAYBCOdJt4C6kiMmq7wVXGKpNivCISSDl3cQRwfsNDJSPx4AUkLzMbKZZyEoxe26f0ubUbdkkj0GowW8qgLwlLgz4WsAeXOD7-WAIQgcuxZIVPUXLvdKV9bJee2Om9y19aHbjatiHNfrBKD4ZwouNc-6fGFVqwjd-WMbl7vTSFkNN9gQ4bCMff0vCuO5z6l-s-EB2ZT7WVCmYPPQMFfNxeIGSjs3GKC81WIxU_9UA"
 
@@ -87,8 +87,7 @@ def processCreateListing(listing, token):
     authentication_result = authenticateUser(token) 
     print(authentication_result)
 
-    if authentication_result == "corporate":
-
+    if authentication_result['role'] == "corporate":
         #3. send address string from listing to geocoding API
         address = listing["address"]
         geocoding_URL_full = geocoding_URL + address
@@ -130,7 +129,6 @@ def processCreateListing(listing, token):
                 "code": 500,
                 "message": "Creation of listing failed. Check if listing service is running."
             }
-
     else:
         return {
             "code": 404,
