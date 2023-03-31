@@ -44,6 +44,13 @@ const routes = [
     component:Onepet,
     // beforeEnter:authguard
   },
+  // Card 
+  // {
+  //   path:'/FindFreeBee/:listingid',
+  //   props: true,
+  //   name:'ListingPage',
+  //   component: Listing,
+  // },
   {
     path: '/signup',
     name: 'signup',

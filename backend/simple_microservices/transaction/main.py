@@ -69,6 +69,14 @@ def create_transaction(transaction: schemas.TransactionCreate, db: Session = Dep
 def update_transaction(transaction_id: int, transaction: schemas.TransactionUpdate, db: Session = Depends(get_db)):
     return crud.update_transaction(db, transaction_id=transaction_id, data=transaction)
 
+# ### GET TRANSACTIONS BASED ON BENEFICIARY ID ###
+@app.get('/transaction/beneficiary/{beneficiary_id}', response_model=List[schemas.Transaction])
+def get_transactions_by_beneficiary(beneficiary_id: int, db: Session = Depends(get_db), skip: int = 0, limit: int = 100,):
+    transaction = crud.get_transactions_by_beneficiary(db, beneficiary_id=beneficiary_id, skip=skip,limit=limit)
+    if transaction is None:
+        raise HTTPException(status_code=404, detail="Beneficiary has no transactions")
+    return transaction
+
 if __name__ == '__main__':
     import uvicorn
     uvicorn.run(app, host='0.0.0.0', port=9000)
