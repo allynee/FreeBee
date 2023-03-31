@@ -19,6 +19,8 @@ import CorporateSignUp  from '../views/RegisterCorporate.vue'
 
 import indivlisting from '../views/IndividualListing.vue'
 
+import Image from '../views/Image.vue'
+// import RegisterFilter from '../views/RegisterFilter.vue'
 // import RegisterFilter from '../views/RegisterFilter.vue'
 Vue.use(VueRouter)
 
@@ -115,6 +117,11 @@ const routes = [
     name: 'indivlisting',
     component: indivlisting,
   },
+  {
+    path:'/image',
+    name : 'Image',
+    component: Image
+  }
 ]
 
 const router = new VueRouter({
