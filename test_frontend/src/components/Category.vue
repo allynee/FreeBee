@@ -1,15 +1,19 @@
 <template>
 <v-hover v-slot="{ hover }">
-    <v-card flat :elevation="hover ? 10 : 2" :class="{ 'on-hover': hover }" style="max-width:300px" outlined class="py-2"> 
-        <v-img :src="require('../assets/Honey.png')" class="mx-auto" max-height="200" max-width="200" contain/>
-        <v-card-title class="justify-center">Food and Beverage</v-card-title>
+    <v-card flat :elevation="hover ? 10 : 2" :class="{ 'on-hover': hover }" style="width:500px" outlined class="pa-1"> 
+        <v-img :src="require(`@/assets/${image}`)" class="mx-auto" height="150" width="150" contain/>
+        <v-card-title class="justify-center">{{ title }}</v-card-title>
     </v-card>
 </v-hover>
 </template>
 
 <script>
-
-
+export default {
+  props: {
+    title: String,
+    image: String,
+    }
+  };
 </script>
 
 <style scoped>

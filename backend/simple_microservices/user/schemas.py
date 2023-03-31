@@ -1,3 +1,4 @@
+import datetime
 from typing import Union, Optional
 from pydantic import BaseModel
 
@@ -6,11 +7,11 @@ from pydantic import BaseModel
 class BeneficiaryBase(BaseModel):
     beneficiary_id: int
     email: str
-    name: str
+    username: str
     phone: Optional[int] = None
     address: Optional[str] = None
     postal: Optional[int] = None
-    district: Optional[int] = None
+    district: Optional[int] = None 
     area: Optional[str] = None
 
 class Beneficiary(BeneficiaryBase):

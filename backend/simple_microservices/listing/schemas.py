@@ -4,6 +4,7 @@ from pydantic import BaseModel
 
 class ListingBase(BaseModel):
     corporate_id: int
+    corporate_name: str
     name: str
     description: Optional[str] = None
     collection_details: str
@@ -13,9 +14,7 @@ class ListingBase(BaseModel):
     area: Optional[str] = None
     category: str
     quantity: int
-    nlp_cat1: Optional[Union[str, None]] = None
-    nlp_cat2: Optional[Union[str, None]] = None
-    nlp_cat3: Optional[Union[str, None]] = None
+    status: str 
 
 class Listing(ListingBase):
     listing_id: int
