@@ -80,10 +80,10 @@ def update_listing(listing_id):
         "message": "Invalid JSON input: " + str(request.get_data())
     }), 400
 
-@app.route("/listing_management/", methods=['GET'])
+@app.route("/listing_management/", methods=['GET']) #implement function to view all listings
 def display_listings():
     pass
-    #1. Retrieve all listings
+    #1. Retrieve all listings (??)
     
         #2. Retrieve associated image
 
@@ -91,7 +91,6 @@ def processCreateListing(listing, token):
     #2. authenticate that this is a corporate user
 
     authentication_result = authenticateUser(token) 
-    print(authentication_result)
 
     if (authentication_result["statusCode"] == '200'):
         if (authentication_result['role'] == "corporate"):
