@@ -24,7 +24,7 @@ import amqp_setup
 
 #### To Multiple Users:
 # Queue name ==> “Cancel”
-# Routing Key ==> “email.company” / "#.cancel"
+# Routing Key ==> “email.cancel” / "#.cancel"
 # 1. Company canceling listing that is up
 
 #### To Specific Company:
