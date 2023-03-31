@@ -88,6 +88,9 @@ def delete_preference(db: Session, beneficiary_id: int, category: str):
 def get_all_subscriptions(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Subscription).offset(skip).limit(limit).all()
 
+def get_subscriptions_by_corporate(db: Session, corporate_id: int, skip: int = 0, limit: int = 100):
+    return db.query(models.Subscription).filter(models.Subscription.corporate_id == corporate_id).offset(skip).limit(limit).all()
+
 def create_subscription(db: Session, subscription: schemas.SubscriptionCreate):
     subscription = models.Subscription(**subscription.dict())
     db.add(subscription)

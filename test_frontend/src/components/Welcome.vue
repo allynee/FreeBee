@@ -42,7 +42,7 @@
         </span> -->
     </v-row>
 
-      <v-row class ="my-8 justify-center">
+      <v-row class ="my-10 justify-center">
         <v-col cols='2' v-for="category in myCategories" :key="category.title">
           <Category :title="category.title" :image="category.image"> </Category>
         </v-col>
@@ -106,6 +106,7 @@ export default {
                 { title: 'Food & Drinks', image: 'Honey.png' },
                 { title: 'Apparel', image: 'yellowshirt.jpg' },
                 { title: 'Electronics', image: 'beeelectronic.jpg' },
+                { title: 'Hobbies & Toys', image: 'Honey.png' },
                 { title: 'Furniture', image: 'beefurniture.jpg' },
                 { title: 'Toys & Hobbies', image: 'pigbee.jpg' },
                 { title: 'Everything Else', image: 'manybees.jpg' },

@@ -80,10 +80,10 @@ def update_listing(listing_id):
         "message": "Invalid JSON input: " + str(request.get_data())
     }), 400
 
-@app.route("/listing_management/", methods=['GET'])
+@app.route("/listing_management/", methods=['GET']) #implement function to view all listings
 def display_listings():
     pass
-    #1. Retrieve all listings
+    #1. Retrieve all listings (??)
     
         #2. Retrieve associated image
 
@@ -91,7 +91,6 @@ def processCreateListing(listing, token):
     #2. authenticate that this is a corporate user
 
     authentication_result = authenticateUser(token) 
-    print(authentication_result)
 
     if (authentication_result["statusCode"] == '200'):
         if (authentication_result['role'] == "corporate"):
@@ -110,18 +109,17 @@ def processCreateListing(listing, token):
             '''
             r = requests.post(geocoding_URL_full, json={'query': query})
             print(json.dumps(r.json()))
+            r = r.json()
 
-            # area = geocoding_result["area"]
-            # district = geocoding_result["district"]
-            # postal_code = geocoding_result["postal_code"]
+            area = r["data"]["address"]["address"]
+            district = r["data"]["address"]["district"]
+            postal_code =r["data"]["address"]["postal_code"]
 
-            # listing["area"] = area
-            # listing["district"] = district
-            # listing["postal"] = postal_code
+            listing["area"] = area
+            listing["district"] = int(district)
+            listing["postal"] = int(postal_code)
 
             print(listing) #check if area district and postal code was added to listing object
-
-            #still need to implement logic check for whether geocoding was successful or not
 
             #4. Send the listing info to database
             #Invoke the listing microservice
@@ -132,6 +130,7 @@ def processCreateListing(listing, token):
             if "detail" not in listing_result: 
                 #5. Send the notification to users who are subscribed to the corporate
                 ############  Publish to subscribe queue   #############
+                print('\n-----Sending notification to RabbitMQ-----')
                 obj = {
                     "listing_result": listing_result
                 } 
