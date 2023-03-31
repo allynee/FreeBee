@@ -87,7 +87,7 @@ def processCreateListing(listing, token):
     authentication_result = authenticateUser(token) 
     print(authentication_result)
 
-    if authentication_result['role'] == "beneficiary":
+    if ("role" in authentication_result) and (authentication_result['role'] == "corporate"):
         # #3. send address string from listing to geocoding API
         # address = listing["address"]
         # geocoding_URL_full = geocoding_URL + address
@@ -138,12 +138,22 @@ def processCreateListing(listing, token):
         }, 404
 
 def processUpdateListing(listing, listing_id):
-    #2. Update listing info in the database
-    #Invoke the listing microservice
-    listing_URL_full = listing_URL + "/" + str(listing_id)
-    print('\n-----Invoking listing microservice-----')
-    listing_result = invoke_http(listing_URL_full, method='PUT', json=listing)
-    print('listing_result:', listing_result)
+    #2.authenticate that this user is a corporate
+    authentication_result = authenticateUser(token) 
+    print(authentication_result)
+
+    if ("role" in authentication_result) and (authentication_result['role'] == "corporate"):
+        #3. Update listing info in the database
+        #Invoke the listing microservice
+        listing_URL_full = listing_URL + "/" + str(listing_id)
+        print('\n-----Invoking listing microservice-----')
+        listing_result = invoke_http(listing_URL_full, method='PUT', json=listing)
+        print('listing_result:', listing_result)
+    else:
+        return {
+            "code": 404,
+            "message": "Unauthenticated user. User needs to be logged into a corporate account."
+        }, 404
 
 def authenticateUser(token_input):
     print('\n-----Authenticating user-----')
