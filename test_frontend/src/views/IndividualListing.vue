@@ -53,6 +53,7 @@
             <br>
             <!-- Claim -->
             <div class="white rounded-xl my-5">
+                <form @submit.prevent="onClaim()">
                 <v-row>
                 <v-col cols="5">
                 <h1 class="text-h6 grey--text text--darken-4 font-weight-light">
@@ -82,6 +83,7 @@
                         Claim
                     </v-btn>
                 </v-row>
+                </form>
             </div>
         </v-col>
     </v-row>
@@ -97,6 +99,7 @@ export default {
         return{
             tab: null,
             listing: null,
+            quantity: 0,
         }
     },
     methods: {
@@ -107,7 +110,15 @@ export default {
             }).catch((exception) => {
                 console.log(exception);
             });
-        }
+        },
+        onClaim(){
+            const listingManagement_URL = 'blabla'
+            axios.post(listingManagement_URL, {
+                listing: this.listing,
+                beneficiary_id: this.$store.state.uid,
+                quantity: this.quantity,
+            })
+        },
     },
     created(){
         this.fetchListing()

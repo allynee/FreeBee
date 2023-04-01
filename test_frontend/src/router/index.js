@@ -115,11 +115,6 @@ const routes = [
     component: CreateListing,
   },
   {
-    path: '/indivlisting',
-    name: 'indivlisting',
-    component: IndividualListing,
-  },
-  {
     path:'/image',
     name : 'Image',
     component: Image
