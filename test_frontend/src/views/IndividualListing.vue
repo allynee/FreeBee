@@ -18,20 +18,37 @@
                 <v-tab class="amber lighten-2">Collection Location</v-tab>
             </v-tabs>
 
-            <v-tabs-items v-model="tab" class="rounded-lg pa-5 amber lighten-5">
-                <v-tab-item :value="0">
+            <v-tabs-items v-model="tab" class="rounded-lg pa-3 amber lighten-5">
+                <v-tab-item :value="0"> 
+                <v-row>
+                    <v-col cols="7">
                     <span class="text-h6 font-weight-medium grey--text text--darken-3">
                         Corporate Name: 
                     </span>
                     <span class="text-h6 font-weight-light grey--text text--darken-3">
                         {{ listing.corporate_name }}
                     </span>
-                    <h1 class="text-h6 font-weight-medium grey--text text--darken-3 mt-3 mb-1">
+                    </v-col>
+                    <v-col cols="5">
+                    <span class="">
+                        <v-btn small class="amber lighten-4" depressed outlined @click="subscribe">
+                            <v-icon left small>mdi-bell</v-icon>
+                            Subscribe to company
+                        </v-btn>
+                    </span>
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col cols="12">
+                    <span class="text-h6 font-weight-medium grey--text text--darken-3 mt-3 mb-1">
                         Description:
-                    </h1>
-                    <h1 class="text-body-1 font-weight-light grey--text text--darken-3">
+                    </span>
+                    <span class="text-h6 font-weight-light grey--text text--darken-3">
                         {{listing.description}}
-                    </h1>
+                    </span>
+                    </v-col>
+                </v-row>
+                    
                 </v-tab-item>
                 <v-tab-item :value="1">
                     <span class="text-h6 font-weight-medium grey--text text--darken-3">
@@ -124,6 +141,25 @@ export default {
                 })
             }
         },
+        subscribe(){
+            const user_URL = 'http://localhost:8421/subscription'
+            axios.post(user_URL, {
+                beneficiary_id: this.$store.state.uid,
+                corporate_id: this.listing.corporate_id
+            })
+            .then((response) => {
+                const response_data = response.data;
+                if (response_data.statusCode == "200") {
+                    console.log(response_data.name)
+                    //some success 
+                }else{
+                    //some failure
+                }     
+            })
+            .catch((error) => {
+                console.log("error " + error);
+            });
+        }
     },
     created(){
         this.fetchListing()

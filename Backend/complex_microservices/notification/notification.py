@@ -2,12 +2,9 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 
 import os, sys
+from os import environ
 
-import requests
 from invokes import invoke_http
-
-import asyncio
-import time
 
 # import amqp_setup
 import pika
@@ -15,6 +12,7 @@ import json
 
 
 app = Flask(__name__)
+# app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
 CORS(app)
 
 listing_URL = "http://localhost:8000/listing"
