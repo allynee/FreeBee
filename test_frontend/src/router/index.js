@@ -18,6 +18,7 @@ import BeneficiarySignUp  from '../views/RegisterBeneficiary.vue'
 import CorporateSignUp  from '../views/RegisterCorporate.vue'
 import CreateListing from '../views/CreateListing.vue'
 import UserTransactions from '../views/UserTransactions.vue'
+import SubscribedListings from '../views/SubscribedListings.vue'
 
 import IndividualListing from '../views/IndividualListing.vue'
 
@@ -124,6 +125,11 @@ const routes = [
     name: 'User Transactions',
     component: UserTransactions,
   },
+  {
+    path: '/subscribedlistings',
+    name: 'Subscribed Listings',
+    component: SubscribedListings,
+  }
 ]
 
 const router = new VueRouter({
