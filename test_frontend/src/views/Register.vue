@@ -156,6 +156,7 @@
                 <v-container>
                   <v-text-field
                     outlined
+                    rounded
                     name="corporatename"
                     label="Corporate Name"
                     id="corporatename"
@@ -169,6 +170,7 @@
                 <v-container>
                   <v-text-field
                     outlined
+                    rounded
                     name="corporateEmail"
                     label="Corporate Email"
                     id="corporateEmail"
@@ -182,6 +184,7 @@
                 <v-container>
                   <v-text-field
                     outlined
+                    rounded
                     name="description"
                     label="Description"
                     id="description"
@@ -195,6 +198,7 @@
                 <v-container>
                   <v-text-field
                     outlined
+                    rounded
                     name="password"
                     label="Password"
                     id="password"
@@ -209,6 +213,7 @@
                 <v-container>
                   <v-text-field
                     outlined
+                    rounded
                     name="confirmpassword"
                     label="Confirm Password"
                     id="confirmpassword"
@@ -349,10 +354,32 @@ export default {
                 uid: response_data.uid,
                 corporateName: response_data.name
             })
-            this.$router.push('/')
+            
             // if function to push to sql db
+            if (role=='corporate'){
+              axios.post("http://localhost:8421/corporate",{
+              corporate_id: this.$store.uid,
+              email: this.corporateEmail,
+              name: this.corporatename,
+              description: this.description
+            })
+            }else {
+              axios.post("http://localhost:8421/beneficiary"),{
+              beneficiary_id: this.$store.uid,
+              email: this.email,
+              username:,
+              phone:,
+              address,
+            }
+            }
+            
+            // end of sql db code
+
+            this.$router.push('/')
+
           } else {
             console.log("fail");
+            alert(`${response_data.authStatus},${response_data.errorMessage}`)
           }
           console.log(this.$store.state.accessToken, this.$store.state.uid)
         })

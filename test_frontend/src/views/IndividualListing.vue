@@ -112,12 +112,17 @@ export default {
             });
         },
         onClaim(){
-            const listingManagement_URL = 'blabla'
-            axios.post(listingManagement_URL, {
-                listing: this.listing,
-                beneficiary_id: this.$store.state.uid,
-                quantity: this.quantity,
-            })
+            if (this.quantity==0){
+                return "No" 
+            }else{
+                const listingManagement_URL = 'blabla'
+                axios.post(listingManagement_URL, {
+                    listing: this.listing,
+                    beneficiary_id: this.$store.state.uid,
+                    token: this.$store.state.state.accessToken, 
+                    quantity: this.quantity,
+                })
+            }
         },
     },
     created(){

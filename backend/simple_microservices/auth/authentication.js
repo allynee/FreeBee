@@ -80,7 +80,7 @@ async function loginEmailPassword(email, password) {
     }
   } catch (error) {
     console.log(error);
-    let return_json = { result: "Unsuccessful", statusCode: "401" };
+    let return_json = { result: "Unsuccessful", statusCode: "401", errorMessage:error.code };
     return return_json;
   }
 }
@@ -133,8 +133,8 @@ async function signUp(email, password, role, name) {
   } catch (error) {
     let userData = {
       authStatus: "Sign Up Failed",
-      statusCode: "200",
-      errorMessage: error
+      statusCode: "401",
+      errorMessage: error.code
     };
     console.log(userData);
     return userData;

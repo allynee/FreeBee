@@ -60,6 +60,11 @@ def create_corporate(corporate: schemas.CorporateCreate, db: Session = Depends(g
 def create_subscription(subscription: schemas.SubscriptionCreate, db: Session = Depends(get_db)):
     return crud.create_subscription(db, subscription=subscription)
 
+### CREATE SINGLE FAVOURITE ###
+@app.post('/favourite', response_model=schemas.Favourite)
+def create_favourite(favourite: schemas.FavouriteCreate, db: Session = Depends(get_db)):
+    return crud.create_favourite(db, favourite=favourite)
+
 ### GET STUFF!!! ###
 
 ### GET ALL CORPORATES ###
