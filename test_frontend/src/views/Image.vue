@@ -48,10 +48,12 @@ export default {
       // let ext = filename.slice(filename.lastIndexOf('.'));
       axios.post(`http://localhost:3002/image`, formData).then((response) => {
         let listingid = response.data.listingid;
-        let ext =response.data.extension
-        this.imagePost = `https://firebasestorage.googleapis.com/v0/b/esdeeznutz.appspot.com/o/listings%2F${listingid + ext}?alt=media&token=d96a1b6f-e4a2-42d1-a06b-c9331d4490a4`;
+        let ext = response.data.extension;
+        this.imagePost = `https://firebasestorage.googleapis.com/v0/b/esdeeznutz.appspot.com/o/listings%2F${
+          listingid + ext
+        }?alt=media&token=d96a1b6f-e4a2-42d1-a06b-c9331d4490a4`;
         console.log(this.imagePost);
-        });
+      });
     },
   },
 };
