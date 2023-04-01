@@ -5,9 +5,14 @@ jwt = require("jsonwebtoken");
 
 const axios = require("axios");
 
-const { ref, set, getDatabase } = require("firebase/database");
+const { ref: dbref, set, getDatabase } = require("firebase/database");
 
-const { getStorage } = require("firebase/storage");
+const {
+  ref: stRef,
+  getStorage,
+  uploadBytes,
+  getDownloadURL,
+} = require("firebase/storage");
 
 const {
   getAuth,
@@ -49,7 +54,7 @@ async function loginEmailPassword(email, password) {
     const user = userCredential._tokenResponse.idToken;
     // setCookie(user, 1);
     if (checkAuthStatus()) {
-      let access = { accessToken: user, statusCode: '200' };
+      let access = { accessToken: user, statusCode: "200" };
       // let return_json = { result: user };
       return access;
     } else {
@@ -82,7 +87,7 @@ async function loginEmailPassword(email, password) {
 //   }
 // }
 
-async function signUp(email, password,role) {
+async function signUp(email, password, role) {
   try {
     const response = await createUserWithEmailAndPassword(
       auth,
@@ -93,18 +98,27 @@ async function signUp(email, password,role) {
     const uid = response.user.uid;
     const accessToken = response.user.accessToken;
 
-    set(ref(db, "UserData/" + uid), {
+    set(dbref(db, "UserData/" + uid), {
       role: role,
     }).catch((error) => {
       console.log(error);
     });
-    
-    let userData = { uid: uid, authStatus: "Sign Up Success", accessToken: accessToken, statusCode: '200' };
+
+    let userData = {
+      uid: uid,
+      authStatus: "Sign Up Success",
+      accessToken: accessToken,
+      statusCode: "200",
+    };
     console.log(userData);
     return userData;
   } catch (error) {
-    let userData = { authStatus: "Sign Up Failed", statusCode: '200', errorMessage: error.code};
-    console.log(userData)
+    let userData = {
+      authStatus: "Sign Up Failed",
+      statusCode: "200",
+      errorMessage: error.code,
+    };
+    console.log(userData);
     return userData;
   }
 }
@@ -131,25 +145,25 @@ async function checkAuthStatus() {
 
 async function checkAccess(token) {
   // const cookie = await getCookie();
-  try{
-  const decodedToken = jwt.decode(token, { complete: true });
-  const uid = decodedToken.payload.user_id;
-  const role = await getUser(uid);
-  // get back uid code and success message
-  let return_json = {
-    uid: uid,
-    statusCode: "200",
-    role: role,
-    authStatus: "Success",
-  };
-  return return_json;
-}catch(error){
-  let return_json = {
-    statusCode: '403',
-    authStatus: "Unauthorized User",
+  try {
+    const decodedToken = jwt.decode(token, { complete: true });
+    const uid = decodedToken.payload.user_id;
+    const role = await getUser(uid);
+    // get back uid code and success message
+    let return_json = {
+      uid: uid,
+      statusCode: "200",
+      role: role,
+      authStatus: "Success",
+    };
+    return return_json;
+  } catch (error) {
+    let return_json = {
+      statusCode: "403",
+      authStatus: "Unauthorized User",
+    };
+    return return_json;
   }
-  return return_json;
-}
 }
 
 async function getUser(uid) {
@@ -166,6 +180,15 @@ async function getUser(uid) {
   }
 }
 
+async function signOutAccount() {
+  try {
+    const response = await auth.signOut();
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 module.exports = {
   // signInWithGoogle,
   loginEmailPassword,
@@ -173,4 +196,5 @@ module.exports = {
   // setCookie,
   // getCookie,
   signUp,
+  signOutAccount,
 };

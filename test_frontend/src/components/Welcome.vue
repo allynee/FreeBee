@@ -72,8 +72,8 @@
   </div>
 
     <!-- scroll to top button -->
-    <v-btn
-      v-scroll="onScroll"
+    <!-- <v-btn
+      v-scroll="scroll"
       v-show="fab"
       fab
       fixed
@@ -83,7 +83,7 @@
       @click="toTop"
     >
       <v-icon>mdi-chevron-up</v-icon>
-    </v-btn>
+    </v-btn> -->
   </div>
 </template>
 
@@ -92,6 +92,7 @@ import AOS from 'aos'
 import Category from './Category.vue';
 import SearchBar from './SearchBar.vue';
 import Listing from './Listing.vue';
+import axios from 'axios';
 export default {
   name: "HelloWorld",
   mounted() {
@@ -135,7 +136,7 @@ export default {
       // }
     async fetchListings() {
         const listing_URL = 'http://0.0.0.0:8000/listing'
-        this.axios.get(listing_URL).then((response) => {
+        axios.get(listing_URL).then((response) => {
           // console.log("hello")
           // console.log(response.data)
           response.data.forEach(element => {

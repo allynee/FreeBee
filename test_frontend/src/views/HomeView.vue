@@ -11,5 +11,9 @@
     components: {
       Welcome,
     },
+    mounted(){
+      console.log(document.cookie)
+      console.log('first')
+    }
   }
 </script>

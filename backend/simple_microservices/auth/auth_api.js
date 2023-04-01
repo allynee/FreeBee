@@ -1,9 +1,11 @@
 const cors = require("cors");
 const express = require("express");
+const multer = require("multer");
 const bodyParser = require("body-parser");
 const app = express();
 const port = 3001;
 app.use(cors(), bodyParser.json());
+const upload = multer();
 // const axios = require("axios");
 const authentication = require("./authentication");
 
@@ -29,6 +31,11 @@ app.post("/register", async (req, res) => {
   const password = req.body.password;
   const role = req.body.role;
   const authStatus = await authentication.signUp(email, password, role);
+  res.json(authStatus);
+});
+
+app.get("/signout", async (req, res) => {
+  const authStatus = await authentication.signOutAccount();
   res.json(authStatus);
 });
 

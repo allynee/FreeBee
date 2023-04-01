@@ -18,6 +18,10 @@ import BeneficiarySignUp  from '../views/RegisterBeneficiary.vue'
 import CorporateSignUp  from '../views/RegisterCorporate.vue'
 import CreateListing from '../views/CreateListing.vue'
 
+import indivlisting from '../views/IndividualListing.vue'
+
+import Image from '../views/Image.vue'
+// import RegisterFilter from '../views/RegisterFilter.vue'
 // import RegisterFilter from '../views/RegisterFilter.vue'
 Vue.use(VueRouter)
 
@@ -78,11 +82,6 @@ const routes = [
     beforeEnter:authguard,
 
   },
-  // {
-  //   path:'/register',
-  //   name:'register',
-  //   component:Register
-  // },
   { 
     path:'/login',
     name:'/login',
@@ -113,6 +112,16 @@ const routes = [
     path: '/createListing',
     name: 'Create Listing',
     component: CreateListing,
+  },
+  {
+    path: '/indivlisting',
+    name: 'indivlisting',
+    component: indivlisting,
+  },
+  {
+    path:'/image',
+    name : 'Image',
+    component: Image
   }
 ]
 
