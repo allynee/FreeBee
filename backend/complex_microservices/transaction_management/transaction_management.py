@@ -17,6 +17,8 @@ transaction_URL = "http://localhost:9000/transaction"
 listing_URL = "http://localhost:8000/listing"
 authentication_URL = "http://localhost:3001/auth/checkaccess/"
 
+status = "Cancelled"
+
 @app.route("/transaction_management", methods=['POST'])
 def create_transaction():
         # Simple check of input format and data of the request are JSON
@@ -54,16 +56,20 @@ def create_transaction():
         }), 400
 
 
-@app.route("/transaction_management/<int:transaction_id>", methods=['PUT'])
-def update_transaction(transaction_id):
+@app.route("/transaction_management", methods=['PUT']) #assuming i get transaction and listing
+def update_transaction():
     # Simple check of input format and data of the request are JSON
     if request.is_json:
         try:
-            transaction = request.get_json()
-            print("\nJSON with details to update in transaction:", transaction)
+            required_details = request.get_json()
+            print("\nJSON with details to update in transaction:", required_details)
+            listing = required_details["listing"]
+            transaction = required_details["transaction"]
+            transaction_id = transaction["transaction_id"]
+            token = required_details["token"]
             # do the actual work
             # 1. initiate update of transaction
-            result = processUpdateTransaction(transaction, transaction_id)
+            result = processUpdateTransaction(transaction, listing, token, status)
             print('\n------------------------')
             print('\nresult: ', result)
             return jsonify(result)
@@ -167,43 +173,63 @@ def processCreateTransaction(listing, beneficiary_id, quantityDeducted, token):
             "message": "Unauthenticated user. User needs to be logged into a beneficiary account."
         }, 404
 
-def processUpdateTransaction(transaction, transaction_id):
+def processUpdateTransaction(transaction, listing, token, status):
+
+    listing_id = listing["listing_id"]
 
     #2. Authenticate user
     authentication_result = authenticateUser(token) 
 
-    if authentication_result["statusCode"] == 200:
+    if authentication_result["statusCode"] == "200":
+
+        transaction_id = transaction["transaction_id"]
         
         #3. Update transaction
         transaction_URL_full = transaction_URL + "/" + str(transaction_id)
         print('\n-----Invoking transaction microservice-----')
-        transaction_result = invoke_http(transaction_URL_full, method='PUT', json=transaction)
+        transaction_update = {
+            "status": status
+        }
+        transaction_result = invoke_http(transaction_URL_full, method='PUT', json=transaction_update)
         print('transaction_result:', transaction_result)    
 
         #4. Notify users if theres is a change in the status of the transaction
 
         #4a. If transaction is Cancelled from Corporate
         if transaction_result["status"] == "Cancelled":
-            obj = {} 
+            print('\n-----Send to Notification microservice-----')
+            obj = {
+                "purpose": "Cancelled",
+                "listing_result": listing
+            } 
             message = json.dumps(obj)
-            amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="email.cancel", 
+            amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="cancel.notif", 
                 body=message, properties=pika.BasicProperties(delivery_mode = 2))
-            print(f"sending message: {message} to queue 'cancel'")
+            print(f"sending message: {message} to 'cancel'")
 
         #4c. If items are Ready to Collect
         if transaction_result["status"] == "Ready to Collect":
-            obj = {} 
+            obj = {
+                "purpose": "toBeneficiary",
+                "listing_result": listing,
+                "transaction_result": transaction
+            }
             message = json.dumps(obj)
-            amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="email.collect", 
+            amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="ready.notif", 
                 body=message, properties=pika.BasicProperties(delivery_mode = 2))
-            print(f"sending message: {message} to queue 'collect'")
+            print(f"sending message: {message} to 'collect'")
 
         #5. Update Listing
-                    
+        print('\n-----Updating listings-----')
+        listing_URL_full = listing_URL + "/" + str(listing_id)
+        listing_update = {
+            "status": status
+        }
+        listing_result = invoke_http(listing_URL_full, method="PUT", json=listing_update)
+        print('listing_result:', listing_result)
 
 #create a function to display transactions associated with an id
 def processViewTransactions(user_id):
-    pass
     #2. Authenticate user, retrieve user type
     authentication_result = authenticateUser(token) 
 
@@ -216,9 +242,7 @@ def processViewTransactions(user_id):
     #4. For each transaction
     for transaction in transactions:
         pass
-    #4a. Retrieve associated beneficiary
-    #4b. Retrieve associated corporate
-    #4c. Retrieve associated listing & listing details
+    #4a. Retrieve associated listing & listing details
 
 
 def authenticateUser(token_input):
