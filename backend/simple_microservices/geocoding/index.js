@@ -1,3 +1,5 @@
+const cors = require('cors')
+
 const express = require("express");
 const expressGraphQL = require("express-graphql").graphqlHTTP;
 const { 
@@ -10,7 +12,7 @@ const {
 const geocoding = require('./geocoding');
 
 const app = express();
-
+app.use(cors())
 const AddressType = new GraphQLObjectType({
   name: 'Address',
   fields: () => ({

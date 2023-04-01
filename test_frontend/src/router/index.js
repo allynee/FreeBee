@@ -22,6 +22,7 @@ import UserTransactions from '../views/UserTransactions.vue'
 import IndividualListing from '../views/IndividualListing.vue'
 
 import Image from '../views/Image.vue'
+import Maps from '../views/maps.vue'
 // import RegisterFilter from '../views/RegisterFilter.vue'
 // import RegisterFilter from '../views/RegisterFilter.vue'
 Vue.use(VueRouter)
@@ -123,6 +124,11 @@ const routes = [
     path: '/usertransactions',
     name: 'User Transactions',
     component: UserTransactions,
+  },
+  {
+    path: '/maps',
+    name: 'maps',
+    component: Maps,
   },
 ]
 
