@@ -1,5 +1,5 @@
 <template>
-    <div class="white pa-5 bground" style="height:25%">
+    <div class="white pa-5 bground" style="height:50%">
         <v-container class="pb-15" style="width:50%;" data-aos="fade-down">
             <span class="text-h6 text-capitalize orange--text">Create your account.</span><br/>
             <v-row class="mb-7 ml-1 mt-1">
@@ -148,6 +148,7 @@
                                     <v-container>
                                         <v-text-field
                                         outlined
+                                        rounded
                                         name="corporatename"
                                         label="Corporate Name"
                                         id="corporatename"
@@ -161,6 +162,7 @@
                                     <v-container>
                                         <v-text-field
                                         outlined
+                                        rounded
                                         name="corporateEmail"
                                         label="Corporate Email"
                                         id="corporateEmail"
@@ -174,6 +176,7 @@
                                     <v-container>
                                         <v-text-field
                                         outlined
+                                        rounded
                                         name="description"
                                         label="Description"
                                         id="description"
@@ -187,6 +190,7 @@
                                     <v-container>
                                         <v-text-field
                                         outlined
+                                        rounded
                                         name="password"
                                         label="Password"
                                         id="password"
@@ -202,6 +206,7 @@
                                     <v-container>
                                         <v-text-field
                                         outlined
+                                        rounded
                                         name="confirmpassword"
                                         label="Confirm Password"
                                         id="confirmpassword"
