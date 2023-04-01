@@ -114,9 +114,9 @@ export default {
   },
   computed: {
     links() {
-      console.log('links')
+      console.log("links");
       let linkitems;
-      if (this.$store.state.accessToken) { 
+      if (this.$store.state.accessToken) {
         linkitems = [
           { text: "Find a FreeBee!", route: "/", icon: "mdi-magnify" },
           // {text: 'Report Pet', route:'/ReportPet', icon: 'mdi-dog-side'},
@@ -140,7 +140,7 @@ export default {
   methods: {
     async onLogout() {
       try {
-        this.$store.commit('resetState')        
+        this.$store.commit("resetState");
         await axios.get(`http://localhost:3001/signout`);
         location.reload();
       } catch (error) {

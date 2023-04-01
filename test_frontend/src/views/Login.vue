@@ -135,6 +135,7 @@ export default {
           `http://localhost:3001/login/${this.email}/${this.password}`
         );
         if (response.data.statusCode == "200") {
+          console.log(response.data)
           if (response.data.role == "corporate") {
             this.$store.commit("access", {
               accessToken: response.data.accessToken,

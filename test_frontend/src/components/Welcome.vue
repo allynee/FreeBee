@@ -100,6 +100,7 @@ export default {
             duration: 1600,
         });
         console.log(this.$store.getters.getAccessToken)
+        console.log(this.$store.state)
   },
   data(){
     return{

@@ -30,7 +30,8 @@ app.post("/register", async (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
   const role = req.body.role;
-  const authStatus = await authentication.signUp(email, password, role);
+  const name = req.body.name;
+  const authStatus = await authentication.signUp(email, password, role, name);
   res.json(authStatus);
 });
 

@@ -61,6 +61,7 @@ async function loginEmailPassword(email, password) {
           uid +
           "/.json"
       );
+      
       const role = response.data.role;
       const name = response.data.name;
       let access = {
@@ -112,7 +113,7 @@ async function signUp(email, password, role, name) {
     // Signed in
     const uid = response.user.uid;
     const accessToken = response.user.accessToken;
-
+      console.log(name)
     set(dbref(db, "UserData/" + uid), {
       role: role,
       name: name,
@@ -125,6 +126,7 @@ async function signUp(email, password, role, name) {
       authStatus: "Sign Up Success",
       accessToken: accessToken,
       statusCode: "200",
+      name:name
     };
     console.log(userData);
     return userData;
@@ -132,7 +134,7 @@ async function signUp(email, password, role, name) {
     let userData = {
       authStatus: "Sign Up Failed",
       statusCode: "200",
-      errorMessage: error.code,
+      errorMessage: error
     };
     console.log(userData);
     return userData;
