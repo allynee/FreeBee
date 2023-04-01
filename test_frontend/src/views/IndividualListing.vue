@@ -23,8 +23,14 @@
                     <span class="text-h6 font-weight-medium grey--text text--darken-3">
                         Corporate Name: 
                     </span>
-                    <span class="text-h6 font-weight-light grey--text text--darken-3">
+                    <span class="text-h6 font-weight-light grey--text text--darken-3 mr-10">
                         {{ listing.corporate_name }}
+                    </span>
+                    <span class="ml-15 pl-15">
+                        <v-btn small class="amber lighten-4 ml-2" depressed outlined @click="subscribe">
+                            <v-icon left small>mdi-bell</v-icon>
+                            Subscribe to {{ listing.corporate_name }}
+                        </v-btn>
                     </span>
                     <h1 class="text-h6 font-weight-medium grey--text text--darken-3 mt-3 mb-1">
                         Description:
@@ -124,6 +130,25 @@ export default {
                 })
             }
         },
+        subscribe(){
+            const user_URL = 'http://localhost:8421/subscription'
+            axios.post(user_URL, {
+                beneficiary_id: this.$store.state.uid,
+                corporate_id: this.listing.corporate_id
+            })
+            .then((response) => {
+                const response_data = response.data;
+                if (response_data.statusCode == "200") {
+                    console.log(response_data.name)
+                    //some success 
+                }else{
+                    //some failure
+                }     
+            })
+            .catch((error) => {
+                console.log("error " + error);
+            });
+        }
     },
     created(){
         this.fetchListing()
