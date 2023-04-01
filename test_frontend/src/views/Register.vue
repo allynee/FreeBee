@@ -63,28 +63,30 @@
                 </v-container>
 
                 <v-container>
-                  <v-text-field
+                  <v-row>
+                    <v-text-field
+                    style="margin-left: 15px;"
                     outlined
                     rounded
                     name="address"
-                    label="Street Address"
+                    
                     id="address"
                     v-model="address"
                     type="text"
                     required
-                  >
-                  </v-text-field>
-                  <label for="autocomplete-input">Enter a location:</label>
-                  <input id="autocomplete-input" type="text" outlined />
+                    >
+                    </v-text-field>
+                    <v-btn style="margin-right: 15px;" plain @click="geocode">Find My Location</v-btn>
+                  </v-row>
                 </v-container>
-                <v-btn @click="geocode">Find My Location</v-btn>
+                
                 <v-container>
-                  Postal Code<v-text-field v-model="postal" :disabled="true">
-                  </v-text-field>
-                </v-container>
-                <v-container>
-                  Area<v-text-field v-model="area" :disabled="true">
-                  </v-text-field>
+                  <v-row>
+                    <v-text-field style="margin-left: 15px; margin-right: 15px;" label="Postal Code" v-model="postal" :disabled="true">
+                    </v-text-field>
+                    <v-text-field style="margin-right: 15px;" label="Area" v-model="area" :disabled="true">
+                    </v-text-field>
+                  </v-row>
                 </v-container>
                 <v-container>
                   <v-text-field
@@ -428,7 +430,7 @@ export default {
     },
     async initAutocomplete(apiKey) {
       await this.loadGoogleMaps(apiKey);
-      const input = document.getElementById("autocomplete-input");
+      const input = document.getElementById("address");
       const autocomplete = new google.maps.places.Autocomplete(input);
       // Set options for the autocomplete search box
       autocomplete.setFields(["place_id", "formatted_address"]);
