@@ -19,7 +19,7 @@ import CorporateSignUp  from '../views/RegisterCorporate.vue'
 import CreateListing from '../views/CreateListing.vue'
 import UserTransactions from '../views/UserTransactions.vue'
 
-import indivlisting from '../views/IndividualListing.vue'
+import IndividualListing from '../views/IndividualListing.vue'
 
 import Image from '../views/Image.vue'
 // import RegisterFilter from '../views/RegisterFilter.vue'
@@ -51,13 +51,13 @@ const routes = [
     component:Onepet,
     // beforeEnter:authguard
   },
-  // Card 
-  // {
-  //   path:'/FindFreeBee/:listingid',
-  //   props: true,
-  //   name:'ListingPage',
-  //   component: Listing,
-  // },
+  // Indiv Listing
+  {
+    path:'/FindFreeBee/:listingid',
+    props: true,
+    name:'IndividualListing',
+    component: IndividualListing,
+  },
   {
     path: '/signup',
     name: 'signup',
@@ -117,7 +117,7 @@ const routes = [
   {
     path: '/indivlisting',
     name: 'indivlisting',
-    component: indivlisting,
+    component: IndividualListing,
   },
   {
     path:'/image',

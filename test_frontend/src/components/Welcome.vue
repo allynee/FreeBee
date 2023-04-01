@@ -65,8 +65,8 @@
       </v-row>
 
       <v-row class="my-15">
-        <v-col cols="12" md="4" lg="3" v-for="aListing in allListingsArray" :key="aListing.listingID">
-          <Listing :aListing="aListing"></Listing>
+        <v-col cols="12" md="4" lg="3" v-for="aListing in allListingsArray" :key="aListing.listing_id">
+          <Listing :aListing="aListing" @gotoListing="gotoListing(aListing.listing_id)"></Listing>
         </v-col>
       </v-row>
   </div>
@@ -121,20 +121,6 @@ export default {
   components: { SearchBar, Category, Listing},
 
   methods:{
-      // async fetchListings() {
-      //     const listing_URL = 'http://0.0.0.0:8000/listing'
-      //     const response =
-      //       fetch(listing_URL)
-      //           .then(response => response.json())
-      //           .then(data => {
-      //               console.log(response);
-      //           })
-      //           .catch(error => {
-      //               // Errors when calling the service; such as network error, 
-      //               // service offline, etc
-      //               console.log(this.message + error);
-      //           });
-      // }
     async fetchListings() {
         const listing_URL = 'http://0.0.0.0:8000/listing'
         axios.get(listing_URL).then((response) => {
@@ -146,8 +132,12 @@ export default {
             this.allListingsArray.push(element)
           });
         })
-        console.log(this.allListingsArray)
+        // console.log(this.allListingsArray)
 
+    },
+    gotoListing(listing_id){
+      console.log("clicked")
+      this.$router.push({ name: 'IndividualListing', params: {listingid: listing_id}})
     },
     onScroll (e) {
       if (typeof window === 'undefined') return
