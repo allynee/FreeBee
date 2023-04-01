@@ -1,8 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import ReportPet from '../views/ReportPet.vue'
-import Search from '../views/Dashboard.vue'
 import MyMap from '../views/MyMap.vue'
 // import Register from '../views/RegisterBeneficiary.vue'
 import Login from '../views/Login.vue'
@@ -11,7 +9,6 @@ import MyFreeBees from '../views/MyFreeBees.vue'
 
 import SignUp from '../views/SignUp.vue'
 import Account from '../views/Account.vue'
-import Onepet from '../views/Onepet.vue'
 import MatchedPets from '../views/MatchedPets.vue'
 import Register from '../views/Register.vue'
 import BeneficiarySignUp  from '../views/RegisterBeneficiary.vue'
@@ -31,25 +28,6 @@ const routes = [
     path: '/',
     name: 'home',
     component: HomeView
-  },
-  {
-    path: '/reportpet',
-    name: 'reportpet',
-    component: ReportPet,
-    beforeEnter:authguard,
-  },
-  {
-    path: '/SearchAllPets',
-    name: 'search',
-    component: Search,
-    beforeEnter:authguard,
-  },
-  {
-    path:'/SearchAllPets/:petid',
-    props:true,
-    name:'Onepet',
-    component:Onepet,
-    // beforeEnter:authguard
   },
   // Indiv Listing
   {

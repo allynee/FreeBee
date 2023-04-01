@@ -128,7 +128,7 @@ export default {
         console.log("login");
       } else {
         linkitems = [
-          { text: "Home", route: "/", icon: "mdi-home" },
+        { text: "Find a FreeBee!", route: "/", icon: "mdi-magnify" },
           { text: "Register", route: "/register", icon: "mdi-account-plus" },
           { text: "Login", route: "/login", icon: "mdi-login" },
         ];
