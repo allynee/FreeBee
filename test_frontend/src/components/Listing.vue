@@ -3,24 +3,32 @@
 <v-hover v-slot="{ hover }">
   <v-card flat :elevation="hover ? 10 : 2" :class="{ 'on-hover': hover }" style="width:350px; height:410px" outlined class="pa-2"> 
 
-  <v-avatar color="grey lighten-2" class="my-1 mx-3">
+  <!-- <v-avatar color="grey lighten-2" class="my-1 mx-3">
     <v-img :src="require('../assets/OrangeCat.png')" max-width="30"></v-img>
   </v-avatar>
-  <span>{{aListing.corporate_name}}</span>
+  <span>{{aListing.corporate_name}}</span> -->
+  <!-- max-height="300" max-width="300"  -->
 
-  <v-img :src="require('../assets/BlackCat.png')" class="mx-auto" max-height="300" max-width="300" contain/>
+  <v-img cover :src="require('../assets/BlackCat.png')" class="mx-auto" contain/>
   
-  <v-card-title class="">{{aListing.name}}</v-card-title>
-  <!-- <v-card-text>
-    {{aListing.description}}
-  </v-card-text> -->
+  <v-card-item>
+    <v-card-title class="">{{aListing.name}}</v-card-title>
+  </v-card-item>
+  <v-card-text> 
+    <div class="text-subtitle-2">
+      Posted By: {{aListing.corporate_name}}
+    </div>
+  </v-card-text>
 
-  <div>
+
+
+
+  <v-card-text>
   <v-btn density="compact" depressed plain>
       <v-icon left color="green darken-4">mdi-map-marker</v-icon>
       <span class="subheading me-2">{{aListing.address}}</span>
   </v-btn>
-  </div>
+  </v-card-text>
 
   <div class="justify-right">
   <v-btn density="compact" depressed plain class="ml-20">
@@ -53,12 +61,6 @@ export default {
         }
     },
     methods: {
-       // redirecting function below
-        redirect(listingid){
-            console.log(listingid)
-            this.$store.dispatch('loadedPet', listingid)
-            this.$router.push('/FindFreeBee/'+ listingid)
-        }
     },
 }
 </script>
