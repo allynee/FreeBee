@@ -119,6 +119,7 @@ export default {
                 axios.post(listingManagement_URL, {
                     listing: this.listing,
                     beneficiary_id: this.$store.state.uid,
+                    token: this.$store.state.state.accessToken, 
                     quantity: this.quantity,
                 })
             }

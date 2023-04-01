@@ -1,42 +1,32 @@
 <template>
-<div @click="$emit('gotoListing')">
+<div>
 <v-hover v-slot="{ hover }">
-  <v-card flat :elevation="hover ? 10 : 2" :class="{ 'on-hover': hover }" style="width:350px; height:410px" outlined class="pa-2"> 
+  <v-card flat :elevation="hover ? 10 : 2" :class="{ 'on-hover': hover }" style="width:350px; height:470px" outlined class="pa-2"> 
+  <v-card-actions>
+    <v-btn depressed plain @click="like" class="">
+       <v-icon :class="{'red': isRed}">mdi-heart</v-icon>
+    </v-btn>
+  </v-card-actions>
 
-  <!-- <v-avatar color="grey lighten-2" class="my-1 mx-3">
-    <v-img :src="require('../assets/OrangeCat.png')" max-width="30"></v-img>
-  </v-avatar>
-  <span>{{aListing.corporate_name}}</span> -->
-  <!-- max-height="300" max-width="300"  -->
-
-  <v-img cover :src="require('../assets/BlackCat.png')" class="mx-auto" contain/>
+  <v-img cover :src="require('../assets/BlackCat.png')" class="mx-auto" contain
+  @click="$emit('gotoListing')"/>
   
   <v-card-item>
     <v-card-title class="">{{aListing.name}}</v-card-title>
   </v-card-item>
+  <v-divider class="mx-3 mb-1"></v-divider>
   <v-card-text> 
-    <div class="text-subtitle-2">
+    <div class="text-subtitle-2 mb-2">
       Posted By: {{aListing.corporate_name}}
     </div>
-  </v-card-text>
-
-
-
-
-  <v-card-text>
-  <v-btn density="compact" depressed plain>
-      <v-icon left color="green darken-4">mdi-map-marker</v-icon>
+    <div class="mb-2">
+      <v-icon small left color="green darken-4">mdi-map-marker</v-icon>
       <span class="subheading me-2">{{aListing.address}}</span>
-  </v-btn>
+    </div>
+    <div class="text-subtitle-2 font-weight-bold mb-2 red--text text--darken-4">
+      {{aListing.quantity}} left in stock!
+    </div>
   </v-card-text>
-
-  <div class="justify-right">
-  <v-btn density="compact" depressed plain class="ml-20">
-      <v-icon left color="red">mdi-heart</v-icon>
-      <!-- color can change to red it clicked -->
-      <span class="subheading m-3">Like</span>
-  </v-btn>
-  </div>
 
 </v-card>
 </v-hover>
@@ -45,6 +35,8 @@
 
 <script>
 import AOS from 'aos'
+import axios from 'axios'
+
 export default {
     emits:['gotoListing'],
     props: {
@@ -57,10 +49,25 @@ export default {
     },
     data(){
         return{ 
-           
+           isRed: false
         }
     },
     methods: {
+      like(){
+        const user_URL = 'http://0.0.0.0:9000/favourite'
+        axios.post(user_URL, {
+          beneficiary_id: this.$store.state.uid,
+          listing_id: this.aListing.listing_id
+        }).then((response) => {
+          const response_data = response.data;
+          if (response_data.statusCode == "200") {
+            console.log(response_data.name)
+            this.isRed = true;
+          } else {
+            console.log("fail");
+          }
+        })
+      }
     },
 }
 </script>
