@@ -358,6 +358,7 @@ export default {
             // if function to push to sql db
           } else {
             console.log("fail");
+            alert(`${response_data.authStatus},${response_data.errorMessage}`)
           }
           console.log(this.$store.state.accessToken, this.$store.state.uid)
         })

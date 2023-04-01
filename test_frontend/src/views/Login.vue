@@ -150,6 +150,8 @@ export default {
             });
           }
           this.$router.push("/");
+        }else{
+          alert(response.data.errorMessage)
         }
       } catch (error) {
         console.log(error);
