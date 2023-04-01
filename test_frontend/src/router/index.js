@@ -16,6 +16,8 @@ import CorporateSignUp from "../views/RegisterCorporate.vue";
 import CreateListing from "../views/CreateListing.vue";
 import UserTransactions from "../views/UserTransactions.vue";
 import SubscribedListings from "../views/SubscribedListings.vue";
+import CorporateTransactions from "../views/CorporateTransactions.vue";
+import CorporateListing from "../views/CorporateListing.vue";
 
 import IndividualListing from "../views/IndividualListing.vue";
 
@@ -112,6 +114,16 @@ const routes = [
     name: "Subscribed Listings",
     component: SubscribedListings,
   },
+  {
+    path: "/corporatetransactions",
+    name: "Corporate Transactions",
+    component: CorporateTransactions,
+  },
+  {
+    path: "/corporatelisting",
+    name: "Corporate Listing",
+    component: CorporateListing,
+  }
 ];
 
 const router = new VueRouter({
