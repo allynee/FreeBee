@@ -69,7 +69,7 @@
             </div>
             <br>
             <!-- Claim -->
-            <div class="white rounded-xl my-5">
+            <div class="white rounded-xl my-5 pa-4">
                 <form @submit.prevent="onClaim()">
                 <v-row>
                 <v-col cols="5">
