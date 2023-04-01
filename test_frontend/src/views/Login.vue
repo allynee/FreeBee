@@ -5,12 +5,6 @@
       style="width: 45%; height: 45%"
       data-aos="fade-down"
     >
-      <v-row class="mt-16">
-        <span class="mt-16"> </span>
-      </v-row>
-      <v-row class="mt-16">
-        <span> </span>
-      </v-row>
       <v-row class="mb-7 mt-16 pt-0 d-flex align-center">
         <span class="text-h4 mt-16 text-capitalize brown--text mx-auto"
           >Login</span
@@ -20,7 +14,7 @@
       <!-- <v-card style="width:45%;height:75%;" elevation="2" class="mx-auto brown pt-9 pb-10 lighten-4">
                     <v-card-text>  -->
       <v-container>
-        <form @submit.prevent="sampleLogin">
+        <form @submit.prevent="login">
           <!-- <v-row >
                                     <v-col>
                                     <v-alert v-if="this.loggedout" type="info">
@@ -39,6 +33,7 @@
                 id="email"
                 v-model="email"
                 type="email"
+                rounded
                 outlined
                 required
               >
@@ -54,6 +49,7 @@
                 id="password"
                 v-model="password"
                 type="password"
+                rounded
                 outlined
                 required
               >
@@ -101,7 +97,7 @@
 <style src="../style/style.css"></style>
 
 <script>
-// const axios = require("axios");
+const axios = require("axios");
 
 export default {
   name: "login",
@@ -133,43 +129,36 @@ export default {
     },
   },
   methods: {
-    // sampleLogin() {
-    //   let data = "";
-
-    //   let config = {
-    //     method: "get",
-    //     maxBodyLength: Infinity,
-    //     url: `http://localhost:3001/login/${this.email}/${this.password}`,
-    //     headers: {},
-    //     data: data,
-    //   };
-
-    //   axios
-    //     .request(config)
-    //     .then((response) => {
-    //       if (response.data.statusCode == "200") {
-    //         var expires = "";
-    //         var date = new Date();
-    //         date.setTime(date.getTime() + 10 * 60 * 1000);
-    //         expires = "; expires=" + date.toUTCString();
-    //         document.cookie =
-    //           "accessToken=" + response.data.accessToken + ";" + expires;
-    //         console.log("Logged in");
-    //       } else {
-    //         console.log("Unsuccessful");
-    //       }
-    //     })
-
-    //     .catch((error) => {
-    //       console.log(error);
-    //     });
-    // },
+    async login() {
+      try {
+        const response = await axios.get(
+          `http://localhost:3001/login/${this.email}/${this.password}`
+        );
+        if (response.data.statusCode == "200") {
+          if (response.data.role == "corporate") {
+            this.$store.commit("access", {
+              accessToken: response.data.accessToken,
+              uid: response.data.uid,
+              corporateName: response.data.name,
+            });
+          } else {
+            this.$store.commit("access", {
+              accessToken: response.data.accessToken,
+              uid: response.data.uid,
+              corporateName: null,
+            });
+          }
+          this.$router.push("/");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
   },
 };
 </script>
 <style scoped>
 .bground {
-  background: url("../assets/dogss.png");
   background-size: cover;
   height: 120vh;
   background-position: 20px;

@@ -65,15 +65,15 @@
       </v-row>
 
       <v-row class="my-15">
-        <v-col cols="12" md="4" lg="3" v-for="aListing in allListingsArray" :key="aListing.listingID">
-          <Listing :aListing="aListing"></Listing>
+        <v-col cols="12" md="4" lg="3" v-for="aListing in allListingsArray" :key="aListing.listing_id">
+          <Listing :aListing="aListing" @gotoListing="gotoListing(aListing.listing_id)"></Listing>
         </v-col>
       </v-row>
   </div>
 
     <!-- scroll to top button -->
-    <v-btn
-      v-scroll="onScroll"
+    <!-- <v-btn
+      v-scroll="scroll"
       v-show="fab"
       fab
       fixed
@@ -83,7 +83,7 @@
       @click="toTop"
     >
       <v-icon>mdi-chevron-up</v-icon>
-    </v-btn>
+    </v-btn> -->
   </div>
 </template>
 
@@ -92,12 +92,14 @@ import AOS from 'aos'
 import Category from './Category.vue';
 import SearchBar from './SearchBar.vue';
 import Listing from './Listing.vue';
+import axios from 'axios';
 export default {
   name: "HelloWorld",
   mounted() {
         AOS.init({
             duration: 1600,
         });
+        console.log(this.$store.getters.getAccessToken)
   },
   data(){
     return{
@@ -106,7 +108,6 @@ export default {
                 { title: 'Food & Drinks', image: 'Honey.png' },
                 { title: 'Apparel', image: 'yellowshirt.jpg' },
                 { title: 'Electronics', image: 'beeelectronic.jpg' },
-                { title: 'Hobbies & Toys', image: 'Honey.png' },
                 { title: 'Furniture', image: 'beefurniture.jpg' },
                 { title: 'Toys & Hobbies', image: 'pigbee.jpg' },
                 { title: 'Everything Else', image: 'manybees.jpg' },
@@ -120,23 +121,9 @@ export default {
   components: { SearchBar, Category, Listing},
 
   methods:{
-      // async fetchListings() {
-      //     const listing_URL = 'http://0.0.0.0:8000/listing'
-      //     const response =
-      //       fetch(listing_URL)
-      //           .then(response => response.json())
-      //           .then(data => {
-      //               console.log(response);
-      //           })
-      //           .catch(error => {
-      //               // Errors when calling the service; such as network error, 
-      //               // service offline, etc
-      //               console.log(this.message + error);
-      //           });
-      // }
     async fetchListings() {
         const listing_URL = 'http://0.0.0.0:8000/listing'
-        this.axios.get(listing_URL).then((response) => {
+        axios.get(listing_URL).then((response) => {
           // console.log("hello")
           // console.log(response.data)
           response.data.forEach(element => {
@@ -145,8 +132,12 @@ export default {
             this.allListingsArray.push(element)
           });
         })
-        console.log(this.allListingsArray)
+        // console.log(this.allListingsArray)
 
+    },
+    gotoListing(listing_id){
+      console.log("clicked")
+      this.$router.push({ name: 'IndividualListing', params: {listingid: listing_id}})
     },
     onScroll (e) {
       if (typeof window === 'undefined') return

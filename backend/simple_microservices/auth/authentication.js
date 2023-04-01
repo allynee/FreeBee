@@ -5,9 +5,14 @@ jwt = require("jsonwebtoken");
 
 const axios = require("axios");
 
-const { ref, set, getDatabase } = require("firebase/database");
+const { ref: dbref, set, getDatabase } = require("firebase/database");
 
-const { getStorage } = require("firebase/storage");
+const {
+  ref: stRef,
+  getStorage,
+  uploadBytes,
+  getDownloadURL,
+} = require("firebase/storage");
 
 const {
   getAuth,
@@ -39,6 +44,7 @@ const storage = getStorage();
 
 async function loginEmailPassword(email, password) {
   try {
+    console.log(email, password);
     console.log("login");
     const userCredential = await signInWithEmailAndPassword(
       auth,
@@ -47,9 +53,23 @@ async function loginEmailPassword(email, password) {
     );
     // Signed in
     const user = userCredential._tokenResponse.idToken;
+    const uid = userCredential._tokenResponse.localId;
     // setCookie(user, 1);
     if (checkAuthStatus()) {
-      let access = { accessToken: user, statusCode: '200' };
+      const response = await axios.get(
+        "https://esdeeznutz-default-rtdb.firebaseio.com/UserData/" +
+          uid +
+          "/.json"
+      );
+      const role = response.data.role;
+      const name = response.data.name;
+      let access = {
+        accessToken: user,
+        statusCode: "200",
+        uid: uid,
+        role: role,
+        name: name,
+      };
       // let return_json = { result: user };
       return access;
     } else {
@@ -82,7 +102,7 @@ async function loginEmailPassword(email, password) {
 //   }
 // }
 
-async function signUp(email, password,role) {
+async function signUp(email, password, role, name) {
   try {
     const response = await createUserWithEmailAndPassword(
       auth,
@@ -93,18 +113,28 @@ async function signUp(email, password,role) {
     const uid = response.user.uid;
     const accessToken = response.user.accessToken;
 
-    set(ref(db, "UserData/" + uid), {
+    set(dbref(db, "UserData/" + uid), {
       role: role,
+      name: name,
     }).catch((error) => {
       console.log(error);
     });
-    
-    let userData = { uid: uid, authStatus: "Sign Up Success", accessToken: accessToken, statusCode: '200' };
+
+    let userData = {
+      uid: uid,
+      authStatus: "Sign Up Success",
+      accessToken: accessToken,
+      statusCode: "200",
+    };
     console.log(userData);
     return userData;
   } catch (error) {
-    let userData = { authStatus: "Sign Up Failed", statusCode: '200', errorMessage: error.code};
-    console.log(userData)
+    let userData = {
+      authStatus: "Sign Up Failed",
+      statusCode: "200",
+      errorMessage: error.code,
+    };
+    console.log(userData);
     return userData;
   }
 }
@@ -131,25 +161,25 @@ async function checkAuthStatus() {
 
 async function checkAccess(token) {
   // const cookie = await getCookie();
-  try{
-  const decodedToken = jwt.decode(token, { complete: true });
-  const uid = decodedToken.payload.user_id;
-  const role = await getUser(uid);
-  // get back uid code and success message
-  let return_json = {
-    uid: uid,
-    statusCode: "200",
-    role: role,
-    authStatus: "Success",
-  };
-  return return_json;
-}catch(error){
-  let return_json = {
-    statusCode: '403',
-    authStatus: "Unauthorized User",
+  try {
+    const decodedToken = jwt.decode(token, { complete: true });
+    const uid = decodedToken.payload.user_id;
+    const role = await getUser(uid);
+    // get back uid code and success message
+    let return_json = {
+      uid: uid,
+      statusCode: "200",
+      role: role,
+      authStatus: "Success",
+    };
+    return return_json;
+  } catch (error) {
+    let return_json = {
+      statusCode: "403",
+      authStatus: "Unauthorized User",
+    };
+    return return_json;
   }
-  return return_json;
-}
 }
 
 async function getUser(uid) {
@@ -166,6 +196,15 @@ async function getUser(uid) {
   }
 }
 
+async function signOutAccount() {
+  try {
+    const response = await auth.signOut();
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 module.exports = {
   // signInWithGoogle,
   loginEmailPassword,
@@ -173,4 +212,5 @@ module.exports = {
   // setCookie,
   // getCookie,
   signUp,
+  signOutAccount,
 };

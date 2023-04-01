@@ -17,6 +17,11 @@ listing_URL = "http://localhost:8000/listing"
 geocoding_URL = "http://localhost:3000/"
 notification_URL = "http://localhost:3000/"
 authentication_URL = "http://localhost:3001/auth/checkaccess/"
+image_URL = "http://localhost:3002/image"
+
+image = {
+    "dummy_object": "nonsense"
+}
 
 token = "eyJhbGciOiJSUzI1NiIsImtpZCI6Ijk3OWVkMTU1OTdhYjM1Zjc4MjljZTc0NDMwN2I3OTNiN2ViZWIyZjAiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vZXNkZWV6bnV0eiIsImF1ZCI6ImVzZGVlem51dHoiLCJhdXRoX3RpbWUiOjE2ODAyMzM5MzUsInVzZXJfaWQiOiIwdmJYemdGNW84U3pMWkxsS25WSGx0YTZyMVAyIiwic3ViIjoiMHZiWHpnRjVvOFN6TFpMbEtuVkhsdGE2cjFQMiIsImlhdCI6MTY4MDIzMzkzNSwiZXhwIjoxNjgwMjM3NTM1LCJlbWFpbCI6InRlc3QxQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJ0ZXN0MUBnbWFpbC5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.etKySBOU7E53MmkhwrN9LcttQJ_2_1oSx9dzN0FmaEZrDDU_vz8i1OclcN_hfVjzoQHg1V9wMHAvEmwrriCi0r_hfPZzX4e4RuMLOSZb5ClHQyhCSujtKzKQncGOYlVH9nX9EjUkPqYdFoaN1jaTYhIXAbOb8tEGmWs44KvuL3_WQMiEb3aIcF_4TtmRiXLaijTR2o2bSvIVZJ360eyqrTXzUjHY2HPcW3t2gOthfyMswWPnhkROlLx8kzaprvOfN8kcoI1WAhRemrMHGVmNAoiUoaB6X69-pGy7fUgCD1lnIndUw1Nm9zblCHohy7oQZ9qb3KX0D-tIPPlRh0i1jg"
 
@@ -30,7 +35,7 @@ def create_listing():
          
             # do the actual work
             # 1. Create listing info 
-            result = processCreateListing(listing, token)
+            result = processCreateListing(listing, token, image)
             return jsonify(result)
 
         except Exception as e:
@@ -82,12 +87,25 @@ def update_listing(listing_id):
 
 @app.route("/listing_management/", methods=['GET']) #implement function to view all listings
 def display_listings():
-    pass
-    #1. Retrieve all listings (??)
-    
-        #2. Retrieve associated image
+    list_of_listings = []
+    #1. Retrieve all listings
+    #Invoking the listing MS
+    print('\n-----Retrieving listings-----')
+    listing_result = invoke_http(listing_URL, method="GET", json=None)
+    print('listing_result:', listing_result)
 
-def processCreateListing(listing, token):
+    for listing in listing_result:
+        pass
+        listing_id = listing["listing_id"]
+        firebase_url = "https://firebasestorage.googleapis.com/v0/b/esdeeznutz.appspot.com/o/listings%2F${key}{ext}?alt=media&token=d96a1b6f-e4a2-42d1-a06b-c9331d4490a4"
+        listing_and_image = {
+            "listing": listing_result,
+            "firebase_url": firebase_url
+        }
+        list_of_listings.append(listing_and_image)
+    return list_of_listings
+    
+def processCreateListing(listing, token, image):
     #2. authenticate that this is a corporate user
 
     authentication_result = authenticateUser(token) 
@@ -127,17 +145,25 @@ def processCreateListing(listing, token):
             listing_result = invoke_http(listing_URL, method='POST', json=listing)
             print('listing_result:', listing_result)
 
+            #5. Send the image data to database
+            #Invoke the image microservice
+            print('\n-----Invoking image microservice-----')
+            image_result = invoke_http(image_URL, method='POST', json=image)
+            print('image_result:', image_result)
+
             if "detail" not in listing_result: 
                 #5. Send the notification to users who are subscribed to the corporate
                 ############  Publish to subscribe queue   #############
                 print('\n-----Sending notification to RabbitMQ-----')
                 obj = {
+                    "purpose": "subscription",
                     "listing_result": listing_result
                 } 
                 message = json.dumps(obj)
-                amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="email.subscribers", 
+                amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="subscribers.notif", 
                     body=message, properties=pika.BasicProperties(delivery_mode = 2))
                 print(f"sending message: {message} to queue 'subscribers' in Notification complex MS")
+
             else:
                 return {
                     "code": 500,
@@ -173,7 +199,6 @@ def authenticateUser(token_input):
     authentication_result = invoke_http(authentication_URL_full, method="GET", json=None)
     print('authentication_result:', authentication_result)
     return authentication_result
-
 
 if __name__ == "__main__":
     print("This is flask " + os.path.basename(__file__) + " for managing a listing...")

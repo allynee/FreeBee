@@ -16,7 +16,13 @@ import MatchedPets from '../views/MatchedPets.vue'
 import Register from '../views/Register.vue'
 import BeneficiarySignUp  from '../views/RegisterBeneficiary.vue'
 import CorporateSignUp  from '../views/RegisterCorporate.vue'
+import CreateListing from '../views/CreateListing.vue'
+import UserTransactions from '../views/UserTransactions.vue'
 
+import IndividualListing from '../views/IndividualListing.vue'
+
+import Image from '../views/Image.vue'
+// import RegisterFilter from '../views/RegisterFilter.vue'
 // import RegisterFilter from '../views/RegisterFilter.vue'
 Vue.use(VueRouter)
 
@@ -45,13 +51,13 @@ const routes = [
     component:Onepet,
     // beforeEnter:authguard
   },
-  // Card 
-  // {
-  //   path:'/FindFreeBee/:listingid',
-  //   props: true,
-  //   name:'ListingPage',
-  //   component: Listing,
-  // },
+  // Indiv Listing
+  {
+    path:'/FindFreeBee/:listingid',
+    props: true,
+    name:'IndividualListing',
+    component: IndividualListing,
+  },
   {
     path: '/signup',
     name: 'signup',
@@ -77,11 +83,6 @@ const routes = [
     beforeEnter:authguard,
 
   },
-  // {
-  //   path:'/register',
-  //   name:'register',
-  //   component:Register
-  // },
   { 
     path:'/login',
     name:'/login',
@@ -107,6 +108,21 @@ const routes = [
     path: '/corporate',
     name: 'Register Corporate',
     component: CorporateSignUp,
+  },
+  {
+    path: '/createlisting',
+    name: 'Create Listing',
+    component: CreateListing,
+  },
+  {
+    path:'/image',
+    name : 'Image',
+    component: Image
+  },
+  {
+    path: '/usertransactions',
+    name: 'User Transactions',
+    component: UserTransactions,
   },
 ]
 

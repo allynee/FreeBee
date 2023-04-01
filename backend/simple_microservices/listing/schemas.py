@@ -3,6 +3,7 @@ from typing import Union, Optional
 from pydantic import BaseModel
 
 class ListingBase(BaseModel):
+    listing_id: int
     corporate_id: int
     corporate_name: str
     name: str
@@ -15,9 +16,9 @@ class ListingBase(BaseModel):
     category: str
     quantity: int
     status: str 
+    img_ext: Optional[str] = None
 
 class Listing(ListingBase):
-    listing_id: int
     created: datetime.datetime
     modified: Optional[datetime.datetime] = None
 
