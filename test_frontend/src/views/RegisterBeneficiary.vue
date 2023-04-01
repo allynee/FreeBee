@@ -24,7 +24,6 @@
                 id="name"
                 v-model="name"
                 type="text"
-                :rules="nameRules"
                 required
               >
               </v-text-field>
@@ -40,7 +39,6 @@
                 id="email"
                 v-model="email"
                 type="email"
-                :rules="emailRules"
                 required
               >
               </v-text-field>
@@ -56,7 +54,6 @@
                 id="username"
                 v-model="username"
                 type="text"
-                :rules="userRules"
                 required
               >
               </v-text-field>
@@ -74,7 +71,6 @@
                 :append-icon="value ? 'mdi-eye-off' : 'mdi-eye'"
                 @click:append="() => (value = !value)"
                 :type="value ? 'password' : 'text'"
-                :rules="[passwordLength]"
               >
               </v-text-field>
             </v-flex>
@@ -91,7 +87,6 @@
                 :append-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
                 @click:append="() => (showPassword = !showPassword)"
                 :type="showPassword ? 'password' : 'text'"
-                :rules="[comparePasswords]"
               >
               </v-text-field>
             </v-flex>
@@ -222,31 +217,31 @@
 //     },
 //   },
 //   methods: {
-//     onRegister() {
-//       axios
-//         .post("http://localhost:3001/register", {
-//           email: this.email,
-//           password: this.password,
-//           role: "beneficiary",
-//         })
-//         .then((response) => {
-//           const response_data = response.data;
-//           if (response_data.statusCode == "200") {
-//             var expires = "";
-//             var date = new Date();
-//             date.setTime(date.getTime() + 10 * 60 * 1000);
-//             expires = "; expires=" + date.toUTCString();
-//             document.cookie =
-//               "accessToken=" + response_data.accessToken + ";" + expires;
-//             console.log("pass");
-//           } else {
-//             console.log("fail");
-//           }
-//         })
-//         .catch((error) => {
-//           console.log("error " + error);
-//         });
-//     },
+    // onRegister() {
+    //   axios
+    //     .post("http://localhost:3001/register", {
+    //       email: this.email,
+    //       password: this.password,
+    //       role: "beneficiary",
+    //     })
+    //     .then((response) => {
+    //       const response_data = response.data;
+    //       if (response_data.statusCode == "200") {
+    //         var expires = "";
+    //         var date = new Date();
+    //         date.setTime(date.getTime() + 10 * 60 * 1000);
+    //         expires = "; expires=" + date.toUTCString();
+    //         document.cookie =
+    //           "accessToken=" + response_data.accessToken + ";" + expires;
+    //         console.log("pass");
+    //       } else {
+    //         console.log("fail");
+    //       }
+    //     })
+    //     .catch((error) => {
+    //       console.log("error " + error);
+    //     });
+    // },
 //   },
 // };
 // </script>
