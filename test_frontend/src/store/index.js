@@ -12,6 +12,7 @@ export const store = new Vuex.Store({
     accessToken: null,
     uid: null,
     corporateName: null,
+    area:null
   },
   plugins: [persistedState],
   mutations: {

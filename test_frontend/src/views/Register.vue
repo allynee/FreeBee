@@ -363,6 +363,7 @@ export default {
               accessToken: response_data.accessToken,
               uid: response_data.uid,
               corporateName: response_data.name,
+              area: this.area
             });
 
             // if function to push to sql db
