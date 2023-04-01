@@ -3,13 +3,14 @@
 // THIS IS IN APP.JS WHEN TESTED
 process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = 0
 
+
 const nodemailer = require('nodemailer');
 const { google } = require('googleapis');
 
-const CLIENT_ID = '406765810173-lial73q96ehf1bm3c2num3q4870df64l.apps.googleusercontent.com';
-const CLIENT_SECRET = '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';
+const CLIENT_ID = '373101173117-5q491oac5dk1mc5nglja1qb2dre4qnk9.apps.googleusercontent.com';
+const CLIENT_SECRET = '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';
 const REDIRECT_URI = 'https://developers.google.com/oauthplayground';
-const REFRESH_TOKEN = '1//048RzrRvfYjrtCgYIARAAGAQSNwF-L9IrdpTersFVRvUgwuKW82W-JWICFsPStrImhWOlbNhPX7iKJW-QrnV3zQtt_YXD8lspshQ';
+const REFRESH_TOKEN = '1//04XWkQuHf31ZzCgYIARAAGAQSNwF-L9IrUdkns84aHxt9XUgBac_-JqCfldFs-Mq2XpRbWCozT8Ibm5pdKmznPj2YJlpfWFdWj6w';
 // const OAuth2 = google.auth.OAuth2;
 
 //access token will expire aft awhile so have to recreate it
@@ -21,9 +22,12 @@ oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
 // subject = 'SAMPLE EMAIL from FreeBeeSg2',
 // text = 'This is a sample email from FreeBeeSg \n Please do not reply to this email. \n Thank you for using FreeBeeSg!',
 // html = '<h1>This is a sample email from FreeBeeSg</h1> \n <h2>Please do not reply to this email.</h2> \n <p>Thank you for using FreeBeeSg!</p>'
-
+// sendingMail(to, subject, html)
 // can pass in parameters to sendMail function
-async function sendMail(toMail, subject, content){
+async function sendingMail(toMail, subject, content){
+    // toMail = 'lixuen.low.2021@smu.edu.sg',
+    // subject = 'SAMPLE EMAIL from FreeBeeSg2',
+    // content = '<h1>This is a sample email from FreeBeeSg</h1> \n <h2>Please do not reply to this email.</h2> \n <p>Thank you for using FreeBeeSg!</p>'
     try{
         const accessToken = await oAuth2Client.getAccessToken();
         const transport = nodemailer.createTransport({
@@ -42,14 +46,13 @@ async function sendMail(toMail, subject, content){
             from: 'FreeBeeSg <FreeBeeDoNotReply@gmail.com>',
             to: toMail,
             subject: subject,
-            text: content,
-            // html: '<h1>This is a sample email from FreeBeeSg</h1> \n <h2>Please do not reply to this email.</h2> \n <p>Thank you for using FreeBeeSg!</p>'
+            html: content
         };
 
         //this returns a promise
         // const result = await transport.sendMail(mailOptions)
         const result = await transport.sendMail(mailOptions)
-        // console.log(result);
+        console.log(result);
         return result;
 
         
@@ -58,12 +61,11 @@ async function sendMail(toMail, subject, content){
         return error.response
     }
 }
-
 // sendMail('lixuen.low.2021@scis.smu.edu.sg').then(result => console.log('Email sent...', result))
 // .catch(error => console.log(error.message));
 // node app.js TO RUN THE THING
 
-module.exports = { sendMail };
+module.exports = { sendingMail };
 
 // error message: self signed certificate in certificate chain
 // // solution 'set NODE_TLS_REJECT_UNAUTHORIZED=0' in terminal (this is for windows)
