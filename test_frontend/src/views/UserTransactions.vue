@@ -1,0 +1,403 @@
+<template>
+    <div class="white pa-5 bground" style="height:50%">
+        <v-container class="pb-15" style="width:50%;" data-aos="fade-down">
+            <v-row class="mb-7 ml-1 mt-1">
+                <span class="text-h4 text-capitalize brown--text">These freebies are waiting for you!</span>
+            </v-row>
+            
+            <v-card>
+                <v-tabs v-model="tab" fixed-tabs color="orange" bg-color="white">
+                    <v-tab>User</v-tab>
+                    <v-tab>Corporate</v-tab>
+                </v-tabs>
+                <v-tabs-items v-model="tab">
+                    <v-tab-item :value="0">
+                        <v-card-text>
+                            <form @submit.prevent="onRegister">
+                                <v-container>
+                                    <v-text-field
+                                    outlined
+                                    rounded
+                                    name="username"
+                                    label="Username"
+                                    id="username"
+                                    v-model="username"
+                                    type="text"
+                                    :rules="nameRules"
+                                    required>
+                                    </v-text-field>
+                                </v-container>
+
+                                <v-container>
+                                    <v-text-field
+                                    outlined
+                                    rounded
+                                    name="email"
+                                    label="Email"
+                                    id="email"
+                                    v-model="email"
+                                    type="email"
+                                    :rules="emailRules"
+                                    required>
+                                    </v-text-field>
+                                </v-container>
+
+                                <v-container>
+                                    <v-text-field
+                                    outlined
+                                    rounded
+                                    name="phone"
+                                    label="Mobile Number"
+                                    id="phone"
+                                    v-model="phone"
+                                    type="number"
+                                    hide-spin-buttons
+                                    :rules="phoneRules"
+                                    required>
+                                    </v-text-field>
+                                </v-container>
+
+                                <v-container>
+                                    <v-text-field
+                                    outlined
+                                    rounded
+                                    name="address"
+                                    label="Street Address"
+                                    id="address"
+                                    v-model="address"
+                                    type="text"
+                                    :rules="addressRules"
+                                    required>
+                                    </v-text-field>
+                                </v-container>
+
+                                <v-container>
+                                    <v-text-field
+                                    outlined
+                                    rounded
+                                    name="password"
+                                    label="Password"
+                                    id="password"
+                                    v-model="password"
+                                    :append-icon="value ? 'mdi-eye-off' : 'mdi-eye'"
+                                    @click:append="() => (value = !value)"
+                                    :type="value ? 'password' : 'text'"
+                                    :rules="[passwordLength]"
+                                    >
+                                    </v-text-field>
+                                </v-container>
+
+                                <v-container>
+                                    <v-text-field
+                                    outlined
+                                    rounded
+                                    name="confirmpassword"
+                                    label="Confirm Password"
+                                    id="confirmpassword"
+                                    v-model="confirmpassword"
+                                    :append-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
+                                    @click:append="() => (showPassword = !showPassword)"
+                                    :type="showPassword ? 'password' : 'text'"
+                                    :rules="[comparePasswords]">
+                                    </v-text-field>
+                                </v-container>
+                                <span class>
+                                    <v-checkbox>
+                                        <template v-slot:label>
+                                            I wish to receive emails regarding activities involving my account
+                                        </template>
+                                    </v-checkbox>
+                                </span>
+
+                                <v-container>
+                                    <v-btn type="submit" block brown outlined :disabled="!formIsValid" :loading="loading">
+                                        Register
+                                        <!-- button loader -->
+                                        <template v-slot:loader>
+                                            <span class="custom-loader">
+                                            <v-icon light>mdi-cached</v-icon>
+                                            </span>
+                                        </template>
+                                    </v-btn>
+                                </v-container>
+
+                                            <v-row >
+                                                <v-col class="my-3">
+                                            
+                                                <v-alert type="error" v-if="errorstatus">
+                                                Email already in use!
+                                                </v-alert>
+                                                </v-col>
+
+                                            </v-row>    
+
+                            <!-- Error Message -->
+                            <!-- <v-layout row>
+                                <v-flex xs12>
+                                    <p v-if="errorstatus"></p>
+                                </v-flex>
+                            </v-layout> -->
+                            </form>
+                        </v-card-text>
+                    </v-tab-item>
+                        
+                        <v-tab-item :value="1">
+                            <v-card-text>
+                                <form @submit.prevent="onRegister">
+                                    <v-container>
+                                        <v-text-field
+                                        outlined
+                                        rounded
+                                        name="corporatename"
+                                        label="Corporate Name"
+                                        id="corporatename"
+                                        v-model="corporatename"
+                                        type="text"
+                                        :rules="nameRules"
+                                        required>
+                                        </v-text-field>
+                                    </v-container>
+
+                                    <v-container>
+                                        <v-text-field
+                                        outlined
+                                        rounded
+                                        name="corporateEmail"
+                                        label="Corporate Email"
+                                        id="corporateEmail"
+                                        v-model="corporateEmail"
+                                        type="email"
+                                        :rules="emailRules"
+                                        required>
+                                        </v-text-field>
+                                    </v-container>
+
+                                    <v-container>
+                                        <v-text-field
+                                        outlined
+                                        rounded
+                                        name="description"
+                                        label="Description"
+                                        id="description"
+                                        v-model="description"
+                                        type="text"
+                                        :rules="descriptionRules"
+                                        required>
+                                        </v-text-field>
+                                    </v-container>
+
+                                    <v-container>
+                                        <v-text-field
+                                        outlined
+                                        rounded
+                                        name="password"
+                                        label="Password"
+                                        id="password"
+                                        v-model="password"
+                                        :append-icon="value ? 'mdi-eye-off' : 'mdi-eye'"
+                                        @click:append="() => (value = !value)"
+                                        :type="value ? 'password' : 'text'"
+                                        :rules="[passwordLength]"
+                                        >
+                                        </v-text-field>
+                                    </v-container>
+
+                                    <v-container>
+                                        <v-text-field
+                                        outlined
+                                        rounded
+                                        name="confirmpassword"
+                                        label="Confirm Password"
+                                        id="confirmpassword"
+                                        v-model="confirmpassword"
+                                        :append-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
+                                        @click:append="() => (showPassword = !showPassword)"
+                                        :type="showPassword ? 'password' : 'text'"
+                                        :rules="[comparePasswords]">
+                                        </v-text-field>
+                                    </v-container>
+
+                                    <v-container>
+                                        <v-btn type="submit" block brown outlined :disabled="!formIsValid" :loading="loading">
+                                            Register
+                                            <!-- button loader -->
+                                            <template v-slot:loader>
+                                                <span class="custom-loader">
+                                                <v-icon light>mdi-cached</v-icon>
+                                                </span>
+                                            </template>
+                                        </v-btn>
+                                    </v-container>
+                                        
+                                                <v-row >
+                                                    <v-col class="my-3">
+                                                    <v-alert type="error" v-if="errorstatus">
+                                                    Email already in use!
+                                                    </v-alert>
+                                                    </v-col>
+                                                </v-row>    
+                                <!-- Error Message -->
+                                <!-- <v-layout row>
+                                    <v-flex xs12>
+                                        <p v-if="errorstatus"></p>
+                                    </v-flex>
+                                </v-layout> -->
+                                </form>
+                            </v-card-text>
+                        </v-tab-item>
+                    </v-tabs-items>
+            </v-card>
+        </v-container>                    
+    </div>
+</template>
+  
+  <style src="../style/style.css">
+</style>
+  
+  <script>
+    import db from '../firebase/index'
+    // import router from '../router/index'
+    import { doc, setDoc } from 'firebase/firestore'
+    import { getAuth, createUserWithEmailAndPassword} from 'firebase/auth'
+  
+    export default {
+
+      name: 'register',
+      data(){
+        return{
+            tab: null, 
+            username:'',
+            email:'',
+            phone:'',
+            address: '',
+            corporatename:'',
+            corporateEmail:'',
+            description:'',
+            password:'',
+            confirmpassword:'',
+            userid:'',
+            corporateid:'',
+            errorstatus:false,
+            value: String,
+            showPassword: String,
+            nameRules: [
+                v => v.length >= 2 || 'Minimum length is 2 characters',
+            ],
+            emailRules: [
+                v => !v || /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'E-mail must be valid'
+            ],
+            userRules: [
+                v => v.length >= 8 || 'Minimum length is 8 characters',
+                v => /[0-9]/.test(v) || 'Must contain at least 1 digit',
+            ],
+            // pwdRules: [
+            //     v => !!v || 'Please type password.',
+            //     v => (v && v.length >= 6) || 'Minimum length is 6 characters',
+            //     v => /[a-z]/.test(v) || 'Must contain at least 1 lowercase letter',
+            //     v => /[A-Z]/.test(v) || 'Must contain at least 1 uppercase letter',
+            //     v => /[`!@#$%^&*()_+\-=[\]{};':"\\|,.<>?~]/.test(v) || 'Must contain at least 1 symbol'
+            // ],
+        }
+      },
+      computed:{
+        loading(){
+            return this.$store.getters.loading
+        },
+        comparePasswords(){
+            return this.password!=this.confirmpassword ? 'Passwords do not match!': ''
+        },
+        passwordLength(){
+            if (this.password.length < 6){
+                return 'Minimum length is 6 characters'
+            }
+            else if(!this.password.match(/[a-z]/)){
+                return 'Must contain at least 1 lowercase letter'
+            }
+            else if(!this.password.match(/[A-Z]/)){
+                return 'Must contain at least 1 uppercase letter'
+            }
+            else if(!this.password.match(/[`!@#$%^&*()_+\-=[\]{};':"\\|,.<>?~]/)){
+                return 'Must contain at least 1 symbol'
+            }
+            else {
+                return true
+            }
+        },
+        formIsValid(){
+            return this.fullname!='' && 
+            this.email!='' &&
+            this.username!=''&&
+            this.password!='' &&
+            this.confirmpassword!=''&&
+            this.password==this.confirmpassword
+        }
+    
+      
+      },
+      methods:{
+
+        onRegister(){
+            this.$store.commit('setLoading',true)
+
+            const auth=getAuth()
+            //Async Create User function
+            createUserWithEmailAndPassword(auth, this.email, this.password)
+            .then( user=>{
+                console.log(user)
+                const uid=user.user.uid
+                console.log(uid)
+                this.userid=user.user.uid
+                const newUser={
+                    userid: this.userid,
+                    fullname:this.fullname,
+                    email: this.email, 
+                    username: this.username,
+                    password:this.password,
+                    listedPets:[],
+                }
+                //Async function to add this user into collection (inner async loop)
+                const docRef=doc(db,"Users", uid)
+                setDoc(docRef, newUser)
+                .then(()=>{
+                    this.$store.commit('setLoading',false)
+
+                    console.log('Registration successful')
+                    this.$router.push('/login')
+                })
+
+                // addDoc(collection(db, 'Users'), newUser)
+                // .then( ()=>{
+                //     alert('Registration successful!')
+                //     this.$router.push('/login')
+                // })
+                .catch( (err)=>{
+                    this.$store.commit('setLoading',false)
+
+                    console.log(err)
+                    this.errorstatus=true
+                    return
+                })
+            })
+            .catch( (err)=>{
+                this.$store.commit('setLoading',false)
+                this.errorstatus=true
+                console.log(err)
+                //set error to true, display error 
+                // this.errorstatus=true
+                // alert('Email already in use! Please retry!')
+                return
+            })
+            // console.log('account created')
+        }
+      }
+    }
+  </script>
+  <style scoped>
+  .bground {
+    background-size: cover;
+    height: 120vh;
+    background-position: 20px;
+    width: 100%
+  }
+  </style>
+  

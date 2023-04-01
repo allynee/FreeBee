@@ -16,6 +16,10 @@ import MatchedPets from '../views/MatchedPets.vue'
 import Register from '../views/Register.vue'
 import BeneficiarySignUp  from '../views/RegisterBeneficiary.vue'
 import CorporateSignUp  from '../views/RegisterCorporate.vue'
+import CreateListing from '../views/CreateListing.vue'
+import UserTransactions from '../views/UserTransactions.vue'
+
+import indivlisting from '../views/IndividualListing.vue'
 
 import Image from '../views/Image.vue'
 // import RegisterFilter from '../views/RegisterFilter.vue'
@@ -79,11 +83,6 @@ const routes = [
     beforeEnter:authguard,
 
   },
-  // {
-  //   path:'/register',
-  //   name:'register',
-  //   component:Register
-  // },
   { 
     path:'/login',
     name:'/login',
@@ -111,10 +110,25 @@ const routes = [
     component: CorporateSignUp,
   },
   {
+    path: '/createlisting',
+    name: 'Create Listing',
+    component: CreateListing,
+  },
+  {
+    path: '/indivlisting',
+    name: 'indivlisting',
+    component: indivlisting,
+  },
+  {
     path:'/image',
-    name: 'Image',
+    name : 'Image',
     component: Image
-  }
+  },
+  {
+    path: '/usertransactions',
+    name: 'User Transactions',
+    component: UserTransactions,
+  },
 ]
 
 const router = new VueRouter({

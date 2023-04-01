@@ -5,12 +5,6 @@
       style="width: 45%; height: 45%"
       data-aos="fade-down"
     >
-      <v-row class="mt-16">
-        <span class="mt-16"> </span>
-      </v-row>
-      <v-row class="mt-16">
-        <span> </span>
-      </v-row>
       <v-row class="mb-7 mt-16 pt-0 d-flex align-center">
         <span class="text-h4 mt-16 text-capitalize brown--text mx-auto"
           >Login</span
@@ -39,6 +33,7 @@
                 id="email"
                 v-model="email"
                 type="email"
+                rounded
                 outlined
                 required
               >
@@ -54,6 +49,7 @@
                 id="password"
                 v-model="password"
                 type="password"
+                rounded
                 outlined
                 required
               >
@@ -139,7 +135,6 @@ export default {
 </script>
 <style scoped>
 .bground {
-  background: url("../assets/dogss.png");
   background-size: cover;
   height: 120vh;
   background-position: 20px;
