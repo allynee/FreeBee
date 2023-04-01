@@ -23,7 +23,6 @@ image = {
     "dummy_object": "nonsense"
 }
 
-token = "eyJhbGciOiJSUzI1NiIsImtpZCI6Ijk3OWVkMTU1OTdhYjM1Zjc4MjljZTc0NDMwN2I3OTNiN2ViZWIyZjAiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vZXNkZWV6bnV0eiIsImF1ZCI6ImVzZGVlem51dHoiLCJhdXRoX3RpbWUiOjE2ODAyMzM5MzUsInVzZXJfaWQiOiIwdmJYemdGNW84U3pMWkxsS25WSGx0YTZyMVAyIiwic3ViIjoiMHZiWHpnRjVvOFN6TFpMbEtuVkhsdGE2cjFQMiIsImlhdCI6MTY4MDIzMzkzNSwiZXhwIjoxNjgwMjM3NTM1LCJlbWFpbCI6InRlc3QxQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJ0ZXN0MUBnbWFpbC5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.etKySBOU7E53MmkhwrN9LcttQJ_2_1oSx9dzN0FmaEZrDDU_vz8i1OclcN_hfVjzoQHg1V9wMHAvEmwrriCi0r_hfPZzX4e4RuMLOSZb5ClHQyhCSujtKzKQncGOYlVH9nX9EjUkPqYdFoaN1jaTYhIXAbOb8tEGmWs44KvuL3_WQMiEb3aIcF_4TtmRiXLaijTR2o2bSvIVZJ360eyqrTXzUjHY2HPcW3t2gOthfyMswWPnhkROlLx8kzaprvOfN8kcoI1WAhRemrMHGVmNAoiUoaB6X69-pGy7fUgCD1lnIndUw1Nm9zblCHohy7oQZ9qb3KX0D-tIPPlRh0i1jg"
 
 @app.route("/listing_management", methods=['POST'])
 def create_listing():
@@ -31,11 +30,14 @@ def create_listing():
     if request.is_json:
         try:
             listing = request.get_json()
-            print("\nReceived an listing in JSON:", listing)        
+            print("\nReceived an listing in JSON:", listing)  
+
+            listing_object = listing["listing"]
+            token = listing["token"]      
          
             # do the actual work
             # 1. Create listing info 
-            result = processCreateListing(listing, token, image)
+            result = processCreateListing(listing_object, token, image)
             return jsonify(result)
 
         except Exception as e:
@@ -105,16 +107,15 @@ def display_listings():
         list_of_listings.append(listing_and_image)
     return list_of_listings
     
-def processCreateListing(listing, token, image):
+def processCreateListing(listing_object, token, image):
     #2. authenticate that this is a corporate user
-
     authentication_result = authenticateUser(token) 
 
     if (authentication_result["statusCode"] == '200'):
         if (authentication_result['role'] == "corporate"):
             # #3. send address string from listing to geocoding API
             print('\n-----Invoking geocoding microservice-----')
-            address = listing["address"]
+            address = listing_object["address"]
             geocoding_URL_full = "http://localhost:3000/graphql"
             query = f'''query {{
                 address(address: "{address}") {{
@@ -133,16 +134,16 @@ def processCreateListing(listing, token, image):
             district = r["data"]["address"]["district"]
             postal_code =r["data"]["address"]["postal_code"]
 
-            listing["area"] = area
-            listing["district"] = int(district)
-            listing["postal"] = int(postal_code)
+            listing_object["area"] = area
+            listing_object["district"] = int(district)
+            listing_object["postal"] = int(postal_code)
 
-            print(listing) #check if area district and postal code was added to listing object
+            print(listing_object) #check if area district and postal code was added to listing object
 
             #4. Send the listing info to database
             #Invoke the listing microservice
             print('\n-----Invoking listing microservice-----')
-            listing_result = invoke_http(listing_URL, method='POST', json=listing)
+            listing_result = invoke_http(listing_URL, method='POST', json=listing_object)
             print('listing_result:', listing_result)
 
             #5. Send the image data to database
@@ -150,6 +151,7 @@ def processCreateListing(listing, token, image):
             print('\n-----Invoking image microservice-----')
             image_result = invoke_http(image_URL, method='POST', json=image)
             print('image_result:', image_result)
+            #still need to check whether this is successful or not, ideally
 
             if "detail" not in listing_result: 
                 #5. Send the notification to users who are subscribed to the corporate
