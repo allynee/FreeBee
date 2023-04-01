@@ -325,11 +325,19 @@ export default {
   methods: {
     onRegister(role) {
         console.log(role)
+        let name
+        if(role == 'corporate'){
+            name = this.corporatename 
+        }
+        else{
+            name = this.username
+        }
       axios
         .post("http://localhost:3001/register", {
           email: this.email,
           password: this.password,
           role: role,
+          name:name
         })
         .then((response) => {
           const response_data = response.data;

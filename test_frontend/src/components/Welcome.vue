@@ -99,6 +99,7 @@ export default {
         AOS.init({
             duration: 1600,
         });
+        console.log(this.$store.getters.getAccessToken)
   },
   data(){
     return{

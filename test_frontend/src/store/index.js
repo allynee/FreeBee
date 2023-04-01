@@ -1,25 +1,27 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import createPersistedState from "vuex-persistedstate";
 
 Vue.use(Vuex);
 
+const persistedState = createPersistedState({
+  key: "my-vuex-store",
+});
 export const store = new Vuex.Store({
   state: {
-    //listed pets: [],
-    user: null,
-    // allPetsArray:null,
-    loading: false,
-    loadedPet: null,
-
-    others: null,
     accessToken: null,
     uid: null,
     corporateName: null,
   },
+  plugins: [persistedState],
   mutations: {
     access(state, access) {
       state.accessToken = access.accessToken;
       state.uid = access.uid;
+      state.corporateName = access.corporateName;
+    },
+    resetState(state) {
+      Object.assign(state, getDefaultState());
     },
   },
   actions: {
@@ -128,5 +130,16 @@ export const store = new Vuex.Store({
     getOthers(state) {
       return state.others;
     },
+    getAccessToken(state) {
+      return state.accessToken;
+    },
   },
 });
+
+function getDefaultState() {
+  return {
+    accessToken: null,
+    uid: null,
+    corporateName: null,
+  };
+}
