@@ -49,7 +49,7 @@
           </v-btn>
         </span>
         <v-btn
-          v-if="this.authorisation"
+          v-if="this.$store.state.accessToken"
           @click="onLogout"
           plain
           depressed
@@ -114,8 +114,9 @@ export default {
   },
   computed: {
     links() {
+      console.log('links')
       let linkitems;
-      if (this.authorisation) {
+      if (this.$store.state.accessToken) { 
         linkitems = [
           { text: "Find a FreeBee!", route: "/", icon: "mdi-magnify" },
           // {text: 'Report Pet', route:'/ReportPet', icon: 'mdi-dog-side'},
@@ -139,13 +140,7 @@ export default {
   methods: {
     async onLogout() {
       try {
-        // retrieve all cookies
-        var Cookies = document.cookie.split(";");
-        // set past expiry to all cookies
-        for (var i = 0; i < Cookies.length; i++) {
-          document.cookie =
-            Cookies[i] + "=; expires=" + new Date(0).toUTCString();
-        }
+        this.$store.commit('resetState')        
         await axios.get(`http://localhost:3001/signout`);
         location.reload();
       } catch (error) {
@@ -154,33 +149,33 @@ export default {
     },
     async userLoggedIn() {
       try {
-        let accessToken = null;
-        var nameEQ = "accessToken=";
-        var ca = document.cookie.split(";");
-        for (var i = 0; i < ca.length; i++) {
-          var c = ca[i];
-          while (c.charAt(0) == " ") c = c.substring(1, c.length);
-          if (c.indexOf(nameEQ) == 0) {
-            accessToken = c.substring(nameEQ.length, c.length);
-          }
-        }
-        if (accessToken) {
-          const response = await axios.get(
-            ` http://localhost:3001/auth/checkaccess/${accessToken}`
-          );
-          if (response.data.statusCode == 200) {
-            this.authorisation = true;
-          } else {
-            this.authorisation = false;
-          }
+        // let accessToken = null;
+        // var nameEQ = "accessToken=";
+        // var ca = document.cookie.split(";");
+        // for (var i = 0; i < ca.length; i++) {
+        //   var c = ca[i];
+        //   while (c.charAt(0) == " ") c = c.substring(1, c.length);
+        //   if (c.indexOf(nameEQ) == 0) {
+        //     accessToken = c.substring(nameEQ.length, c.length);
+        //   }
+        // }
+        // if (accessToken) {
+        //   const response = await axios.get(
+        //     ` http://localhost:3001/auth/checkaccess/${accessToken}`
+        //   );
+        //   if (response.data.statusCode == 200) {
+        //     this.authorisation = true;
+        //   } else {
+        //     this.authorisation = false;
+        //   }
+        // }
+        if (this.$store.getters.getuser != null) {
+          this.authorisation = true;
         }
       } catch (error) {
         console.log(error);
       }
     },
-  },
-  created() {
-    this.userLoggedIn();
   },
 };
 </script>

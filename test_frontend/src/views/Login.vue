@@ -14,7 +14,7 @@
       <!-- <v-card style="width:45%;height:75%;" elevation="2" class="mx-auto brown pt-9 pb-10 lighten-4">
                     <v-card-text>  -->
       <v-container>
-        <form @submit.prevent="sampleLogin">
+        <form @submit.prevent="login">
           <!-- <v-row >
                                     <v-col>
                                     <v-alert v-if="this.loggedout" type="info">
@@ -97,7 +97,7 @@
 <style src="../style/style.css"></style>
 
 <script>
-// const axios = require("axios");
+const axios = require("axios");
 
 export default {
   name: "login",
@@ -129,7 +129,31 @@ export default {
     },
   },
   methods: {
-
+    async login() {
+      try {
+        const response = await axios.get(
+          `http://localhost:3001/login/${this.email}/${this.password}`
+        );
+        if (response.data.statusCode == "200") {
+          if (response.data.role == "corporate") {
+            this.$store.commit("access", {
+              accessToken: response.data.accessToken,
+              uid: response.data.uid,
+              corporateName: response.data.name,
+            });
+          } else {
+            this.$store.commit("access", {
+              accessToken: response.data.accessToken,
+              uid: response.data.uid,
+              corporateName: null,
+            });
+          }
+          this.$router.push("/");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
   },
 };
 </script>

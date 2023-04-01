@@ -44,6 +44,7 @@ const storage = getStorage();
 
 async function loginEmailPassword(email, password) {
   try {
+    console.log(email, password);
     console.log("login");
     const userCredential = await signInWithEmailAndPassword(
       auth,
@@ -52,9 +53,23 @@ async function loginEmailPassword(email, password) {
     );
     // Signed in
     const user = userCredential._tokenResponse.idToken;
+    const uid = userCredential._tokenResponse.localId;
     // setCookie(user, 1);
     if (checkAuthStatus()) {
-      let access = { accessToken: user, statusCode: "200" };
+      const response = await axios.get(
+        "https://esdeeznutz-default-rtdb.firebaseio.com/UserData/" +
+          uid +
+          "/.json"
+      );
+      const role = response.data.role;
+      const name = response.data.name;
+      let access = {
+        accessToken: user,
+        statusCode: "200",
+        uid: uid,
+        role: role,
+        name: name,
+      };
       // let return_json = { result: user };
       return access;
     } else {
@@ -87,7 +102,7 @@ async function loginEmailPassword(email, password) {
 //   }
 // }
 
-async function signUp(email, password, role) {
+async function signUp(email, password, role, name) {
   try {
     const response = await createUserWithEmailAndPassword(
       auth,
@@ -100,6 +115,7 @@ async function signUp(email, password, role) {
 
     set(dbref(db, "UserData/" + uid), {
       role: role,
+      name: name,
     }).catch((error) => {
       console.log(error);
     });
