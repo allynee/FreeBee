@@ -125,7 +125,7 @@
                 </span>
 
                 <v-container>
-                  <v-btn type="submit" block brown outlined :loading="loading">
+                  <v-btn type="submit" block brown outlined :loading="loading" :disabled="check">
                     Register
                     <!-- button loader -->
                     <template v-slot:loader>
@@ -327,6 +327,14 @@ export default {
         this.password == this.confirmpassword
       );
     },
+    check(){
+        if(this.postal == ''){
+            return true
+        }
+        else{
+            return false
+        }
+    }
   },
   methods: {
     onRegister(role) {
