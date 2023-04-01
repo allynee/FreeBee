@@ -97,9 +97,9 @@ def display_listings():
     print('listing_result:', listing_result)
 
     for listing in listing_result:
-        pass
         listing_id = listing["listing_id"]
-        firebase_url = "https://firebasestorage.googleapis.com/v0/b/esdeeznutz.appspot.com/o/listings%2F${key}{ext}?alt=media&token=d96a1b6f-e4a2-42d1-a06b-c9331d4490a4"
+        img_ext = listing["img_ext"]
+        firebase_url = f"https://firebasestorage.googleapis.com/v0/b/esdeeznutz.appspot.com/o/listings%2F{listing_id}{img_ext}?alt=media&token=d96a1b6f-e4a2-42d1-a06b-c9331d4490a4"
         listing_and_image = {
             "listing": listing_result,
             "firebase_url": firebase_url
