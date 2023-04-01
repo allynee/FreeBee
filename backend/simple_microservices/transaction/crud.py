@@ -19,6 +19,9 @@ def get_transactions_by_beneficiary(db: Session, beneficiary_id: int, skip: int 
 def get_transactions_by_corporate(db: Session, corporate_id: int, skip: int = 0, limit: int = 100):
     return db.query(models.Transaction).filter(models.Transaction.corporate_id == corporate_id).offset(skip).limit(limit).all()
 
+def get_transactions_by_listing(db: Session, listing_id: int, skip: int = 0, limit: int = 100):
+    return db.query(models.Transaction).filter(models.Transaction.listing_id == listing_id).offset(skip).limit(limit).all()
+
 ### POST ###
 def create_transaction(db: Session, transaction: schemas.TransactionCreate):
     transaction = models.Transaction(**transaction.dict())

@@ -67,6 +67,14 @@ def get_transactions_by_corporate(corporate_id: int, db: Session = Depends(get_d
         raise HTTPException(status_code=404, detail="Corporate has no transactions")
     return transactions
 
+### GET TRANSACTIONS BASED ON LISTING ID ###
+@app.get('/transaction/listing/{listing_id}', response_model=List[schemas.Transaction])
+def get_transactions_by_listing(listing_id: int, db: Session = Depends(get_db), skip: int = 0, limit: int = 100,):
+    transactions = crud.get_transactions_by_listing(db, listing_id=listing_id, skip=skip,limit=limit)
+    if transactions is None:
+        raise HTTPException(status_code=404, detail="Listing has no transactions")
+    return transactions
+
 # ### GET SINGLE TRANSACTION BASED ON TRANSACTION ID ###
 @app.get('/transaction/{transaction_id}', response_model=schemas.Transaction)
 def get_transaction_by_id(transaction_id: int, db: Session = Depends(get_db)):

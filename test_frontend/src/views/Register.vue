@@ -156,6 +156,7 @@
                 <v-container>
                   <v-text-field
                     outlined
+                    rounded
                     name="corporatename"
                     label="Corporate Name"
                     id="corporatename"
@@ -169,6 +170,7 @@
                 <v-container>
                   <v-text-field
                     outlined
+                    rounded
                     name="corporateEmail"
                     label="Corporate Email"
                     id="corporateEmail"
@@ -182,6 +184,7 @@
                 <v-container>
                   <v-text-field
                     outlined
+                    rounded
                     name="description"
                     label="Description"
                     id="description"
@@ -195,6 +198,7 @@
                 <v-container>
                   <v-text-field
                     outlined
+                    rounded
                     name="password"
                     label="Password"
                     id="password"
@@ -209,6 +213,7 @@
                 <v-container>
                   <v-text-field
                     outlined
+                    rounded
                     name="confirmpassword"
                     label="Confirm Password"
                     id="confirmpassword"
