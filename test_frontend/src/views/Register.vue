@@ -354,8 +354,29 @@ export default {
                 uid: response_data.uid,
                 corporateName: response_data.name
             })
-            this.$router.push('/')
+            
             // if function to push to sql db
+            if (role=='corporate'){
+              axios.post("http://localhost:8421/corporate",{
+              corporate_id: this.$store.uid,
+              email: this.corporateEmail,
+              name: this.corporatename,
+              description: this.description
+            })
+            }else {
+              axios.post("http://localhost:8421/beneficiary"),{
+              beneficiary_id: this.$store.uid,
+              email: this.email,
+              username:,
+              phone:,
+              address,
+            }
+            }
+            
+            // end of sql db code
+
+            this.$router.push('/')
+
           } else {
             console.log("fail");
             alert(`${response_data.authStatus},${response_data.errorMessage}`)
