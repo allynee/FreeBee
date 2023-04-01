@@ -367,9 +367,9 @@ export default {
               axios.post("http://localhost:8421/beneficiary"),{
               beneficiary_id: this.$store.uid,
               email: this.email,
-              username:,
-              phone:,
-              address,
+              // username:,
+              // phone:,
+              // address,
             }
             }
             
