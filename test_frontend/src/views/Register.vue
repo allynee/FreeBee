@@ -336,7 +336,8 @@ export default {
           if (response_data.statusCode == "200") {
             this.$store.commit('access',{
                 accessToken: response_data.accessToken ,
-                uid: response_data.uid
+                uid: response_data.uid,
+                corporateName: this.corporateName
             })
             // if function to push to sql db
           } else {

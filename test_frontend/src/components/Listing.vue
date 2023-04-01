@@ -1,5 +1,5 @@
 <template>
-<div>
+<div @click="$emit('gotoListing')">
 <v-hover v-slot="{ hover }">
   <v-card flat :elevation="hover ? 10 : 2" :class="{ 'on-hover': hover }" style="width:350px; height:410px" outlined class="pa-2"> 
 
@@ -38,6 +38,7 @@
 <script>
 import AOS from 'aos'
 export default {
+    emits:['gotoListing'],
     props: {
       aListing: Object,
     },

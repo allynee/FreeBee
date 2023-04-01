@@ -8,32 +8,45 @@
             </div>
         </v-col>
         <v-col cols="6" align="left">
-            <h1 class="text-h3 font-weight-medium grey--text text--darken-3 my-2">Name of Item</h1>
-            <h1 class="text-subtitle-1 font-weight-light my-1">Post Creation Date</h1>
+            <h1 class="text-h3 font-weight-medium grey--text text--darken-3 my-2" data-aos="fade-right">{{listing.name}}</h1>
+            <h1 class="text-subtitle-1 font-weight-light my-1">Posted on: {{listing.created.split('T')[0]}}</h1>
             <br>
             <!-- v tabs -->
-            <div class="" style="height:30%">
+            <div class="">
             <v-tabs v-model="tab" grow class="rounded-lg">
-                <v-tab class="amber lighten-2">Description</v-tab>
-                <v-tab class="amber lighten-2">Location</v-tab>
-                <v-tab class="amber lighten-2">Company Details</v-tab>
+                <v-tab class="amber lighten-2">About this Post</v-tab>
+                <v-tab class="amber lighten-2">Collection Location</v-tab>
             </v-tabs>
 
             <v-tabs-items v-model="tab" class="rounded-lg pa-5 amber lighten-5">
                 <v-tab-item :value="0">
-                    Description blablabla <br>
-                    Description blablabla <br>
-                    Description blablabla <br>
+                    <span class="text-h6 font-weight-medium grey--text text--darken-3">
+                        Corporate Name: 
+                    </span>
+                    <span class="text-h6 font-weight-light grey--text text--darken-3">
+                        {{ listing.corporate_name }}
+                    </span>
+                    <h1 class="text-h6 font-weight-medium grey--text text--darken-3 mt-3 mb-1">
+                        Description:
+                    </h1>
+                    <h1 class="text-body-1 font-weight-light grey--text text--darken-3">
+                        {{listing.description}}
+                    </h1>
                 </v-tab-item>
                 <v-tab-item :value="1">
-                    Location blablabla <br>
-                    Location blablabla <br>
-                    Location blablabla <br>
-                </v-tab-item>
-                <v-tab-item :value="2">
-                    Company blablabla <br>
-                    Company blablabla <br>
-                    Company blablabla <br>
+                    <span class="text-h6 font-weight-medium grey--text text--darken-3">
+                        Address:
+                    </span>
+                    <span class="text-h6 font-weight-light">
+                        {{listing.address}}
+                    </span>
+                    <br>
+                    <span class="text-h6 font-weight-medium grey--text text--darken-3">
+                        Postal Code: 
+                    </span>
+                    <span class="text-h6 font-weight-light">
+                        {{listing.postal}}
+                    </span>
                 </v-tab-item>
             </v-tabs-items>
             </div>
@@ -41,12 +54,12 @@
             <!-- Claim -->
             <div class="white rounded-xl my-5">
                 <v-row>
-                <v-col cols="3">
-                <h1 class="text-h6 grey--text text--darken-4 font-weight-light" data-aos="fade-down">
+                <v-col cols="5">
+                <h1 class="text-h6 grey--text text--darken-4 font-weight-light">
                     Claim Now!
                 </h1>
                 <h1 class="text-subtitle-2 red--text text--darken-4">
-                    Only XX left in stock.
+                    We have {{ listing.quantity }} left in stock.
                 </h1>
                 </v-col>
                 <v-col cols="2">
@@ -76,13 +89,29 @@
 </div>
 </template>
 <script>
+import axios from 'axios';
+
 export default {
     name: 'IndividualListing',
     data(){
         return{
             tab: null,
+            listing: null,
         }
     },
+    methods: {
+        async fetchListing(){
+            const listing_URL = 'http://0.0.0.0:8000/listing/' + this.$route.params.listingid
+            axios.get(listing_URL).then((response) => {
+                this.listing = response.data
+            }).catch((exception) => {
+                console.log(exception);
+            });
+        }
+    },
+    created(){
+        this.fetchListing()
+    }
 }
 
 </script>
