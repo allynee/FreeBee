@@ -17,6 +17,7 @@ import Register from '../views/Register.vue'
 import BeneficiarySignUp  from '../views/RegisterBeneficiary.vue'
 import CorporateSignUp  from '../views/RegisterCorporate.vue'
 import CreateListing from '../views/CreateListing.vue'
+import UserTransactions from '../views/UserTransactions.vue'
 
 import indivlisting from '../views/IndividualListing.vue'
 
@@ -109,7 +110,7 @@ const routes = [
     component: CorporateSignUp,
   },
   {
-    path: '/createListing',
+    path: '/createlisting',
     name: 'Create Listing',
     component: CreateListing,
   },
@@ -122,7 +123,12 @@ const routes = [
     path:'/image',
     name : 'Image',
     component: Image
-  }
+  },
+  {
+    path: '/usertransactions',
+    name: 'User Transactions',
+    component: UserTransactions,
+  },
 ]
 
 const router = new VueRouter({

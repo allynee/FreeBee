@@ -23,16 +23,30 @@
                                 </v-container>
 
                                 <v-container>
-                                    <v-text-field
+                                    <v-file-input
+                                    outlined
+                                    rounded
+                                    name="itemImage"
+                                    label="Image of Item"
+                                    id="itemImage"
+                                    v-model="itemImage"
+                                    type="file"
+                                    required>
+                                    </v-file-input>
+                                </v-container>
+
+                                <v-container>
+                                    <v-textarea
                                     outlined
                                     rounded
                                     name="itemDescription"
                                     label="Description of Item"
                                     id="itemDescription"
+                                    height = "150"
                                     v-model="itemDescription"
                                     type="text"
                                     required>
-                                    </v-text-field>
+                                    </v-textarea>
                                 </v-container>
 
                                 <v-container>
