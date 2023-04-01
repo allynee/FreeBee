@@ -74,8 +74,18 @@
                     required
                   >
                   </v-text-field>
+                  <label for="autocomplete-input">Enter a location:</label>
+                  <input id="autocomplete-input" type="text" outlined />
                 </v-container>
-
+                <v-btn @click="geocode">Find My Location</v-btn>
+                <v-container>
+                  Postal Code<v-text-field v-model="postal" :disabled="true">
+                  </v-text-field>
+                </v-container>
+                <v-container>
+                  Area<v-text-field v-model="area" :disabled="true">
+                  </v-text-field>
+                </v-container>
                 <v-container>
                   <v-text-field
                     outlined
@@ -115,13 +125,7 @@
                 </span>
 
                 <v-container>
-                  <v-btn
-                    type="submit"
-                    block
-                    brown
-                    outlined
-                    :loading="loading"
-                  >
+                  <v-btn type="submit" block brown outlined :loading="loading" :disabled="check">
                     Register
                     <!-- button loader -->
                     <template v-slot:loader>
@@ -226,14 +230,7 @@
                 </v-container>
 
                 <v-container>
-                  <v-btn
-                    type="submit"
-                    block
-                    brown
-                    outlined
-                    :loading="loading"
-                    
-                  >
+                  <v-btn type="submit" block brown outlined :loading="loading">
                     Register
                     <!-- button loader -->
                     <template v-slot:loader>
@@ -269,7 +266,8 @@
 <style src="../style/style.css"></style>
 
 <script>
-import axios from 'axios';
+import axios from "axios";
+/* global google */
 
 export default {
   name: "register",
@@ -279,7 +277,6 @@ export default {
       username: "",
       email: "",
       phone: "",
-      address: "",
       corporatename: "",
       corporateEmail: "",
       description: "",
@@ -290,6 +287,12 @@ export default {
       errorstatus: false,
       value: String,
       showPassword: String,
+      geocodeResult: null,
+      apiKey: "AIzaSyCuYRt4DvWiVVLzsBaR8fyuU_vRz9zCn9I",
+      address: "",
+      postal: "",
+      area: "",
+      district: "",
     };
   },
   computed: {
@@ -324,48 +327,156 @@ export default {
         this.password == this.confirmpassword
       );
     },
+    check(){
+        if(this.postal == ''){
+            return true
+        }
+        else{
+            return false
+        }
+    }
   },
   methods: {
     onRegister(role) {
-        console.log(role)
-        let name
-        let email
-        if(role == 'corporate'){
-            name = this.corporatename 
-            email = this.corporateEmail
-        }
-        else{
-            name = null
-            email = this.email
-        }
+      console.log(role);
+      let name;
+      let email;
+      if (role == "corporate") {
+        name = this.corporatename;
+        email = this.corporateEmail;
+      } else {
+        name = null;
+        email = this.email;
+      }
       axios
         .post("http://localhost:3001/register", {
           email: email,
           password: this.password,
           role: role,
-          name: name
+          name: name,
         })
         .then((response) => {
           const response_data = response.data;
           if (response_data.statusCode == "200") {
-            console.log(response_data.name)
-            this.$store.commit('access',{
-                accessToken: response_data.accessToken ,
-                uid: response_data.uid,
-                corporateName: response_data.name
-            })
-            this.$router.push('/')
+            console.log(response_data.name);
+            this.$store.commit("access", {
+              accessToken: response_data.accessToken,
+              uid: response_data.uid,
+              corporateName: response_data.name,
+              area: this.area
+            });
+
             // if function to push to sql db
+            if (role == "corporate") {
+              axios.post("http://localhost:8421/corporate", {
+                corporate_id: this.$store.uid,
+                email: this.corporateEmail,
+                name: this.corporatename,
+                description: this.description,
+              });
+            } else {
+              axios.post("http://localhost:8421/beneficiary"),
+                {
+                  beneficiary_id: this.$store.uid,
+                  email: this.email,
+                  username: this.username,
+                  phone: this.phone,
+                  //   address,
+                };
+            }
+
+            // end of sql db code
+
+            this.$router.push("/");
           } else {
             console.log("fail");
-            alert(`${response_data.authStatus},${response_data.errorMessage}`)
+            alert(`${response_data.authStatus},${response_data.errorMessage}`);
           }
-          console.log(this.$store.state.accessToken, this.$store.state.uid)
+          console.log(this.$store.state.accessToken, this.$store.state.uid);
         })
         .catch((error) => {
           console.log("error " + error);
         });
     },
+    loadGoogleMaps(apiKey) {
+      return new Promise((resolve, reject) => {
+        const script = document.createElement("script");
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`;
+        script.onload = () => {
+          resolve();
+        };
+        script.onerror = () => {
+          reject(new Error("Failed to load Google Maps API script"));
+        };
+        document.head.appendChild(script);
+      });
+    },
+    async initAutocomplete(apiKey) {
+      await this.loadGoogleMaps(apiKey);
+      const input = document.getElementById("autocomplete-input");
+      const autocomplete = new google.maps.places.Autocomplete(input);
+      // Set options for the autocomplete search box
+      autocomplete.setFields(["place_id", "formatted_address"]);
+      autocomplete.setTypes(["geocode"]);
+      // Listen for changes to the input field
+      autocomplete.addListener("place_changed", async () => {
+        autocomplete.getPlace();
+        // Use the getPlacePredictions() function to get more autocomplete results
+        const service = new google.maps.places.AutocompleteService();
+        const request = {
+          input: input.value,
+          types: ["geocode"],
+        };
+        try {
+          const results = await new Promise((resolve, reject) => {
+            service.getPlacePredictions(request, (results, status) => {
+              if (status === google.maps.places.PlacesServiceStatus.OK) {
+                resolve(results);
+              } else {
+                reject(status);
+              }
+            });
+          });
+          const address = results[0].description;
+          console.log(address);
+          this.geocodeResult = address; // parase address information to Vue
+        } catch (error) {
+          console.error(error);
+        }
+      });
+    },
+    async geocode() {
+      try {
+        const response = await fetch("http://localhost:3000/graphql", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify({
+            query: `query address($address: String!) {
+      address(address: $address) {
+        address
+        postal_code
+        area
+        district
+      }
+    }`,
+            variables: { address: this.geocodeResult },
+          }),
+        });
+        const data = await response.json();
+        this.postal = data.data.address.postal_code;
+        this.area = data.data.address.area;
+        this.district = data.data.address.district;
+        this.address = data.data.address.address;
+      } catch (error) {
+        alert('Please enter an address with a valid postal code')
+    }
+    },
+  },
+  mounted() {
+    this.initAutocomplete(this.apiKey, this);
   },
 };
 </script>
