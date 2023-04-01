@@ -11,9 +11,7 @@
   <v-img cover :src="require('../assets/BlackCat.png')" class="mx-auto" contain
   @click="$emit('gotoListing')"/>
   
-  <v-card-item>
-    <v-card-title class="">{{aListing.name}}</v-card-title>
-  </v-card-item>
+  <v-card-title class="">{{aListing.name}}</v-card-title>
   <v-divider class="mx-3 mb-1"></v-divider>
   <v-card-text> 
     <div class="text-subtitle-2 mb-2">

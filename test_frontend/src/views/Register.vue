@@ -350,7 +350,7 @@ export default {
         .then((response) => {
           const response_data = response.data;
           if (response_data.statusCode == "200") {
-            console.log(response_data.name);
+            // console.log(response_data.name);
             this.$store.commit("access", {
               accessToken: response_data.accessToken,
               uid: response_data.uid,
@@ -360,20 +360,31 @@ export default {
             // if function to push to sql db
             if (role == "corporate") {
               axios.post("http://localhost:8421/corporate", {
-                corporate_id: this.$store.uid,
+                corporate_id: this.$store.state.uid,
                 email: this.corporateEmail,
                 name: this.corporatename,
                 description: this.description,
               });
             } else {
+              // console.log("HAIZ")
+              // console.log(this.email)
+              // console.log(this.username)
+              // console.log(this.phone)
+              // console.log(this.address)
+              // console.log(this.postal)
+              // console.log(this.district)
               axios.post("http://localhost:8421/beneficiary"),
                 {
-                  beneficiary_id: this.$store.uid,
+                  beneficiary_id: this.$store.state.uid,
                   email: this.email,
                   username: this.username,
-                  phone: this.phone,
-                  //   address,
+                  phone: parseInt(this.phone),
+                  address: this.address,
+                  postal: parseInt(this.postal),
+                  district: parseInt(this.district),
+                  area: this.area
                 };
+                
             }
 
             // end of sql db code

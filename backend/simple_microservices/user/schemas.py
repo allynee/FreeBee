@@ -5,7 +5,7 @@ from pydantic import BaseModel
 ### BENEFICIARY ###
 
 class BeneficiaryBase(BaseModel):
-    beneficiary_id: int
+    beneficiary_id: str
     email: str
     username: str
     phone: Optional[int] = None
@@ -28,7 +28,7 @@ class BeneficiaryUpdate(BeneficiaryBase):
 ### CORPORATE ###
 
 class CorporateBase(BaseModel):
-    corporate_id: int
+    corporate_id: str
     email: str
     name: str
     description: Optional[str] = None
@@ -47,7 +47,7 @@ class CorporateUpdate(CorporateBase):
 ### PREFERENCE ###
 
 class PreferenceBase(BaseModel):
-    beneficiary_id: int
+    beneficiary_id: str
     category: str 
 
 class Preference(PreferenceBase):
@@ -65,8 +65,8 @@ class PreferenceUpdate(PreferenceBase):
 ### SUBSCRIPTION ###
 
 class SubscriptionBase(BaseModel):
-    beneficiary_id: int
-    corporate_id: int
+    beneficiary_id: str
+    corporate_id: str
 
 class Subscription(SubscriptionBase):
     class Config:
@@ -82,8 +82,8 @@ class SubscriptionUpdate(SubscriptionBase):
 ### FAVOURITE ###
 
 class FavouriteBase(BaseModel):
-    beneficiary_id: int
-    listing_id: int
+    beneficiary_id: str
+    listing_id: str
 
 class Favourite(FavouriteBase):
     class Config:

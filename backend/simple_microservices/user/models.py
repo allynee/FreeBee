@@ -10,7 +10,7 @@ from database import Base
 
 class Beneficiary(Base):
     __tablename__ = 'beneficiary'
-    beneficiary_id = Column(Integer, primary_key=True, index=True)
+    beneficiary_id = Column(String(200), primary_key=True, index=True)
     email = Column(String(50), nullable=False, index=True)
     username = Column(String(50), nullable=False, index=True)
     phone= Column(Integer, index=True)
@@ -25,28 +25,28 @@ class Beneficiary(Base):
 
 class Preference(Base):
     __tablename__ = 'preference'
-    beneficiary_id = Column(Integer, ForeignKey('beneficiary.beneficiary_id'), primary_key=True)
+    beneficiary_id = Column(String(200), ForeignKey('beneficiary.beneficiary_id'), primary_key=True)
     category = Column(String(50), primary_key=True, nullable=False, index=True)
 
     beneficiary = relationship('Beneficiary', back_populates='preferences')
 
 class Subscription(Base):
     __tablename__ = 'subscription'
-    beneficiary_id = Column(Integer, ForeignKey('beneficiary.beneficiary_id'), primary_key=True)
-    corporate_id = Column(Integer, primary_key=True, nullable=False, index=True)
+    beneficiary_id = Column(String(200), ForeignKey('beneficiary.beneficiary_id'), primary_key=True)
+    corporate_id = Column(String(200), primary_key=True, nullable=False, index=True)
 
     beneficiary = relationship('Beneficiary', back_populates='subscriptions')
 
 class Favourite(Base):
     __tablename__ = 'favourite'
-    beneficiary_id = Column(Integer, ForeignKey('beneficiary.beneficiary_id'), primary_key=True)
-    listing_id = Column(Integer, primary_key=True, index=True)
+    beneficiary_id = Column(String(200), ForeignKey('beneficiary.beneficiary_id'), primary_key=True)
+    listing_id = Column(String(200), primary_key=True, index=True)
 
     beneficiary = relationship('Beneficiary', back_populates='favourites')
 
 class Corporate(Base):
     __tablename__ = 'corporate'
-    corporate_id = Column(Integer, primary_key=True, index=True)
+    corporate_id = Column(String(200), primary_key=True, index=True)
     email = Column(String(50), nullable=False, index=True)
     name = Column(String(50), nullable=False, index=True)
     description = Column(String(1000), index=True)
