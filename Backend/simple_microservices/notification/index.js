@@ -27,13 +27,14 @@ app.get('/sendmail/:email?', async (req, res) => {
     // console.log(req.params)
     // console.log(req.params.email)
     if (req.body != null && req.body != undefined && req.body != '' && req.body != ' ' && req.body != {}){
-        console.log("sending mail " + req.body.email)
+        console.log("sending mail ")
+        console.log(req.body)
         email = req.body.email
         subject = req.body.subject
         message = req.body.message
         try {
             // This tries to send the email
-            const result = await mail.sendMail(email, subject, message);
+            const result = await mail.sendingMail(email, subject, message);
             console.log(result)
             // res.status(200).send('ITS OKAY!!')
             // If the email sending is successful, it will return a string

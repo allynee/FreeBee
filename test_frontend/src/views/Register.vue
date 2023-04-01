@@ -18,7 +18,7 @@
         <v-tabs-items v-model="tab">
           <v-tab-item :value="0">
             <v-card-text>
-              <form @submit.prevent="onRegister('corporate')">
+              <form @submit.prevent="onRegister('beneficiary')">
                 <v-container>
                   <v-text-field
                     outlined
@@ -120,7 +120,6 @@
                     block
                     brown
                     outlined
-                    :disabled="!formIsValid"
                     :loading="loading"
                   >
                     Register
@@ -153,7 +152,7 @@
 
           <v-tab-item :value="1">
             <v-card-text>
-              <form @submit.prevent="onRegister('beneficiary')">
+              <form @submit.prevent="onRegister('corporate')">
                 <v-container>
                   <v-text-field
                     outlined
@@ -227,7 +226,6 @@
                     block
                     brown
                     outlined
-                    :disabled="!formIsValid"
                     :loading="loading"
                     
                   >
@@ -326,27 +324,32 @@ export default {
     onRegister(role) {
         console.log(role)
         let name
+        let email
         if(role == 'corporate'){
             name = this.corporatename 
+            email = this.corporateEmail
         }
         else{
-            name = this.username
+            name = null
+            email = this.email
         }
       axios
         .post("http://localhost:3001/register", {
-          email: this.email,
+          email: email,
           password: this.password,
           role: role,
-          name:name
+          name: name
         })
         .then((response) => {
           const response_data = response.data;
           if (response_data.statusCode == "200") {
+            console.log(response_data.name)
             this.$store.commit('access',{
                 accessToken: response_data.accessToken ,
                 uid: response_data.uid,
-                corporateName: this.corporateName
+                corporateName: response_data.name
             })
+            this.$router.push('/')
             // if function to push to sql db
           } else {
             console.log("fail");
