@@ -211,7 +211,6 @@ def processViewTransactions(user_id):
 def processDeleteTransaction(transaction_id):
     pass
 
-
 def authenticateUser(token_input):
     print('\n-----Authenticating user-----')
     authentication_URL_full = authentication_URL + token_input #need to get token from the front-end, currently HARDCODED

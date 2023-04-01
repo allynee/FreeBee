@@ -8,7 +8,13 @@
 # app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
 # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+
+
 import pika
+import json
+from invokes import invoke_http
+
+notification_URL = "http://localhost:5001/"
 
 # These module-level variables are initialized whenever a new instance of python interpreter imports the module;
 # In each instance of python interpreter (i.e., a program run), the same module is only imported once (guaranteed by the interpreter).
@@ -28,60 +34,80 @@ connection = pika.BlockingConnection(
     # For rare cases, it's incompatibility between RabbitMQ and the machine running it,
     # - Use the Docker version of RabbitMQ instead: https://www.rabbitmq.com/download.html
 channel = connection.channel()
+# channel2 = connection.channel()
+# channel3 = connection.channel()
+# channel4 = connection.channel()
+
 # Set up the exchange if the exchange doesn't exist
 # - use a 'topic' exchange to enable interaction
-exchangename="transaction_topic"
-exchangetype="topic"
+exchangename="Notification_topic"
+exchangetype="fanout"
 channel.exchange_declare(exchange=exchangename, exchange_type=exchangetype, durable=True)
     # 'durable' makes the exchange survive broker restarts
 
 # Here can be a place to set up all queues needed by the microservices,
 # - instead of setting up the queues using RabbitMQ UI.
 
-############   Cancel queue   #############
-#delcare Cancel queue
-queue_name = 'Cancel'
+############   notification queue   #############
+#delcare notification queue
+queue_name = 'notification'
 channel.queue_declare(queue=queue_name, durable=True) 
     # 'durable' makes the queue survive broker restarts
 
 #bind Subscription queue
-channel.queue_bind(exchange=exchangename, queue=queue_name, routing_key='#.cancel') 
+channel.queue_bind(exchange=exchangename, queue=queue_name, routing_key='#.notif') 
     # bind the queue to the exchange via the key
-    # any routing_key ending with '.cancel' will be matched
+    # any routing_key ending with '.notif' will be matched
+
+print(" amqp_setup.py: Done declaring and binding queues")
 
 
-############   Subscription queue   #############
-#delcare Subscription queue
-queue_name = 'Subscription'
-channel.queue_declare(queue=queue_name, durable=True) 
-    # 'durable' makes the queue survive broker restarts
 
-#bind Subscription queue
-channel.queue_bind(exchange=exchangename, queue=queue_name, routing_key='#.subscribers') 
-    # bind the queue to the exchange via the key
-    # any routing_key ending with '.subscribers' will be matched
 
-############   Company queue   #############
-#delcare company queue
-queue_name = 'ToCompany'
-channel.queue_declare(queue=queue_name, durable=True) 
-    # 'durable' makes the queue survive broker restarts
+# ############   Cancel queue   #############
+# #delcare Cancel queue
+# queue_name = 'Cancel'
+# channel.queue_declare(queue=queue_name, durable=True) 
+#     # 'durable' makes the queue survive broker restarts
 
-#bind Subscription queue
-channel.queue_bind(exchange=exchangename, queue=queue_name, routing_key='#.company') 
-    # bind the queue to the exchange via the key
-    # any routing_key ending with '.subscribers' will be matched
+# #bind Subscription queue
+# channel.queue_bind(exchange=exchangename, queue=queue_name, routing_key='#.cancel') 
+#     # bind the queue to the exchange via the key
+#     # any routing_key ending with '.cancel' will be matched
+
+
+# ############   Subscription queue   #############
+# #delcare Subscription queue
+# queue_name = 'Subscription'
+# channel.queue_declare(queue=queue_name, durable=True) 
+#     # 'durable' makes the queue survive broker restarts
+
+# #bind Subscription queue
+# channel.queue_bind(exchange=exchangename, queue=queue_name, routing_key='#.subscribers') 
+#     # bind the queue to the exchange via the key
+#     # any routing_key ending with '.subscribers' will be matched
+
+# ############   Company queue   #############
+# #delcare company queue
+# queue_name = 'ToCompany'
+# channel.queue_declare(queue=queue_name, durable=True) 
+#     # 'durable' makes the queue survive broker restarts
+
+# #bind Subscription queue
+# channel.queue_bind(exchange=exchangename, queue=queue_name, routing_key='#.company') 
+#     # bind the queue to the exchange via the key
+#     # any routing_key ending with '.subscribers' will be matched
     
-############   Beneficiary queue   #############
-#delcare ToBeneficiary queue
-queue_name = 'ToBeneficiary'
-channel.queue_declare(queue=queue_name, durable=True) 
-    # 'durable' makes the queue survive broker restarts
+# ############   Beneficiary queue   #############
+# #delcare ToBeneficiary queue
+# queue_name = 'ToBeneficiary'
+# channel.queue_declare(queue=queue_name, durable=True) 
+#     # 'durable' makes the queue survive broker restarts
 
-#bind ToBeneficiary queue
-channel.queue_bind(exchange=exchangename, queue=queue_name, routing_key='#.beneficiary') 
-    # bind the queue to the exchange via the key
-    # any routing_key ending with '.subscribers' will be matched
+# #bind ToBeneficiary queue
+# channel.queue_bind(exchange=exchangename, queue=queue_name, routing_key='#.beneficiary') 
+#     # bind the queue to the exchange via the key
+#     # any routing_key ending with '.subscribers' will be matched
 
     
 
