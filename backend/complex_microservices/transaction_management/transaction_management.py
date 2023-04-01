@@ -130,25 +130,24 @@ def processCreateTransaction(listing, beneficiary_id, quantityDeducted, token):
     authentication_result = authenticateUser(token) 
     if authentication_result["statusCode"] == '200':
         if (authentication_result['role'] == "beneficiary"):
+            
             # 3. Create the transaction info
             transaction = {
                 "listing_id": listing_id,
                 "corporate_id": corporate_id,
                 "beneficiary_id": beneficiary_id,
                 "status": "In Progress",
-                "quantity": quantityDeducted
+                "quantity": int(quantityDeducted)
             }
-
             #4. Check that beneficiary can deduct quantity requested from listing
             #4a. Get existing listing details
             # listing_URL_full = listing_URL + "/" + str(listing_id)
             # listing_result = invoke_http(listing_URL_full, method='GET', json=None)
             # print('listing_result:', listing_result)
-            existing_quantity = listing["quantity"]
+            existing_quantity = int(listing["quantity"])
             #4b. Deduct quantity from  listing
-            new_quantity = existing_quantity - quantityDeducted
+            new_quantity = existing_quantity - int(quantityDeducted)
             new_listing = {"quantity": new_quantity}
-
             if new_quantity >= 0: #if sufficient quantity
                 print('\n-----Updating listing-----')
                 listing_URL_full = listing_URL + "/" + str(listing_id)
