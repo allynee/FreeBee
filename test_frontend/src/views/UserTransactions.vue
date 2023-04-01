@@ -67,16 +67,16 @@
             const transaction_URL = 'http://localhost:9000/transactions'
             axios.get(transaction_URL).then((response) => {
                 response.data.forEach((transaction) => {
-                    if (transaction.status == 'inProgress') {
+                    if (transaction.status == 'In Progress') {
                         this.inProgressArray.push(transaction)
                     }
-                    else if (transaction.status == 'ready') {
+                    else if (transaction.status == 'Ready for Collection') {
                         this.readyArray.push(transaction)
                     }
-                    else if (transaction.status == 'completed') {
+                    else if (transaction.status == 'Completed') {
                         this.completedArray.push(transaction)
                     }
-                    else if (transaction.status == 'cancelled') {
+                    else if (transaction.status == 'Cancelled') {
                         this.cancelledArray.push(transaction)
                     }
                 })
