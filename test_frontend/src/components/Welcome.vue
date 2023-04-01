@@ -1,7 +1,17 @@
 <!-- Welcome page -->
 
 <template>
+<!-- loading bee -->
+  <div v-if="loaded">
+    <v-row justify="center" class="my-15">
+      <v-col cols="12" align="center" data-aos="fade-left">
+        <video-background :src="require(`@/assets/bee.mp4`)" style="height: 250px; width: 180px">
+        </video-background>
+      </v-col>
+    </v-row>
+  </div>
   <!-- First Segment -->
+<div v-else>
   <div class="white darken-3">
     <div class="py-5">
       <v-row class="my-15 justify-center">
@@ -12,6 +22,8 @@
           >
           </video-background>
         </span>
+
+
         <h1
           class="text-md-h3 text-sm-h2 grey--text text--darken-4 font-weight-light justify-center"
           data-aos="fade-down"
@@ -29,6 +41,7 @@
       <v-row class="my-15">
         <SearchBar></SearchBar>
       </v-row>
+      
     </div>
 
     <div class="mx-15 px-15">
@@ -51,14 +64,18 @@
       <v-row class="">
         <h1 class="text-h4 grey--text text--darken-3">Recommended for you</h1>
       </v-row>
-
-
+      <v-row class="my-15">
+        <v-col cols="12" md="4" lg="3" v-for="aListing in recListingsArray.slice(0,4)" :key="aListing.listing_id">
+          <Listing :aListing="aListing" @gotoListing="gotoListing(aListing.listing_id)"></Listing>
+        </v-col>
+      </v-row>
+<!-- 
       <v-row justify="center" class="my-15">
         <v-col cols="12" align="center" data-aos="fade-left">
           <video-background :src="require(`@/assets/bee.mp4`)" style="height: 250px; width: 180px">
           </video-background>
         </v-col>
-      </v-row>
+      </v-row> -->
 
       <v-row class="">
         <h1 class="text-h4 grey--text text--darken-3">All FreeBees</h1>
@@ -84,7 +101,9 @@
     >
       <v-icon>mdi-chevron-up</v-icon>
     </v-btn> -->
+
   </div>
+</div>
 </template>
 
 <script>
@@ -101,7 +120,7 @@ export default {
         });
         console.log(this.$store.getters.getAccessToken)
         console.log(this.$store.state)
-  },
+  },  
   data(){
     return{
     fab: false,
@@ -116,6 +135,8 @@ export default {
       //listings array retrieved from MS:
       categories: ["Food and Beverage",""],
       allListingsArray:[],
+      recListingsArray:[],
+      loaded: true,
   };
   },
 
@@ -123,15 +144,24 @@ export default {
 
   methods:{
     async fetchListings() {
-        const listing_URL = 'http://0.0.0.0:8000/listing'
+        const listing_URL = 'http://localhost:8000/listing'
         axios.get(listing_URL).then((response) => {
           // console.log("hello")
           // console.log(response.data)
           response.data.forEach(element => {
             // console.log("An ELeemnt")
             // console.log(element)
-            this.allListingsArray.push(element)
+            if (element.status == "Available"){ //
+              this.allListingsArray.push(element)
+            }
+            console.log(this.$store.state.area)
+            let rec_area = "string" //suppose to be this.$store.state.area
+            if (element.area == rec_area){
+              this.recListingsArray.push(element)
+            }
+
           });
+        console.log(this.allListingsArray)
         })
         // console.log(this.allListingsArray)
 
@@ -151,6 +181,10 @@ export default {
   },
   created(){
     this.fetchListings()
+    setTimeout(() => {
+      this.loaded = false
+      console.log(this.loaded)
+    }, 2000)
   }
 } 
 </script>
