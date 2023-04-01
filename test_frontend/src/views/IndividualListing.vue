@@ -18,26 +18,37 @@
                 <v-tab class="amber lighten-2">Collection Location</v-tab>
             </v-tabs>
 
-            <v-tabs-items v-model="tab" class="rounded-lg pa-5 amber lighten-5">
-                <v-tab-item :value="0">
+            <v-tabs-items v-model="tab" class="rounded-lg pa-3 amber lighten-5">
+                <v-tab-item :value="0"> 
+                <v-row>
+                    <v-col cols="7">
                     <span class="text-h6 font-weight-medium grey--text text--darken-3">
                         Corporate Name: 
                     </span>
-                    <span class="text-h6 font-weight-light grey--text text--darken-3 mr-10">
+                    <span class="text-h6 font-weight-light grey--text text--darken-3">
                         {{ listing.corporate_name }}
                     </span>
-                    <span class="ml-15 pl-15">
-                        <v-btn small class="amber lighten-4 ml-2" depressed outlined @click="subscribe">
+                    </v-col>
+                    <v-col cols="5">
+                    <span class="">
+                        <v-btn small class="amber lighten-4" depressed outlined @click="subscribe">
                             <v-icon left small>mdi-bell</v-icon>
-                            Subscribe to {{ listing.corporate_name }}
+                            Subscribe to company
                         </v-btn>
                     </span>
-                    <h1 class="text-h6 font-weight-medium grey--text text--darken-3 mt-3 mb-1">
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col cols="12">
+                    <span class="text-h6 font-weight-medium grey--text text--darken-3 mt-3 mb-1">
                         Description:
-                    </h1>
-                    <h1 class="text-body-1 font-weight-light grey--text text--darken-3">
+                    </span>
+                    <span class="text-h6 font-weight-light grey--text text--darken-3">
                         {{listing.description}}
-                    </h1>
+                    </span>
+                    </v-col>
+                </v-row>
+                    
                 </v-tab-item>
                 <v-tab-item :value="1">
                     <span class="text-h6 font-weight-medium grey--text text--darken-3">
