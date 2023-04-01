@@ -125,7 +125,14 @@
                 </span>
 
                 <v-container>
-                  <v-btn type="submit" block brown outlined :loading="loading" :disabled="check">
+                  <v-btn
+                    type="submit"
+                    block
+                    brown
+                    outlined
+                    :loading="loading"
+                    :disabled="check"
+                  >
                     Register
                     <!-- button loader -->
                     <template v-slot:loader>
@@ -327,14 +334,13 @@ export default {
         this.password == this.confirmpassword
       );
     },
-    check(){
-        if(this.postal == ''){
-            return true
-        }
-        else{
-            return false
-        }
-    }
+    check() {
+      if (this.postal == "") {
+        return true;
+      } else {
+        return false;
+      }
+    },
   },
   methods: {
     onRegister(role) {
@@ -363,7 +369,7 @@ export default {
               accessToken: response_data.accessToken,
               uid: response_data.uid,
               corporateName: response_data.name,
-              area: this.area
+              area: this.area,
             });
 
             // if function to push to sql db
@@ -382,18 +388,16 @@ export default {
               // console.log(this.address)
               // console.log(this.postal)
               // console.log(this.district)
-              axios.post("http://localhost:8421/beneficiary"),
-                {
-                  beneficiary_id: this.$store.state.uid,
-                  email: this.email,
-                  username: this.username,
-                  phone: parseInt(this.phone),
-                  address: this.address,
-                  postal: parseInt(this.postal),
-                  district: parseInt(this.district),
-                  area: this.area
-                };
-                
+              axios.post("http://localhost:8421/beneficiary", {
+                beneficiary_id: this.$store.state.uid,
+                email: this.email,
+                username: this.username,
+                phone: parseInt(this.phone),
+                address: this.address,
+                postal: parseInt(this.postal),
+                district: parseInt(this.district),
+                area: this.area,
+              });
             }
 
             // end of sql db code
@@ -482,8 +486,8 @@ export default {
         this.district = data.data.address.district;
         this.address = data.data.address.address;
       } catch (error) {
-        alert('Please enter an address with a valid postal code')
-    }
+        alert("Please enter an address with a valid postal code");
+      }
     },
   },
   mounted() {
