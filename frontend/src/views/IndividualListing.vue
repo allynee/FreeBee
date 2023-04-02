@@ -80,7 +80,7 @@
               <v-tab-item :value="1">
                 <span
                   class="text-h6 font-weight-medium grey--text text--darken-3"
-                >
+                > 
                   Address:
                 </span>
                 <span class="text-h6 font-weight-light">
