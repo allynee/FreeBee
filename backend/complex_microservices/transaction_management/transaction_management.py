@@ -243,14 +243,14 @@ def processUpdateTransaction(transaction, listing, token, status):
             print(f"sending message: {message} to 'cancel'")
 
         #4c. If items are Ready to Collect
-        if transaction_result["status"] == "Ready to Collect":
+        if transaction_result["status"] != "Cancelled":
             obj = {
                 "purpose": "toBeneficiary",
                 "listing_result": listing,
                 "transaction_result": transaction
             }
             message = json.dumps(obj)
-            amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="ready.notif", 
+            amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="change.notif", 
                 body=message, properties=pika.BasicProperties(delivery_mode = 2))
             print(f"sending message: {message} to 'collect'")
 
