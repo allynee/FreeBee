@@ -26,12 +26,6 @@
                         <span class="text-h6 font-weight-light grey--text text--darken-3 mr-10">
                             Starbucks
                         </span>
-                        <span class="ml-15 pl-15">
-                            <v-btn small class="amber lighten-4 ml-2" depressed outlined @click="subscribe">
-                                <v-icon left small>mdi-pencil-outline</v-icon>
-                                Edit Listing
-                            </v-btn>
-                        </span>
                         <h1 class="text-h6 font-weight-medium grey--text text--darken-3 mt-3 mb-1">
                             Description:
                         </h1>
@@ -63,6 +57,19 @@
                         Quantity: hehe
                     </h1>
                 </div>
+                <span class="ml-15 pl-15">
+                    <v-col>
+                                    <v-btn small class="amber lighten-4 ml-2" depressed outlined @click="subscribe">
+                                        <v-icon left small>mdi-pencil-outline</v-icon>
+                                        Edit Listing
+                                    </v-btn>
+                                
+                                    <v-btn small class="amber lighten-4 ml-2" depressed outlined @click="subscribe">
+                                        <v-icon left small>mdi-delete-empty</v-icon>
+                                        Delete Listing
+                                    </v-btn>
+                                </v-col>
+                        </span>
             </v-col>
         </v-row>
         </div>
