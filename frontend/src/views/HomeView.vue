@@ -1,19 +1,19 @@
 <template>
-  <Welcome/>
+  <Corporate v-if="this.$store.state.corporateName" />
+
+  <Welcome v-else />
 </template>
 
 <script>
-  import Welcome from '../components/Welcome'
+import Welcome from "../components/Welcome";
+import Corporate from "../views/CorporateHomePage";
+export default {
+  name: "Home",
 
-  export default {
-    name: 'Home',
-
-    components: {
-      Welcome,
-    },
-    mounted(){
-      console.log(document.cookie)
-      console.log('first')
-    }
-  }
+  components: {
+    Welcome,
+    Corporate,
+  },
+  mounted() {},
+};
 </script>
