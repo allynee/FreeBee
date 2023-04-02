@@ -22,7 +22,7 @@
         <v-row> Change status to: </v-row>
         <v-row>
           <v-select
-            style="margin-left: 15px; margin-right: 15px"
+            style="margin-right: 15px; max-width:300px"
             outlined
             rounded
             name="status"
@@ -32,6 +32,9 @@
             :items="myStatuses"
           >
           </v-select>
+          <v-btn color="amber lighten-3" style="margin-top: 10px;" >
+            Update Status
+          </v-btn>
         </v-row>
         <v-row
           v-for="transaction in transactions"

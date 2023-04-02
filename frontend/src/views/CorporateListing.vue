@@ -25,6 +25,38 @@
             Posted on: {{ this.listing.created.split('T')[0] }}
           </h1>
           <br />
+          <v-container style="margin-bottom: 15px;" >
+            <v-row>
+              <v-btn
+                class="amber lighten-4 ml-2"
+                depressed
+                outlined
+                @click="gotoTransactions"
+              >
+                <v-icon left small>mdi-account-multiple</v-icon>
+                View Beneficiaries
+              </v-btn>
+              <v-btn
+                class="amber lighten-4 ml-2"
+                depressed
+                outlined
+                @click="subscribe"
+              >
+                <v-icon left small>mdi-pencil-outline</v-icon>
+                Edit Listing
+              </v-btn>
+
+              <v-btn
+                class="amber lighten-4 ml-2"
+                depressed
+                outlined
+                @click="subscribe"
+              >
+                <v-icon left small>mdi-delete-empty</v-icon>
+                Delete Listing
+              </v-btn>
+            </v-row>
+          </v-container>
           <!-- v tabs -->
           <div class="">
             <v-tabs v-model="tab" grow class="rounded-lg">
@@ -69,41 +101,6 @@
               Quantity: {{ this.listing.quantity }}
             </h1>
           </div>
-          <span class="ml-15 pl-15">
-            <v-col>
-              <v-btn
-                small
-                class="amber lighten-4 ml-2"
-                depressed
-                outlined
-                @click="gotoTransactions"
-              >
-                <v-icon left small>mdi-account-multiple</v-icon>
-                View Beneficiaries
-              </v-btn>
-              <v-btn
-                small
-                class="amber lighten-4 ml-2"
-                depressed
-                outlined
-                @click="subscribe"
-              >
-                <v-icon left small>mdi-pencil-outline</v-icon>
-                Edit Listing
-              </v-btn>
-
-              <v-btn
-                small
-                class="amber lighten-4 ml-2"
-                depressed
-                outlined
-                @click="subscribe"
-              >
-                <v-icon left small>mdi-delete-empty</v-icon>
-                Delete Listing
-              </v-btn>
-            </v-col>
-          </span>
         </v-col>
       </v-row>
     </div>
@@ -124,7 +121,7 @@ export default {
   methods: {
     async fetchListing() {
       const listing_URL =
-        "http://0.0.0.0:8000/listing/" + this.$route.params.listingid;
+        "http://localhost:8000/listing/" + this.$route.params.listingid;
       axios
         .get(listing_URL)
         .then((response) => {
