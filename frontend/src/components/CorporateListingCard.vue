@@ -13,7 +13,7 @@
        </v-btn> -->
       </v-card-actions>
     
-      <v-img cover :src="require('../assets/pigbee.jpg')" class="mx-auto"/>
+      <v-img cover style="max-height: 200px;" :src="require('../assets/pigbee.jpg')" class="mx-auto"/>
       
       <v-card-title class="">Listing Name</v-card-title>
       <v-divider class="mx-3 mb-1"></v-divider>
