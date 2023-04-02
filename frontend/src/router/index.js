@@ -18,6 +18,7 @@ import UserTransactions from "../views/UserTransactions.vue";
 import SubscribedListings from "../views/SubscribedListings.vue";
 import CorporateTransactions from "../views/CorporateTransactions.vue";
 import CorporateListing from "../views/CorporateListing.vue";
+import CorporateHomePage from "../views/CorporateHomePage.vue";
 
 import IndividualListing from "../views/IndividualListing.vue";
 
@@ -123,6 +124,11 @@ const routes = [
     path: "/corporatelisting",
     name: "Corporate Listing",
     component: CorporateListing,
+  },
+  {
+    path: "/corporatehomepage",
+    name: "Corporate Homepage",
+    component: CorporateHomePage,
   }
 ];
 
