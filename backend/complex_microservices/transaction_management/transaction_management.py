@@ -124,14 +124,14 @@ def view_transactions_beneficiary(beneficiary_id):
         "result":  results
     }
 
-@app.route("/transaction_management/corporate/<string:corporate_id>", methods=["GET"])
-def view_transactions_corp(corporate_id):
+@app.route("/transaction_management/corporate/<string:listing_id>", methods=["GET"]) #for corporate view of transactions associated with listings
+def view_transactions_corp(listing_id):
 
     results = []
 
-    #1. Retrieve transactions associated with corporate  
+    #1. Retrieve transactions associated with corporate's listing 
     print('\n-----Retrieving transactions-----')
-    transaction_URL_full = transaction_URL + f"/corporate/{corporate_id}"
+    transaction_URL_full = transaction_URL + f"/listing/{listing_id}"
     transaction_result = invoke_http(transaction_URL_full, method="GET", json=None)
     print('transaction_result:', transaction_result)
 
@@ -262,19 +262,6 @@ def processUpdateTransaction(transaction, listing, token, status):
         }
         listing_result = invoke_http(listing_URL_full, method="PUT", json=listing_update)
         print('listing_result:', listing_result)
-
-#create a function to display transactions associated with an id
-# def processViewTransactions(user_id):
-#     #2. Retrieve all transactions associated with user id, store status, ben id, corp id, listing id
-#     #2a. Retrieve if corporate
-#     #2b. Retrieve if beneficiary
-
-#     transactions = ["transaction 1"]
-
-#     #4. For each transaction
-#     for transaction in transactions:
-#         pass
-#     #4a. Retrieve associated listing & listing details
 
 
 def authenticateUser(token_input):
