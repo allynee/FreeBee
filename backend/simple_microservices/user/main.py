@@ -77,7 +77,7 @@ def get_all_corporates(skip: int = 0, limit: int = 100, db: Session = Depends(ge
 
 ### GET CORPORATE BASED ON CORPORATE ID ###
 @app.get('/corporate/{corporate_id}', response_model=schemas.Corporate)
-def get_corporate_by_id(corporate_id: int, db: Session = Depends(get_db)):
+def get_corporate_by_id(corporate_id: str, db: Session = Depends(get_db)):
     corporate = crud.get_corporate(db, corporate_id=corporate_id)
     if corporate is None:
         raise HTTPException(status_code=404, detail="Corporate does not exist.")
@@ -85,7 +85,7 @@ def get_corporate_by_id(corporate_id: int, db: Session = Depends(get_db)):
 
 ### GET BENEFICIARY BASED ON BENEFICIARY ID ###
 @app.get('/beneficiary/{beneficiary_id}', response_model=schemas.Beneficiary)
-def get_beneficiary_by_id(beneficiary_id: int, db: Session = Depends(get_db)):
+def get_beneficiary_by_id(beneficiary_id: str, db: Session = Depends(get_db)):
     beneficiary = crud.get_beneficiary(db, beneficiary_id=beneficiary_id)
     if beneficiary is None:
         raise HTTPException(status_code=404, detail="Beneficiary does not exist.")
@@ -93,7 +93,7 @@ def get_beneficiary_by_id(beneficiary_id: int, db: Session = Depends(get_db)):
 
 ### GET SUBSCRIBERS INFO BASED ON CORPORATE ID ###
 @app.get('/subscription/corporate/{corporate_id}', response_model=List[schemas.Beneficiary])
-def get_subscribers_by_corporate(corporate_id: int, db: Session = Depends(get_db), skip: int = 0, limit: int = 100,):
+def get_subscribers_by_corporate(corporate_id: str, db: Session = Depends(get_db), skip: int = 0, limit: int = 100,):
     subscriptions = crud.get_subscriptions_by_corporate(db, corporate_id=corporate_id, skip=skip,limit=limit)
     if subscriptions is None:
         raise HTTPException(status_code=404, detail="Corporate has no subscribers.")
@@ -108,6 +108,13 @@ def get_subscribers_by_corporate(corporate_id: int, db: Session = Depends(get_db
 
     return subscribers
 
+### GET FAVOURITE ###
+@app.get('/favourite', response_model=List[schemas.Favourite])
+def get_favourite(beneficiary_id: str, listing_id: str, db: Session = Depends(get_db)):
+    favourite = crud.get_favourite(db, beneficiary_id=beneficiary_id, listing_id=listing_id)
+    if favourite is None:
+        return False
+    return True
 
 
 

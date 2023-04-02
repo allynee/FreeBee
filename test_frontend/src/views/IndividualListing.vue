@@ -170,6 +170,7 @@ export default {
     async fetchListing() {
       const listing_URL =
         "http://0.0.0.0:8000/listing/" + this.$route.params.listingid;
+        console.log(listing_URL)
       axios
         .get(listing_URL)
         .then((response) => {

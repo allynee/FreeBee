@@ -10,8 +10,8 @@ from database import Base
 
 class Listing(Base):
     __tablename__ = 'listing'
-    listing_id = Column(Integer, primary_key=True, index=True)
-    corporate_id = Column(Integer, nullable=False, index=True)
+    listing_id = Column(String(200), primary_key=True, index=True)
+    corporate_id = Column(String(200), nullable=False, index=True)
     corporate_name = Column(String(50), nullable=False, index=True)
     name = Column(String(50), nullable=False)
     description = Column(String(1000), nullable=False)

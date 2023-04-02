@@ -3,8 +3,8 @@ from typing import Union, Optional
 from pydantic import BaseModel
 
 class ListingBase(BaseModel):
-    listing_id: int
-    corporate_id: int
+    listing_id: str
+    corporate_id: str
     corporate_name: str
     name: str
     description: Optional[str] = None

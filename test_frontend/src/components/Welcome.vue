@@ -89,18 +89,9 @@
   </div>
 
     <!-- scroll to top button -->
-    <!-- <v-btn
-      v-scroll="scroll"
-      v-show="fab"
-      fab
-      fixed
-      bottom
-      right
-      color="amber"
-      @click="toTop"
-    >
+    <v-btn v-scroll="onScroll" v-show="fab" fab fixed bottom right color="amber lighten-3" @click="toTop">
       <v-icon>mdi-chevron-up</v-icon>
-    </v-btn> -->
+    </v-btn>
 
   </div>
 </div>
@@ -146,15 +137,13 @@ export default {
     async fetchListings() {
         const listing_URL = 'http://localhost:8000/listing'
         axios.get(listing_URL).then((response) => {
-          // console.log("hello")
           // console.log(response.data)
           response.data.forEach(element => {
-            // console.log("An ELeemnt")
             // console.log(element)
             if (element.status == "Available"){ //
               this.allListingsArray.push(element)
             }
-            console.log(this.$store.state.area)
+            // console.log(this.$store.state.area)
             let rec_area = "string" //suppose to be this.$store.state.area
             if (element.area == rec_area){
               this.recListingsArray.push(element)
@@ -167,7 +156,7 @@ export default {
 
     },
     gotoListing(listing_id){
-      console.log("clicked")
+      // console.log("clicked")
       this.$router.push({ name: 'IndividualListing', params: {listingid: listing_id}})
     },
     onScroll (e) {

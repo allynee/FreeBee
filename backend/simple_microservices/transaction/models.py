@@ -11,9 +11,9 @@ from database import Base
 class Transaction(Base):
     __tablename__ = 'transaction'
     transaction_id = Column(Integer, primary_key=True, autoincrement=True, index=True)
-    listing_id = Column(Integer, nullable=False, index=True)
-    corporate_id = Column(Integer, nullable=False, index=True)
-    beneficiary_id = Column(Integer, nullable=False, index=True)
+    listing_id = Column(String(200), nullable=False, index=True)
+    corporate_id = Column(String(200), nullable=False, index=True)
+    beneficiary_id = Column(String(200), nullable=False, index=True)
     status = Column(String(50), nullable=False)
     quantity = Column(Integer, nullable=False, index=True)
     created = Column(DateTime(timezone=True), server_default=func.now())
