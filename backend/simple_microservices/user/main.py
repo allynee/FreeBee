@@ -61,7 +61,7 @@ def create_subscription(subscription: schemas.SubscriptionCreate, db: Session = 
     return crud.create_subscription(db, subscription=subscription)
 
 ### CREATE SINGLE FAVOURITE ###
-@app.post('/favourite', response_model=schemas.Favourite)
+@app.post('/favourite', response_model=schemas.Favourite, status_code=201)
 def create_favourite(favourite: schemas.FavouriteCreate, db: Session = Depends(get_db)):
     return crud.create_favourite(db, favourite=favourite)
 
@@ -109,20 +109,27 @@ def get_subscribers_by_corporate(corporate_id: str, db: Session = Depends(get_db
     return subscribers
 
 ### GET FAVOURITE ###
-@app.get('/favourite/{beneficiary_id}/{listing_id}', response_model=List[schemas.Favourite])
+@app.get('/favourite')
 # def recieveReq(request: Request):
 #     beneficiary_id = request.query_params.get('beneficiary_id')
 #     listing_id = request.query_params.get('listing_id')
 #     print(beneficiary_id, listing_id)
 #     # get_favourite(beneficiary_id=beneficiary_id, listing_id=listing_id)
-def get_favourite(beneficiary_id: str, listing_id: str, db: Session = Depends(get_db)):
-    print(beneficiary_id, listing_id)
+def get_favourite(beneficiary_id: str, listing_id:str, db: Session = Depends(get_db)):
+    # favourite = crud.get_favourite(db, favourite)
+    # beneficiary_id = request.query_params.get('beneficiary_id')
+    # listing_id = request.query_params.get('listing_id')
+    # print(beneficiary_id, listing_id)
     favourite = crud.get_favourite(db, beneficiary_id=beneficiary_id, listing_id=listing_id)
     if favourite is None:
         return False
     return True
 
-
+### DELETE STUFF!!! ###
+### DELETE SINGLE FAVOURITE###
+@app.delete('/favourite')
+def delete_favourite(favourite: schemas.Favourite, db: Session = Depends(get_db)):
+    return crud.delete_favourite(db, favourite=favourite)
 
 
 if __name__ == '__main__':

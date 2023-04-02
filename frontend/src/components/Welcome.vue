@@ -61,7 +61,8 @@
             v-for="category in myCategories"
             :key="category.title"
           >
-            <Category :title="category.title" :image="category.image">
+            <Category :title="category.title" :image="category.image" 
+            @chooseCat="chooseCat(category.title)">
             </Category>
           </v-col>
         </v-row>
@@ -100,7 +101,7 @@
             cols="12"
             md="4"
             lg="3"
-            v-for="aListing in allListingsArray"
+            v-for="aListing in filteredListings"
             :key="aListing.listing.listing_id"
           >
             <Listing
@@ -137,29 +138,40 @@ import axios from "axios";
 export default {
   name: "HelloWorld",
   mounted() {
-    AOS.init({
-      duration: 1600,
-    });
-    console.log(this.$store.getters.getAccessToken);
-    console.log(this.$store.state);
-  },
-  data() {
-    return {
-      fab: false,
-      myCategories: [
-        { title: "Food & Drinks", image: "Honey.png" },
-        { title: "Apparel", image: "yellowshirt.jpg" },
-        { title: "Electronics", image: "beeelectronic.jpg" },
-        { title: "Furniture", image: "beefurniture.jpg" },
-        { title: "Toys & Hobbies", image: "pigbee.jpg" },
-        { title: "Everything Else", image: "manybees.jpg" },
-      ],
+        AOS.init({
+            duration: 1600,
+        });
+        // console.log(this.$store.getters.getAccessToken)
+        // console.log(this.$store.state)
+  },  
+  data(){
+    return{
+    fab: false,
+    myCategories: [
+                { title: 'Food & Drinks', image: 'Honey.png' },
+                { title: 'Apparel', image: 'yellowshirt.jpg' },
+                { title: 'Electronics', image: 'beeelectronic.jpg' },
+                { title: 'Furniture', image: 'beefurniture.jpg' },
+                { title: 'Toys & Hobbies', image: 'pigbee.jpg' },
+                { title: 'Everything Else', image: 'manybees.jpg' },
+            ],
       //listings array retrieved from MS:
-      categories: ["Food and Beverage", ""],
       allListingsArray: [],
       recListingsArray: [],
+      filteredCategories: ['Food & Drinks', 'Apparel', 'Electronics', 'Furniture', 'Toys & Hobbies', 'Everything Else'],
       loaded: true,
     };
+  },
+  computed:{
+    filteredListings(){
+      return this.allListingsArray.filter(listing => {
+        if(this.filteredCategories.includes(listing.listing.category)){
+          return true
+        }else{
+          return false
+        }
+    })
+    },
   },
 
   components: { SearchBar, Category, Listing },
@@ -192,6 +204,14 @@ export default {
         params: { listingid: listing_id },
       });
     },
+    chooseCat(cat){
+      if(this.filteredCategories.length==1 && this.filteredCategories.includes(cat)){
+        this.filteredCategories = ['Food & Drinks', 'Apparel', 'Electronics', 'Furniture', 'Toys & Hobbies', 'Everything Else']
+      }else{
+        this.filteredCategories = []
+        this.filteredCategories.push(cat)
+      }
+    },
     onScroll(e) {
       if (typeof window === "undefined") return;
       const top = window.pageYOffset || e.target.scrollTop || 0;
@@ -200,13 +220,14 @@ export default {
     toTop() {
       this.$vuetify.goTo(0);
     },
+
   },
   created() {
     this.fetchListings();
     setTimeout(() => {
-      this.loaded = false;
-      console.log(this.loaded);
-    }, 1250);
-  },
-};
+      this.loaded = false
+      // console.log(this.loaded)
+    }, 1250)
+  }
+} 
 </script>

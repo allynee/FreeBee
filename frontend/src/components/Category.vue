@@ -1,6 +1,7 @@
 <template>
 <v-hover v-slot="{ hover }">
-    <v-card flat :elevation="hover ? 10 : 2" :class="{ 'on-hover': hover }" style="width:500px" outlined class="pa-1 pt-4"> 
+    <v-card flat :elevation="hover ? 10 : 2" :class="{ 'on-hover': hover }" style="width:500px" outlined class="pa-1 pt-4"
+    @click="$emit('chooseCat')"> 
         <v-img :src="require(`@/assets/${image}`)" class="mx-auto" height="150" width="150" contain/>
         <v-card-title class="justify-center">{{ title }}</v-card-title>
     </v-card>
@@ -9,6 +10,7 @@
 
 <script>
 export default {
+  emits:['chooseCat'],
   props: {
     title: String,
     image: String,

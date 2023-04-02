@@ -134,6 +134,9 @@ export const store = new Vuex.Store({
     getAccessToken(state) {
       return state.accessToken;
     },
+    getCorporateName(state) {
+      return state.corporateName;
+    },
   },
 });
 

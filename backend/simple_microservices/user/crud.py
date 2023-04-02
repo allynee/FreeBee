@@ -118,7 +118,7 @@ def delete_subscription(db: Session, beneficiary_id: str, corporate_id: str):
         }
 
 ### FAVOURITE TABLE ###
-def get_favourite(db: Session, beneficiary_id: int, listing_id: int):
+def get_favourite(db: Session, beneficiary_id: str, listing_id: str):
     return db.query(models.Favourite).filter(models.Favourite.beneficiary_id == beneficiary_id,
                                             models.Favourite.listing_id == listing_id).first()
     
@@ -132,9 +132,9 @@ def create_favourite(db: Session, favourite: schemas.FavouriteCreate):
     db.refresh(favourite)
     return favourite
 
-def delete_favourite(db: Session, beneficiary_id: str, listing_id: str):
-    favourite = db.query(models.Favourite).filter(models.Favourite.beneficiary_id == beneficiary_id,
-                                                  models.Favourite.listing_id == listing_id).first()
+def delete_favourite(db: Session, favourite:schemas.Favourite):
+    favourite = db.query(models.Favourite).filter(models.Favourite.beneficiary_id == favourite.beneficiary_id,
+                                                  models.Favourite.listing_id == favourite.listing_id).first()
 
     if not favourite: 
         # return{
