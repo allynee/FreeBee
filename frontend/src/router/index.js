@@ -116,12 +116,12 @@ const routes = [
     component: SubscribedListings,
   },
   {
-    path: "/corporatetransactions",
+    path: "/corporatetransactions/:listingid",
     name: "Corporate Transactions",
     component: CorporateTransactions,
   },
   {
-    path: "/corporatelisting",
+    path: "/corporatelisting/:listingid",
     name: "Corporate Listing",
     component: CorporateListing,
   },
