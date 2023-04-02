@@ -61,7 +61,8 @@
             v-for="category in myCategories"
             :key="category.title"
           >
-            <Category :title="category.title" :image="category.image">
+            <Category :title="category.title" :image="category.image" 
+            @chooseCat="chooseCat(category.title)">
             </Category>
           </v-col>
         </v-row>
@@ -100,7 +101,7 @@
             cols="12"
             md="4"
             lg="3"
-            v-for="aListing in allListingsArray"
+            v-for="aListing in filteredListings"
             :key="aListing.listing.listing_id"
           >
             <Listing
@@ -155,11 +156,22 @@ export default {
                 { title: 'Everything Else', image: 'manybees.jpg' },
             ],
       //listings array retrieved from MS:
-      categories: ["Food and Beverage", ""],
       allListingsArray: [],
       recListingsArray: [],
+      filteredCategories: ['Food & Drinks', 'Apparel', 'Electronics', 'Furniture', 'Toys & Hobbies', 'Everything Else'],
       loaded: true,
     };
+  },
+  computed:{
+    filteredListings(){
+      return this.allListingsArray.filter(listing => {
+        if(this.filteredCategories.includes(listing.listing.category)){
+          return true
+        }else{
+          return false
+        }
+    })
+    },
   },
 
   components: { SearchBar, Category, Listing },
@@ -192,6 +204,10 @@ export default {
         params: { listingid: listing_id },
       });
     },
+    chooseCat(cat){
+      this.filteredCategories = []
+      this.filteredCategories.push(cat)
+    },
     onScroll(e) {
       if (typeof window === "undefined") return;
       const top = window.pageYOffset || e.target.scrollTop || 0;
@@ -200,6 +216,7 @@ export default {
     toTop() {
       this.$vuetify.goTo(0);
     },
+
   },
   created() {
     this.fetchListings();

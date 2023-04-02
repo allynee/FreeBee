@@ -20,7 +20,8 @@
         <v-app-bar-title class="text-no-wrap">
           <div>
             <span class="font-weight-regular">Free</span>
-            <span class="font-weight-bold">Bee! CORPORATE</span>
+            <span class="font-weight-bold">Bee!</span>
+            <span class="font-weight-light"> CORPORATE</span>
           </div>
         </v-app-bar-title>
       </v-btn>
