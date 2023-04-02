@@ -205,8 +205,12 @@ export default {
       });
     },
     chooseCat(cat){
-      this.filteredCategories = []
-      this.filteredCategories.push(cat)
+      if(this.filteredCategories.length==1 && this.filteredCategories.includes(cat)){
+        this.filteredCategories = ['Food & Drinks', 'Apparel', 'Electronics', 'Furniture', 'Toys & Hobbies', 'Everything Else']
+      }else{
+        this.filteredCategories = []
+        this.filteredCategories.push(cat)
+      }
     },
     onScroll(e) {
       if (typeof window === "undefined") return;
