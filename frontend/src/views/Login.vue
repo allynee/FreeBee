@@ -86,6 +86,9 @@
             </v-flex>
           </v-layout>
         </form>
+        <v-row>
+          Don't have an account ? Register&nbsp;<a href="/register" clickable> here</a> 
+        </v-row>
       </v-container>
       <!-- </v-card-text>
                 </v-card>  -->

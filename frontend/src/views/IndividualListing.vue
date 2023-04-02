@@ -8,7 +8,7 @@
             style="width: 450px; height: 450px"
           >
             <v-img
-              :src=this.image
+              :src="this.image"
               class="rounded-circle"
               style="height: 425px; width: 425px"
             ></v-img>
@@ -165,20 +165,19 @@ export default {
       tab: null,
       listing: null,
       quantity: 0,
-      image:null
+      image: null,
     };
   },
   methods: {
     async fetchListing() {
       const listing_URL =
         "http://0.0.0.0:8000/listing/" + this.$route.params.listingid;
-        console.log(listing_URL)
+      console.log(listing_URL);
       axios
         .get(listing_URL)
         .then((response) => {
           this.listing = response.data;
-          this.image = `https://firebasestorage.googleapis.com/v0/b/esdeeznutz.appspot.com/o/listings%2F${this.listing.listing_id}${this.listing.img_ext}?alt=media&token=d96a1b6f-e4a2-42d1-a06b-c9331d4490a4`
-
+          this.image = `https://firebasestorage.googleapis.com/v0/b/esdeeznutz.appspot.com/o/listings%2F${this.listing.listing_id}${this.listing.img_ext}?alt=media&token=d96a1b6f-e4a2-42d1-a06b-c9331d4490a4`;
         })
         .catch((exception) => {
           console.log(exception);
@@ -188,21 +187,25 @@ export default {
       if (this.quantity == 0) {
         return "No";
       } else {
-        const transactionManagement_URL =
-          "http://localhost:5100/transaction_management";
-        axios
-          .post(transactionManagement_URL, {
-            listing: this.listing,
-            beneficiary_id: this.$store.state.uid,
-            token: this.$store.state.accessToken,
-            quantity: this.quantity,
-          })
-          .then((response) => {
-            if(response.data[0].code == 200){
-                alert('Claim Successful !')
-                this.$router.push('/')
-            }
-          });
+        if (this.$store.state.accessToken) {
+          const transactionManagement_URL =
+            "http://localhost:5100/transaction_management";
+          axios
+            .post(transactionManagement_URL, {
+              listing: this.listing,
+              beneficiary_id: this.$store.state.uid,
+              token: this.$store.state.accessToken,
+              quantity: this.quantity,
+            })
+            .then((response) => {
+              if (response.data[0].code == 200) {
+                alert("Claim Successful !");
+                this.$router.push("/");
+              }
+            });
+        } else {
+          this.$router.push("/login");
+        }
       }
     },
     subscribe() {
