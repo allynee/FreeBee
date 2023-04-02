@@ -191,7 +191,7 @@ export default {
           name: this.listingName,
           description: this.itemDescription,
           collection_details: this.collectionDetails,
-          address: this.address,
+          address: this.geocodeResult,
           postal: 0,
           district: 0,
           area: "",

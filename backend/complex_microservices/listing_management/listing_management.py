@@ -139,7 +139,7 @@ def processCreateListing(listing_object, token, image):
             print(json.dumps(r.json()))
             r = r.json()
 
-            area = r["data"]["address"]["address"]
+            area = r["data"]["address"]["area"]
             district = r["data"]["address"]["district"]
             postal_code =r["data"]["address"]["postal_code"]
 
