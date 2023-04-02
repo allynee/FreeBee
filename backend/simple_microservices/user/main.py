@@ -108,6 +108,13 @@ def get_subscribers_by_corporate(corporate_id: str, db: Session = Depends(get_db
 
     return subscribers
 
+### GET FAVOURITE ###
+@app.get('/favourite', response_model=List[schemas.Favourite])
+def get_favourite(beneficiary_id: str, listing_id: str, db: Session = Depends(get_db)):
+    favourite = crud.get_favourite(db, beneficiary_id=beneficiary_id, listing_id=listing_id)
+    if favourite is None:
+        return False
+    return True
 
 
 
