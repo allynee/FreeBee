@@ -188,8 +188,8 @@ export default {
             this.allListingsArray.push(element);
           }
           // console.log(this.$store.state.area)
-          let rec_area = "string"; //suppose to be this.$store.state.area
-          if (element.area == rec_area || rec_area == null) {
+          let rec_area = this.$store.state.area
+          if ((element.area == rec_area || rec_area == null) && element.listing.status == "Available") {
             this.recListingsArray.push(element);
           }
         });
