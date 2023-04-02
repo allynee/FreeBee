@@ -65,7 +65,6 @@ def update_transaction():
             print("\nJSON with details to update in transaction:", required_details)
             listing = required_details["listing"]
             transaction = required_details["transaction"]
-            transaction_id = transaction["transaction_id"]
             token = required_details["token"]
             # do the actual work
             # 1. initiate update of transaction
@@ -93,7 +92,7 @@ def update_transaction():
     }), 400
 
 @app.route("/transaction_management/beneficiary/<string:beneficiary_id>", methods=["GET"])
-def view_transactions(beneficiary_id):
+def view_transactions_beneficiary(beneficiary_id):
 
     results = []
 
@@ -126,7 +125,7 @@ def view_transactions(beneficiary_id):
     }
 
 @app.route("/transaction_management/corporate/<string:corporate_id>", methods=["GET"])
-def view_transactions(corporate_id):
+def view_transactions_corp(corporate_id):
 
     results = []
 

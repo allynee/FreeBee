@@ -9,10 +9,26 @@
                     <v-img src="../assets/apparel.jpg" class="rounded-circle" style="height:225px;width:225px"></v-img>
                 </div>
             </v-container>
+            <v-container>
+                <v-row>
+                    Change status to:
+                </v-row>
+                <v-row>
+                    <v-select 
+                        style="margin-left: 15px; margin-right: 15px;"
+                        outlined
+                        rounded
+                        name="category"
+                        placeholder="In Progress"
+                        id="category"
+                        v-model="itemCategory"
+                        :items=myCategories>
+                    </v-select>
+                </v-row>
+            </v-container>
             <CorporateTransactionCard></CorporateTransactionCard>
             <CorporateTransactionCard></CorporateTransactionCard>
             <CorporateTransactionCard></CorporateTransactionCard>
-
         </v-container>                    
     </div>
 </template>
@@ -30,6 +46,7 @@
       data(){
         return{
             fab: false,
+            myCategories: ['Food & Drinks', 'Apparel', 'Electronics', 'Furniture', 'Toys & Hobbies', 'Others'],
 
         }
       },

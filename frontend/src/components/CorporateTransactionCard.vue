@@ -1,27 +1,24 @@
 <template>
     <div>
-        <v-card width="100%">
+        <v-card width="100%" style="margin-bottom: 15px;" >
             <v-card-text>
                 <v-container>
                     <v-row>
-                        <v-col>
+                        <v-col>  
                             <v-row>
-                                Status
-                            </v-row>
+                            <v-list-item>
+                                <v-checkbox/>
+                            </v-list-item>
+                            </v-row>    
                             <v-row>
-                                <v-select
-                                style="margin-right: 15px"
-                                rounded
-                                outlined
-                                name="status"
-                                placeholder="In Progress"
-                                id="status"
-                                v-model="CurrentStatus"
-                                :items=myStatuses>
-                                </v-select>
+                                <v-btn tile color="green" style="margin-left: 15px;">
+                                    <v-btn smallheight="80%">
+                                        <v-icon>mdi-pencil-outline</v-icon>
+                                    </v-btn>
+                                    In Progress
+                                </v-btn>
                             </v-row>
                         </v-col>
-                    
                         <v-col>
                             <v-row>
                                 Beneficiary: Melvin

@@ -66,7 +66,7 @@ def create_listing():
         "message": "Invalid JSON input: " + str(request.get_data())
     }), 400
 
-@app.route("/listing_management/<int:listing_id>", methods=['PUT'])
+@app.route("/listing_management/<string:listing_id>", methods=['PUT'])
 def update_listing(listing_id):
     #Simple check of input format and data of the request are JSON
     if request.is_json:
@@ -110,7 +110,7 @@ def display_listings():
         img_ext = listing["img_ext"]
         firebase_url = f"https://firebasestorage.googleapis.com/v0/b/esdeeznutz.appspot.com/o/listings%2F{listing_id}{img_ext}?alt=media&token=d96a1b6f-e4a2-42d1-a06b-c9331d4490a4"
         listing_and_image = {
-            "listing": listing_result,
+            "listing": listing,
             "firebase_url": firebase_url
         }
         list_of_listings.append(listing_and_image)
