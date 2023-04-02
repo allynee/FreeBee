@@ -16,8 +16,9 @@ app = Flask(__name__)
 CORS(app)
 
 listing_URL = "http://localhost:8000/listing"
+transaction_URL = "http://localhost:9000/transaction"
 # geocoding_URL = "http://localhost:3000/"
-notification_URL = "http://localhost:5001/"
+# notification_URL = "http://localhost:5001/" #this is this page
 # authentication_URL = "localhost:3001/"
 sendEmail_URL = "http://localhost:5005/sendmail"
 user_URL = "http://localhost:8421"
@@ -82,7 +83,7 @@ def sortMail(info):
     elif info['purpose'] == "toCorporate":
         print("toCorporate")
         toCorporate(info)
-    elif info['purpose'] == "cancel":
+    elif info['purpose'] == "cancelled":
         cancel(info)
 
 def subscription(info):
@@ -127,9 +128,9 @@ def toBeneficiary(info):
     if status == "Completed":
         subject = f"Your item has been successfully collected!"
         message = f"Hi {username} aka {email}!<br><br>Your item - {info['listing_result']['name']} has been collected!<br><br>Thank you for using FreeBee!"
-    if status == "Cancelled":
-        subject = f"Your item collection has been cancelled!"
-        message = f"Hi {username} aka {email}!<br><br>Your item - {info['listing_result']['name']} has been cancelled by {corporate_name}!<br>We apologize for any inconvinience caused<br><br>Thank you for using FreeBee!"
+    # if status == "Cancelled":
+    #     subject = f"Your item collection has been cancelled!"
+    #     message = f"Hi {username} aka {email}!<br><br>Your item - {info['listing_result']['name']} has been cancelled by {corporate_name}!<br>We apologize for any inconvinience caused<br><br>Thank you for using FreeBee!"
     sendEmail('lixuen.low.2021@scis.smu.edu.sg', subject, message);
     # doEmail();
 
@@ -143,7 +144,7 @@ def toCorporate(info):
     print(corporate_id)
     full_user_URL = user_URL + f"/corporate/{corporate_id}"
     corporate_result = invoke_http(full_user_URL, method='GET', json=None)
-    print('subscription_result:', corporate_result) #this returns a list of the beneficiary info
+    print('subscription_result:', corporate_result) #this returns coportate details
     corporate_name = info['listing_result']['corporate_name']
     email = corporate_result['email']
     subject = f"Successfully posted listing!"
@@ -154,11 +155,30 @@ def toCorporate(info):
 def cancel(info):
 #     ############ This is for mass sending cancellation to involved users ## FROM trans_manage ##########
 #     #i THINK i want listingID from ___ (anyth) (then can get all transactions involved from trans simple ms directly)
+        corporate_name = info['listing_result']['corporate_name']
 # from transaction get all transactions with listingID
+        print('\n-----Retrieving transactions-----')
+        listing_id = info['listing_result']['listing_id']
+        transaction_URL_full = transaction_URL + f"/listing/{listing_id}"
+        transaction_result = invoke_http(transaction_URL_full, method="GET", json=None)
+        print('transaction_result:', transaction_result) #this returns a list of transactions
+        subject = f"Your item collection has been cancelled!"
+        if str(transaction_result) != "{'detail': 'Not Found'}":
+            for transaction in transaction_result:
+                #cannot test because the transaction does not make sense at the moment
+                beneficiary_id = transaction['beneficiary_id']
+                full_user_URL = user_URL + f"/beneficiary/{beneficiary_id}"
+                beneficiary_result = invoke_http(full_user_URL, method='GET', json=None)
+                username = beneficiary_result['username']
+                email = beneficiary_result['email']
+                message = f"Hi {username} aka {email}!<br><br>Your item - {info['listing_result']['name']} has been cancelled by {corporate_name}!<br>We apologize for any inconvinience caused<br><br>Thank you for using FreeBee!"
+                sendEmail('lixuen.low.2021@scis.smu.edu.sg', subject, message);
+        else:
+            print("No transactions found")
 # then go user and user details to send
 #     #needs transaction objs, then hv a list of beneficiaryID
 #     #needs to get userEmails + CompanyName
-    doEmail();
+    # doEmail();
 
 ###################################################################
 def doEmail():

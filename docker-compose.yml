@@ -1,50 +1,92 @@
 version: "3.8"
 
+volumes:
+  rabbitmq_data:
+
 services:
+  ####################################
+  # RabbitMQ: The messaging broker   
+  ####################################
+  rabbitmq:
+    image: rabbitmq:3-management
+    hostname: esd-rabbit
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes: 
+      - rabbitmq_data:/var/lib/rabbitmq
 
   #################################
   # SIMPLE MICROSERVICES 
   #################################
 
   auth:
-    build: ./backend/simple_microservices/auth
+    build: 
+      context: ./backend/simple_microservices/auth
+      dockerfile: auth.dockerfile
+    image: <dockerid>/auth:freebee
     restart: always
     ports:
       - 3001:3001
 
   geocoding:
-    build: ./backend/simple_microservices/geocoding
+    build: 
+      context: ./backend/simple_microservices/geocoding
+      dockerfile: geocoding.dockerfile
+    image: <dockerid>/geocoding:freebee
     restart: always
     ports:
       - 3000:3000
   
-  image:
-    build: ./backend/simple_microservices/image
+  imaging:
+    build: 
+      context: ./backend/simple_microservices/image
+      dockerfile: image.dockerfile
+    image: <dockerid>/image:freebee
     restart: always
     posts:
       - 3002:3002
 
   listing:
-    build: ./backend/simple_microservices/listing
+    build: 
+      context: ./backend/simple_microservices/listing
+      dockerfile: listing.dockerfile
+    image: <dockerid>/listing:freebee
     restart: always
+    environment:
+      PYTHONUNBUFFERED: 1
     ports:
       - 8000:8000
 
   notification:
-    build: ./backend/simple_microservices/notification
+    build: 
+      context: ./backend/simple_microservices/notification
+      dockerfile: notification.dockerfile
+    image: <dockerid>/notification:freebee
     restart: always
     ports:
       - 5005:5005
 
   transaction:
-    build: ./backend/simple_microservices/transaction
+    build: 
+      context: ./backend/simple_microservices/transaction
+      dockerfile: transaction.dockerfile
+    image: <dockerid>/transaction:freebee
     restart: always
+    environment:
+      PYTHONUNBUFFERED: 1
     ports:
       - 9000:9000
 
   user:
-    build: ./backend/simple_microservices/user
+    build: 
+      context: ./backend/simple_microservices/user
+      dockerfile: user.dockerfile
+    image: <dockerid>/user:freebee
     restart: always
+    environment:
+      PYTHONUNBUFFERED: 1
     ports:
       - 8421:8421
 
@@ -53,30 +95,51 @@ services:
   ###############################################
   
   listing_management:
-    build: ./backend/complex_microservices/listing_management
+    build: 
+      context: ./backend/complex_microservices/listing_management
+      dockerfile: listing_management.dockerfile
     restart: always
     depends_on:
+      -rabbitmq
       - listing
       - auth
       - geocoding
+    environment:
+      rabbit_host: rabbitmq
+      rabbit_port: 5672
+      PYTHONUNBUFFERED: 1
     ports:
       - 5000:5000
 
   transaction_management:
-    build: ./backend/complex_microservices/transaction_management
+    build: 
+      context: ./backend/complex_microservices/transaction_management
+      dockerfile: transaction_management.dockerfile
     restart: always
     depends_on:
+      - rabbitmq
       - listing
       - transaction
+    environment:
+      rabbit_host: rabbitmq
+      rabbit_port: 5672
+      PYTHONUNBUFFERED: 1
     ports:
       - 5100:5100
 
   notification_management:
-    build: ./backend/complex_microservices/notification_management
+    build: 
+      context: ./backend/complex_microservices/notification_management
+      dockerfile: notification_management.dockerfile
     restart: always
     depends_on:
+      - rabbitmq
       - notification
       - user
+    environment:
+      rabbit_host: rabbitmq
+      rabbit_port: 5672
+      PYTHONUNBUFFERED: 1
     ports: 
       - 5001:5001
 
@@ -84,12 +147,16 @@ services:
   # FRONTEND
   #################################
   frontend:
-    build: ./frontend
+    build: 
+      context: ./frontend
+      dockerfile: frontend.dockerfile
     restart: always
     depends_on: 
       - listing_management
       - transaction_management
       - notification_management
+    environment:
+      PYTHONUNBUFFERED: 1
     ports: 
       - 8080:8080
 

@@ -235,7 +235,7 @@ def processUpdateTransaction(transaction, listing, token, status):
         if transaction_result["status"] == "Cancelled":
             print('\n-----Send to Notification microservice-----')
             obj = {
-                "purpose": "Cancelled",
+                "purpose": "cancelled",
                 "listing_result": listing
             } 
             message = json.dumps(obj)
