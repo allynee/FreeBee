@@ -13,13 +13,13 @@ def get_transactions(db: Session, skip: int = 0, limit: int = 100):
 def get_transaction(db: Session, transaction_id: int):
     return db.query(models.Transaction).filter(models.Transaction.transaction_id == transaction_id).first()
 
-def get_transactions_by_beneficiary(db: Session, beneficiary_id: int, skip: int = 0, limit: int = 100):
+def get_transactions_by_beneficiary(db: Session, beneficiary_id: str, skip: int = 0, limit: int = 100):
     return db.query(models.Transaction).filter(models.Transaction.beneficiary_id == beneficiary_id).offset(skip).limit(limit).all()
 
-def get_transactions_by_corporate(db: Session, corporate_id: int, skip: int = 0, limit: int = 100):
+def get_transactions_by_corporate(db: Session, corporate_id: str, skip: int = 0, limit: int = 100):
     return db.query(models.Transaction).filter(models.Transaction.corporate_id == corporate_id).offset(skip).limit(limit).all()
 
-def get_transactions_by_listing(db: Session, listing_id: int, skip: int = 0, limit: int = 100):
+def get_transactions_by_listing(db: Session, listing_id: str, skip: int = 0, limit: int = 100):
     return db.query(models.Transaction).filter(models.Transaction.listing_id == listing_id).offset(skip).limit(limit).all()
 
 ### POST ###

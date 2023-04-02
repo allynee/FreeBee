@@ -45,7 +45,7 @@ def ping():
 
 ### GET ALL LISTINGS ###
 @app.get('/listing', response_model=List[schemas.Listing])
-def get_all_listings(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+def get_all_listings(skip: str = 0, limit: int = 100, db: Session = Depends(get_db)):
     items = crud.get_listings(db,skip=skip,limit=limit)
     if items is None:
         raise HTTPException(status_code=404, detail="No listings available")
@@ -53,7 +53,7 @@ def get_all_listings(skip: int = 0, limit: int = 100, db: Session = Depends(get_
 
 ### GET SINGLE LISTING BASED ON LISTING ID ###
 @app.get('/listing/{listing_id}', response_model=schemas.Listing)
-def get_listing_by_id(listing_id: int, db: Session = Depends(get_db)):
+def get_listing_by_id(listing_id: str, db: Session = Depends(get_db)):
     listing = crud.get_listing(db, listing_id=listing_id)
     if listing is None:
         raise HTTPException(status_code=404, detail="Listing not found")
@@ -66,12 +66,12 @@ def create_listing(listing: schemas.ListingCreate, db: Session = Depends(get_db)
 
 ### UPDATE ANY FIELD IN LISTING ###
 @app.put('/listing/{listing_id}', response_model=schemas.Listing)
-def update_listing(listing_id: int, listing: schemas.ListingUpdate, db: Session = Depends(get_db)):
+def update_listing(listing_id: str, listing: schemas.ListingUpdate, db: Session = Depends(get_db)):
     return crud.update_listing(db, listing_id=listing_id, data=listing)
 
 ### DELETE SINGLE LISTING ###
 @app.delete('/listing/{listing_id}')
-def delete_listing(listing_id: int, db: Session = Depends(get_db)):
+def delete_listing(listing_id: str, db: Session = Depends(get_db)):
     return crud.delete_listing(db, listing_id=listing_id)
 
 if __name__ == '__main__':

@@ -119,7 +119,7 @@ obj3 = {
     "cancel"
   ],
   "listing_result": {
-    "corporate_id": 1,
+    "corporate_id": "6ubkEQJU3ZaQ8NM1vdqQQowGMQJ3",
     "corporate_name": "Salvation Barney",
     "name": "string",
     "description": "string",

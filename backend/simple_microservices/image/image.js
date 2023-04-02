@@ -1,6 +1,7 @@
 const { initializeApp } = require("firebase/app");
 const { ref: dbref, getDatabase, push } = require("firebase/database");
 const { ref: stRef,getStorage, uploadBytes } = require("firebase/storage");
+const fs = require('fs');
 
 const firebaseConfig = initializeApp({
   apiKey: "AIzaSyD5ESzYYAhQhq7fecEJZofuXqjZTzSHRus",
@@ -18,16 +19,22 @@ const storage = getStorage();
 
 async function createListingFirebase(image) {
   try {
+    const filepath = image.filepath
+    const filename = image.filename
+    console.log(filepath)
+    console.log(filename)
+    const bufferData = fs.readFileSync(filepath);
+    console.log(bufferData)
     const data = await push(dbref(db, "Listing"), {
-      image: image.originalname,
+      image: filename,
     });
     const key = data.key;
-    const filename = image.originalname;
     let ext = filename.slice(filename.lastIndexOf("."));
     const imageUpload = await uploadBytes(
       stRef(storage, "listings/" + key + ext),
-      image.buffer
+      bufferData
     );
+    
     // const imageUrl = await getDownloadURL(
     //   stRef(storage, "listings/" + key + ext)
     // );

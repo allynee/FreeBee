@@ -3,9 +3,23 @@
 <v-hover v-slot="{ hover }">
   <v-card flat :elevation="hover ? 10 : 2" :class="{ 'on-hover': hover }" style="width:350px; height:470px" outlined class="pa-2"> 
   <v-card-actions>
-    <v-btn depressed plain @click="like" class="">
-       <v-icon :class="{'red': isRed}">mdi-heart</v-icon>
-    </v-btn>
+    <!-- <v-btn v-if="isRed" depressed plain @click="like" class="">
+       <v-icon :class="{'red': isRed}">mdi-heart</v-icon>\ -->
+      <div v-if="isRed">
+       <v-btn icon color="pink">
+          <v-icon>mdi-heart</v-icon>
+        </v-btn>
+      </div>
+      <div v-else>
+        <v-btn icon color="grey">
+          <v-icon>mdi-heart</v-icon>
+        </v-btn>
+      </div>
+    <!-- </v-btn> -->
+    <!-- <v-btn v-else depressed plain @click="like" class="">
+      <v-icon :class="{'red': isRed}">mdi-circle</v-icon>
+      this not is red
+   </v-btn> -->
   </v-card-actions>
 
   <v-img cover :src="require('../assets/BlackCat.png')" class="mx-auto" contain
@@ -52,15 +66,18 @@ export default {
     },
     methods: {
       like(){
-        const user_URL = 'http://0.0.0.0:9000/favourite'
+        const user_URL = 'http://localhost:8421/favourite'
         axios.post(user_URL, {
-          beneficiary_id: this.$store.state.uid,
+          // beneficiary_id: this.$store.state.uid,
+          // listing_id: this.aListing.listing_id
+          beneficiary_id: "blabla",
           listing_id: this.aListing.listing_id
         }).then((response) => {
           const response_data = response.data;
           if (response_data.statusCode == "200") {
             console.log(response_data.name)
             this.isRed = true;
+            console.log(this.isRed);
           } else {
             console.log("fail");
           }
