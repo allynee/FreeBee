@@ -130,6 +130,7 @@ def create_favourite(db: Session, favourite: schemas.FavouriteCreate):
     db.commit() 
     db.refresh(favourite)
     return favourite
+#this is smth random
 
 def delete_favourite(db: Session, beneficiary_id: str, listing_id: str):
     favourite = db.query(models.Favourite).filter(models.Favourite.beneficiary_id == beneficiary_id,
