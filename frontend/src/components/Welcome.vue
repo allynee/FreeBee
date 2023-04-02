@@ -173,7 +173,7 @@ export default {
     setTimeout(() => {
       this.loaded = false
       console.log(this.loaded)
-    }, 2000)
+    }, 1250)
   }
 } 
 </script>

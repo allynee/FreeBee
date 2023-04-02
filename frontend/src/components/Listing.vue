@@ -31,6 +31,7 @@
 
         <v-img
           cover
+          style="max-height:200px"
           :src="aListing.firebase_url"
           class="mx-auto"
           contain

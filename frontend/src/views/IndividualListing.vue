@@ -132,6 +132,7 @@
                     name="quantity"
                     label="Quantity"
                     id="quantity"
+                    min="1"
                     v-model="quantity"
                   >
                   </v-text-field>
