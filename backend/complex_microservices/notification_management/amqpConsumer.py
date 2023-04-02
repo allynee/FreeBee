@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import pika
 import json
 from invokes import invoke_http
@@ -18,6 +20,7 @@ def callback(ch, method, properties, body):
     print('notifAmqp_result:', notifAmqp_result)
     # return json.loads(notifAmqp_result)
 
+amqp_setup.check_setup()
 amqp_setup.channel.basic_consume(queue='notification', on_message_callback=callback, auto_ack=True)
 
 print('AMQP code waiting for messages...')

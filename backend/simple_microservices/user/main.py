@@ -109,8 +109,14 @@ def get_subscribers_by_corporate(corporate_id: str, db: Session = Depends(get_db
     return subscribers
 
 ### GET FAVOURITE ###
-@app.get('/favourite', response_model=List[schemas.Favourite])
+@app.get('/favourite/{beneficiary_id}/{listing_id}', response_model=List[schemas.Favourite])
+# def recieveReq(request: Request):
+#     beneficiary_id = request.query_params.get('beneficiary_id')
+#     listing_id = request.query_params.get('listing_id')
+#     print(beneficiary_id, listing_id)
+#     # get_favourite(beneficiary_id=beneficiary_id, listing_id=listing_id)
 def get_favourite(beneficiary_id: str, listing_id: str, db: Session = Depends(get_db)):
+    print(beneficiary_id, listing_id)
     favourite = crud.get_favourite(db, beneficiary_id=beneficiary_id, listing_id=listing_id)
     if favourite is None:
         return False
