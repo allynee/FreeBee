@@ -4,8 +4,8 @@ from pydantic import BaseModel
 
 class TransactionBase(BaseModel):
     listing_id: int
-    corporate_id: int
-    beneficiary_id: int
+    corporate_id: str
+    beneficiary_id: str
     status: str
     quantity: int
 
