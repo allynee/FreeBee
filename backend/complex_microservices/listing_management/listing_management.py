@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+import tempfile
 
 import os, sys
 
@@ -19,25 +20,33 @@ notification_URL = "http://localhost:3000/"
 authentication_URL = "http://localhost:3001/auth/checkaccess/"
 image_URL = "http://localhost:3002/image"
 
-image = {
-    "dummy_object": "nonsense"
-}
-
 
 @app.route("/listing_management", methods=['POST'])
 def create_listing():
+    image_file = request.files['image']
+    data = json.loads(request.form.get('data'))
+    listing = json.loads(data['listing'])
+
+    print('line32', listing)
+    print(image_file)
+    filename = image_file.filename
+    tempdir = tempfile.mkdtemp()
+    filepath = os.path.join(tempdir, filename)
+    image_file.save(filepath)
     #Simple check of input format and data of the request are JSON
-    if request.is_json:
+    if request.files:
         try:
-            listing = request.get_json()
+            data = json.loads(request.form.get('data'))
+            listing = json.loads(data['listing'])
             print("\nReceived an listing in JSON:", listing)  
 
-            listing_object = listing["listing"]
-            token = listing["token"]      
-         
+            listing_object = listing
+
+            token = data['token']
             # do the actual work
             # 1. Create listing info 
-            result = processCreateListing(listing_object, token, image)
+            json_filepath = json.dumps({"filepath": filepath,"filename":filename})
+            result = processCreateListing(listing_object, token, json_filepath)
             return jsonify(result)
 
         except Exception as e:
@@ -140,19 +149,24 @@ def processCreateListing(listing_object, token, image):
 
             print(listing_object) #check if area district and postal code was added to listing object
 
-            #4. Send the listing info to database
+            #4. Send the image data to database
+            #Invoke the image microservice
+            print('\n-----Invoking image microservice-----')
+            image = eval(image)
+            image_result = invoke_http(image_URL, method='POST', json=image)
+            print('image_result:', image_result)
+            #still need to check whether this is successful or not, ideally
+            
+            listing_object["listing_id"] = image_result['listingid']
+            listing_object['img_ext']=  image_result['extension']
+            print(listing_object)
+            #5. Send the listing info to database
             #Invoke the listing microservice
             print('\n-----Invoking listing microservice-----')
             listing_result = invoke_http(listing_URL, method='POST', json=listing_object)
             print('listing_result:', listing_result)
 
-            #5. Send the image data to database
-            #Invoke the image microservice
-            print('\n-----Invoking image microservice-----')
-            image_result = invoke_http(image_URL, method='POST', json=image)
-            print('image_result:', image_result)
-            #still need to check whether this is successful or not, ideally
-
+        
             if "detail" not in listing_result: 
                 #5. Send the notification to users who are subscribed to the corporate
                 ############  Publish to subscribe queue   #############
