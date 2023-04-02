@@ -222,6 +222,7 @@ export default {
         .get(listing_URL)
         .then((response) => {
           this.listing = response.data;
+          console.log(this.listing)
           this.image = `https://firebasestorage.googleapis.com/v0/b/esdeeznutz.appspot.com/o/listings%2F${this.listing.listing_id}${this.listing.img_ext}?alt=media&token=d96a1b6f-e4a2-42d1-a06b-c9331d4490a4`
 
         })
@@ -276,19 +277,6 @@ export default {
     unsubscribe(){
       // console.log("this is the unsubscribe function")
     },
-    checkLike(){
-        axios.get('http://localhost:8421/favourite' , 
-          {params : { "beneficiary_id": this.$store.state.uid,
-                        "listing_id": this.listing.listing_id} }
-        )
-        .then((response) => {
-          return response.data
-        })
-        .catch((error) => {
-          console.error(error);
-          return false;
-        });
-      },
       like(){
         if(this.$store.state.uid==null){
           alert("Please register and log in to like this post!")
@@ -297,7 +285,7 @@ export default {
           const user_URL = 'http://localhost:8421/favourite'
           axios.post(user_URL, {
             beneficiary_id: this.$store.state.uid,
-            listing_id: this.listing.listing_id,
+            listing_id: this.$route.params.listingid,
           })
           .then((response) => {
             if (response.status == "201") {
@@ -315,7 +303,7 @@ export default {
         axios.delete(user_URL, {
             data: {
               beneficiary_id: this.$store.state.uid,
-              listing_id: this.listing.listing_id,
+              listing_id: this.$route.params.listingid,
             }
           }).then((response) => {
             const response_data = response.data;
@@ -331,12 +319,25 @@ export default {
   },
   created() {
     this.fetchListing();
-    // this.checkLike();
     // this.checksubscribe();
     setTimeout(() => {
       this.loaded = false
       // console.log(this.loaded)
     }, 1250)
+  },
+  mounted() {
+    let listing_id = this.$route.params.listingid;
+    axios.get('http://localhost:8421/favourite' , 
+          {params : { "beneficiary_id": this.$store.state.uid,
+                        "listing_id": listing_id} }
+        )
+        .then((response) => {
+          this.favourite = response.data
+        })
+        .catch((error) => {
+          console.error(error);
+          this.favourite = false;
+        });
   },
 };
 </script>
