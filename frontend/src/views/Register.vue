@@ -383,13 +383,6 @@ export default {
                 description: this.description,
               });
             } else {
-              // console.log("HAIZ")
-              // console.log(this.email)
-              // console.log(this.username)
-              // console.log(this.phone)
-              // console.log(this.address)
-              // console.log(this.postal)
-              // console.log(this.district)
               axios.post("http://localhost:8421/beneficiary", {
                 beneficiary_id: this.$store.state.uid,
                 email: this.email,

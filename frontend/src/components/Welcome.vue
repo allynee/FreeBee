@@ -109,8 +109,8 @@ export default {
         AOS.init({
             duration: 1600,
         });
-        console.log(this.$store.getters.getAccessToken)
-        console.log(this.$store.state)
+        // console.log(this.$store.getters.getAccessToken)
+        // console.log(this.$store.state)
   },  
   data(){
     return{
@@ -150,7 +150,6 @@ export default {
             }
 
           });
-        console.log(this.allListingsArray)
         })
         // console.log(this.allListingsArray)
 
@@ -172,7 +171,7 @@ export default {
     this.fetchListings()
     setTimeout(() => {
       this.loaded = false
-      console.log(this.loaded)
+      // console.log(this.loaded)
     }, 1250)
   }
 } 
