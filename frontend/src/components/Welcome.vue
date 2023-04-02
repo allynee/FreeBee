@@ -142,10 +142,10 @@ export default {
             // console.log(element)
             if (element.listing.status == "Available"){ //
               this.allListingsArray.push(element)
-            }
+            } 
             // console.log(this.$store.state.area)
             let rec_area = "string" //suppose to be this.$store.state.area
-            if (element.area == rec_area){
+            if (element.area == rec_area || rec_area == null){
               this.recListingsArray.push(element)
             }
 
@@ -173,7 +173,7 @@ export default {
     setTimeout(() => {
       this.loaded = false
       console.log(this.loaded)
-    }, 2000)
+    }, 1250)
   }
 } 
 </script>

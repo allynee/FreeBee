@@ -1,3 +1,4 @@
+
 from sqlalchemy.orm import Session
 import models
 import schemas
@@ -112,9 +113,9 @@ def delete_subscription(db: Session, beneficiary_id: str, corporate_id: str):
     db.commit()
 
     return {
-        "code": 200,
-        "message": "Subscription deleted successfully"
-    }
+            "code": 200,
+            "message": "Subscription deleted successfully"
+        }
 
 ### FAVOURITE TABLE ###
 def get_favourite(db: Session, beneficiary_id: int, listing_id: int):
@@ -130,7 +131,6 @@ def create_favourite(db: Session, favourite: schemas.FavouriteCreate):
     db.commit() 
     db.refresh(favourite)
     return favourite
-#this is smth random
 
 def delete_favourite(db: Session, beneficiary_id: str, listing_id: str):
     favourite = db.query(models.Favourite).filter(models.Favourite.beneficiary_id == beneficiary_id,
@@ -195,6 +195,6 @@ def delete_corporate(db: Session, corporate_id: str):
     db.commit()
 
     return {
-        "code": 200,
-        "message": "Corporate deleted successfully"
-    }
+            "code": 200,
+            "message": "Corporate deleted successfully"
+        }
