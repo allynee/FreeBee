@@ -12,9 +12,6 @@
                             </v-row>    
                             <v-row>
                                 <v-btn tile color="green" style="margin-left: 15px;">
-                                    <v-btn smallheight="80%">
-                                        <v-icon>mdi-pencil-outline</v-icon>
-                                    </v-btn>
                                     In Progress
                                 </v-btn>
                             </v-row>
