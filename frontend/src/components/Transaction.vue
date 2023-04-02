@@ -9,22 +9,25 @@
                                 <v-img :src="require('../assets/pigbee.jpg')" max-width="70"></v-img>
                             </v-row>
                             <v-row>
-                                Item Name
+                                {{ aTransaction.listing_details.name }}
                             </v-row>
                         </v-col>
                     
                         <v-col>
                             <v-row>
-                                Quantity: 10
+                                Quantity: {{ aTransaction.quantity }}
                             </v-row>
                             <v-row>
-                                Claimed Item on 10/10/2021 13:01
+                                Claimed Item on {{ aTransaction.created.split("T")[0] }}
+                            </v-row>
+                            <v-row v-if="aTransaction.modified">
+                                Last Status Update: {{ aTransaction.modified.split("T")[0] }}
+                            </v-row>
+                            <v-row v-else>
+                                Last Status Update: {{ aTransaction.created.split("T")[0] }}
                             </v-row>
                             <v-row>
-                                Last Status Update: 12/10/2021 08:40
-                            </v-row>
-                            <v-row>
-                                Collection Details: Please ring doorbell 8 times
+                                Collection Details: {{ aTransaction.listing_details.collection_details }}
                             </v-row>
                         </v-col>
                     </v-row>
@@ -38,16 +41,17 @@
     import AOS from 'aos'
     export default {
         props: {
-          aListing: Object,
+          aTransaction: Object,
         },
         mounted() {
           AOS.init({
             duration: 1600,
           })
+          console.log(this.aTransaction)
+
         },
         data(){
             return{ 
-               
             }
         },
         methods: {
@@ -56,8 +60,9 @@
                 console.log(listingid)
                 this.$store.dispatch('loadedPet', listingid)
                 this.$router.push('/FindFreeBee/'+ listingid)
-            }
+            },
         },
+
     }
     </script>
     

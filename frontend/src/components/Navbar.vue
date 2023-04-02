@@ -121,7 +121,7 @@ export default {
           { text: "Find a FreeBee!", route: "/", icon: "mdi-magnify" },
           // {text: 'Report Pet', route:'/ReportPet', icon: 'mdi-dog-side'},
           // {text: 'Search Pet', route:'/SearchAllPets', icon: 'mdi-magnify'},
-          { text: "My FreeBees", route: "/Inbox", icon: "mdi-beehive-outline" },
+          { text: "My FreeBees", route: "/usertransactions", icon: "mdi-beehive-outline" },
           { text: "My Account", route: "/Account", icon: "mdi-account" },
           // {text: 'Matched Pets', route:'/MatchedPets', icon: 'mdi-paw'},
         ];

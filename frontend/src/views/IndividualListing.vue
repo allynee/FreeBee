@@ -8,7 +8,7 @@
             style="width: 450px; height: 450px"
           >
             <v-img
-              src="../assets/apparel.jpg"
+              :src=this.image
               class="rounded-circle"
               style="height: 425px; width: 425px"
             ></v-img>
@@ -164,6 +164,7 @@ export default {
       tab: null,
       listing: null,
       quantity: 0,
+      image:null
     };
   },
   methods: {
@@ -175,6 +176,8 @@ export default {
         .get(listing_URL)
         .then((response) => {
           this.listing = response.data;
+          this.image = `https://firebasestorage.googleapis.com/v0/b/esdeeznutz.appspot.com/o/listings%2F${this.listing.listing_id}${this.listing.img_ext}?alt=media&token=d96a1b6f-e4a2-42d1-a06b-c9331d4490a4`
+
         })
         .catch((exception) => {
           console.log(exception);

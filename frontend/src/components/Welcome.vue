@@ -82,8 +82,8 @@
       </v-row>
 
       <v-row class="my-15">
-        <v-col cols="12" md="4" lg="3" v-for="aListing in allListingsArray" :key="aListing.listing_id">
-          <Listing :aListing="aListing" @gotoListing="gotoListing(aListing.listing_id)"></Listing>
+        <v-col cols="12" md="4" lg="3" v-for="aListing in allListingsArray" :key="aListing.listing.listing_id">
+          <Listing :aListing="aListing" @gotoListing="gotoListing(aListing.listing.listing_id)"></Listing>
         </v-col>
       </v-row>
   </div>
@@ -135,12 +135,12 @@ export default {
 
   methods:{
     async fetchListings() {
-        const listing_URL = 'http://localhost:8000/listing'
+        const listing_URL = 'http://localhost:5000/listing_management'
         axios.get(listing_URL).then((response) => {
           // console.log(response.data)
           response.data.forEach(element => {
             // console.log(element)
-            if (element.status == "Available"){ //
+            if (element.listing.status == "Available"){ //
               this.allListingsArray.push(element)
             }
             // console.log(this.$store.state.area)

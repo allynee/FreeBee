@@ -9,10 +9,26 @@
                     <v-img src="../assets/apparel.jpg" class="rounded-circle" style="height:225px;width:225px"></v-img>
                 </div>
             </v-container>
+            <v-container>
+                <v-row>
+                    Change status to:
+                </v-row>
+                <v-row>
+                    <v-select 
+                        style="margin-left: 15px; margin-right: 15px;"
+                        outlined
+                        rounded
+                        name="status"
+                        placeholder="In Progress"
+                        id="status"
+                        v-model="transactionStatus"
+                        :items=myStatuses>
+                    </v-select>
+                </v-row>
+            </v-container>
             <CorporateTransactionCard></CorporateTransactionCard>
             <CorporateTransactionCard></CorporateTransactionCard>
             <CorporateTransactionCard></CorporateTransactionCard>
-
         </v-container>                    
     </div>
 </template>
@@ -30,6 +46,7 @@
       data(){
         return{
             fab: false,
+            myStatuses: ['In Progress', 'Ready for Collection', 'Collected', 'Cancelled'],    
 
         }
       },

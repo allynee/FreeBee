@@ -65,7 +65,6 @@ def update_transaction():
             print("\nJSON with details to update in transaction:", required_details)
             listing = required_details["listing"]
             transaction = required_details["transaction"]
-            transaction_id = transaction["transaction_id"]
             token = required_details["token"]
             # do the actual work
             # 1. initiate update of transaction
@@ -92,35 +91,72 @@ def update_transaction():
         "message": "Invalid JSON input: " + str(request.get_data())
     }), 400
 
-# @app.route("/transaction_management/<int:user_id>", methods=['GET'])
-# def display_transactions(user_id):
-#     # Simple check of input format and data of the request are JSON
-#     if request.is_json:
-#         try:
-#             # do the actual work
-#             # 1. initiate view of all transactions associated with user id
-#             result = processViewTransactions(user_id)
-#             print('\n------------------------')
-#             print('\nresult: ', result)
-#             return jsonify(result)
+@app.route("/transaction_management/beneficiary/<string:beneficiary_id>", methods=["GET"])
+def view_transactions_beneficiary(beneficiary_id):
 
-#         except Exception as e:
-#             # Unexpected error in code
-#             exc_type, exc_obj, exc_tb = sys.exc_info()
-#             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-#             ex_str = str(e) + " at " + str(exc_type) + ": " + fname + ": line " + str(exc_tb.tb_lineno)
-#             print(ex_str)
+    results = []
 
-#             return jsonify({
-#                 "code": 500,
-#                 "message": "transaction service internal error: " + ex_str
-#             }), 500
+    #1. Retrieve transactions associated with beneficiary  
+    print('\n-----Retrieving transactions-----')
+    transaction_URL_full = transaction_URL + f"/beneficiary/{beneficiary_id}"
+    transaction_result = invoke_http(transaction_URL_full, method="GET", json=None)
+    print('transaction_result:', transaction_result)
 
-#     # if reached here, not a JSON request.
-#     return jsonify({
-#         "code": 400,
-#         "message": "Invalid JSON input: " + str(request.get_data())
-#     }), 400
+    #2. For each transaction, retrieve listing details
+
+    for transaction in transaction_result:
+        listing_id = transaction["listing_id"]
+        print('\n-----Retrieving listing details for each transaction-----')
+        listing_URL_full = listing_URL + f"/{listing_id}"
+        listing_result = invoke_http(listing_URL_full, method="GET", json=None)
+        print('listing_result:', listing_result)
+        
+        #3. add listing details into each transaction
+        transaction["listing_details"] = listing_result
+        print('\nEdited transaction:', transaction)
+        results.append(transaction)
+
+    print(results)
+
+    return {
+        "code": 200,
+        "message": "Retrieving transactions via beneficiary_id was successful",
+        "result":  results
+    }
+
+@app.route("/transaction_management/corporate/<string:listing_id>", methods=["GET"]) #for corporate view of transactions associated with listings
+def view_transactions_corp(listing_id):
+
+    results = []
+
+    #1. Retrieve transactions associated with corporate's listing 
+    print('\n-----Retrieving transactions-----')
+    transaction_URL_full = transaction_URL + f"/listing/{listing_id}"
+    transaction_result = invoke_http(transaction_URL_full, method="GET", json=None)
+    print('transaction_result:', transaction_result)
+
+    #2. For each transaction, retrieve listing details
+
+    for transaction in transaction_result:
+        listing_id = transaction["listing_id"]
+        print('\n-----Retrieving listing details for each transaction-----')
+        listing_URL_full = listing_URL + f"/{listing_id}"
+        listing_result = invoke_http(listing_URL_full, method="GET", json=None)
+        print('listing_result:', listing_result)
+        
+        #3. add listing details into each transaction
+        transaction["listing_details"] = listing_result
+        print('\nEdited transaction:', transaction)
+        results.append(transaction)
+
+    print(results)
+
+    return {
+        "code": 200,
+        "message": "Retrieving transactions via corporate_id was successful",
+        "result":  results
+    }
+
 
 def processCreateTransaction(listing, beneficiary_id, quantityDeducted, token):
     listing_id = listing["listing_id"]
@@ -207,14 +243,14 @@ def processUpdateTransaction(transaction, listing, token, status):
             print(f"sending message: {message} to 'cancel'")
 
         #4c. If items are Ready to Collect
-        if transaction_result["status"] == "Ready to Collect":
+        if transaction_result["status"] != "Cancelled":
             obj = {
                 "purpose": "toBeneficiary",
                 "listing_result": listing,
                 "transaction_result": transaction
             }
             message = json.dumps(obj)
-            amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="ready.notif", 
+            amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="change.notif", 
                 body=message, properties=pika.BasicProperties(delivery_mode = 2))
             print(f"sending message: {message} to 'collect'")
 
@@ -226,22 +262,6 @@ def processUpdateTransaction(transaction, listing, token, status):
         }
         listing_result = invoke_http(listing_URL_full, method="PUT", json=listing_update)
         print('listing_result:', listing_result)
-
-#create a function to display transactions associated with an id
-def processViewTransactions(user_id):
-    #2. Authenticate user, retrieve user type
-    authentication_result = authenticateUser(token) 
-
-    #3. Retrieve all transactions associated with user id, store status, ben id, corp id, listing id
-    #3a. Retrieve if corporate
-    #3b. Retrieve if beneficiary
-
-    transactions = ["transaction 1"]
-
-    #4. For each transaction
-    for transaction in transactions:
-        pass
-    #4a. Retrieve associated listing & listing details
 
 
 def authenticateUser(token_input):

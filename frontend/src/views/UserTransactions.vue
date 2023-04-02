@@ -13,9 +13,9 @@
             </v-tabs>
             <v-tabs-items v-model="tab">
                 <v-tab-item :value="0">
-                    <v-card-text>
-                        <Transaction></Transaction>
-                    </v-card-text>
+                    <v-card v-for="aTransaction in inProgressArray" :key="aTransaction.listing_id">
+                        <Transaction :aTransaction="aTransaction"></Transaction>
+                    </v-card>
                 </v-tab-item>
                     
                 <v-tab-item :value="1">
@@ -64,9 +64,10 @@
 
       methods:{
         async fetchTransactions() {
-            const transaction_URL = 'http://localhost:9000/transactions'
+            const transaction_URL = 'http://localhost:5100/transaction_management/beneficiary/' + this.$store.state.uid
             axios.get(transaction_URL).then((response) => {
-                response.data.forEach((transaction) => {
+                console.log(response.data.result)
+                response.data.result.forEach((transaction) => {
                     if (transaction.status == 'In Progress') {
                         this.inProgressArray.push(transaction)
                     }
@@ -119,6 +120,9 @@
     
       
       },
+      mounted(){
+        this.fetchTransactions()
+      }
     }
   </script>
   <style scoped>

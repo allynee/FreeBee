@@ -22,4 +22,4 @@ class TransactionCreate(TransactionBase):
     pass
 
 class TransactionUpdate(TransactionBase):
-    __annotations__ = {k: Optional[v] for k, v in TransactionBase.__annotations__.items()}
+    __annotations__ = {k: Optional[v] for k, v in TransactionCreate.__annotations__.items()}
