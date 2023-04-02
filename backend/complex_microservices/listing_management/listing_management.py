@@ -96,7 +96,7 @@ def update_listing(listing_id):
         "message": "Invalid JSON input: " + str(request.get_data())
     }), 400
 
-@app.route("/listing_management", methods=['GET']) #implement function to view all listings
+@app.route("/listing_managemen", methods=['GET']) #implement function to view all listings
 def display_listings():
     list_of_listings = []
     #1. Retrieve all listings

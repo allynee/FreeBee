@@ -1,31 +1,28 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import HomeView from "../views/HomeView.vue";
-import MyMap from "../views/MyMap.vue";
+// import MyMap from "../views/MyMap.vue";
 // import Register from '../views/RegisterBeneficiary.vue'
 import Login from "../views/Login.vue";
 import authguard from "./auth-guard.js";
-import MyFreeBees from "../views/MyFreeBees.vue";
+import notCorp from "./notCorp.js";
+import isCorp from './isCorp.js'
 
-import SignUp from "../views/SignUp.vue";
+// import SignUp from "../views/SignUp.vue";
 import Account from "../views/Account.vue";
-import MatchedPets from "../views/MatchedPets.vue";
+// import MatchedPets from "../views/MatchedPets.vue";
 import Register from "../views/Register.vue";
-import BeneficiarySignUp from "../views/RegisterBeneficiary.vue";
-import CorporateSignUp from "../views/RegisterCorporate.vue";
+// import BeneficiarySignUp from "../views/RegisterBeneficiary.vue";
+// import CorporateSignUp from "../views/RegisterCorporate.vue";
 import CreateListing from "../views/CreateListing.vue";
 import UserTransactions from "../views/UserTransactions.vue";
 import SubscribedListings from "../views/SubscribedListings.vue";
 import CorporateTransactions from "../views/CorporateTransactions.vue";
 import CorporateListing from "../views/CorporateListing.vue";
-import CorporateHomePage from "../views/CorporateHomePage.vue";
+// import CorporateHomePage from "../views/CorporateHomePage.vue";
 
 import IndividualListing from "../views/IndividualListing.vue";
 
-import Image from "../views/Image.vue";
-import Maps from "../views/maps.vue";
-// import RegisterFilter from '../views/RegisterFilter.vue'
-// import RegisterFilter from '../views/RegisterFilter.vue'
 Vue.use(VueRouter);
 
 const routes = [
@@ -40,23 +37,8 @@ const routes = [
     props: true,
     name: "IndividualListing",
     component: IndividualListing,
-  },
-  {
-    path: "/signup",
-    name: "signup",
-    component: SignUp,
-  },
-  {
-    path: "/MyMap",
-    name: "MyMap",
-    component: MyMap,
-    beforeEnter: authguard,
-  },
-  {
-    path: "/MyFreeBees",
-    name: "MyFreeBees",
-    component: MyFreeBees,
-    // beforeEnter:authguard,
+    beforeEnter: notCorp
+
   },
   {
     path: "/account",
@@ -70,45 +52,24 @@ const routes = [
     component: Login,
   },
   {
-    path: "/MatchedPets",
-    name: "MatchedPets",
-    component: MatchedPets,
-    beforeEnter: authguard,
-  },
-  {
     path: "/register",
     name: "Register",
     component: Register,
-  },
-  {
-    path: "/beneficiary",
-    name: "Register Beneficiary",
-    component: BeneficiarySignUp,
-  },
-  {
-    path: "/corporate",
-    name: "Register Corporate",
-    component: CorporateSignUp,
+    
   },
   {
     path: "/createlisting",
     name: "Create Listing",
     component: CreateListing,
+    beforeEnter: isCorp
+
   },
   {
-    path: "/image",
-    name: "Image",
-    component: Image,
-  },
-  {
-    path: "/usertransactions",
-    name: "User Transactions",
+    path: "/MyFreeBees",
+    name: "My FreeBees",
     component: UserTransactions,
-  },
-  {
-    path: "/maps",
-    name: "maps",
-    component: Maps,
+    beforeEnter: notCorp
+
   },
   {
     path: "/subscribedlistings",
@@ -116,20 +77,18 @@ const routes = [
     component: SubscribedListings,
   },
   {
-    path: "/corporatetransactions",
+    path: "/corporatetransactions/:listingid",
     name: "Corporate Transactions",
     component: CorporateTransactions,
+    beforeEnter: isCorp
   },
   {
-    path: "/corporatelisting",
+    path: "/corporatelisting/:listingid",
     name: "Corporate Listing",
     component: CorporateListing,
+    beforeEnter: isCorp
+
   },
-  {
-    path: "/corporatehomepage",
-    name: "Corporate Homepage",
-    component: CorporateHomePage,
-  }
 ];
 
 const router = new VueRouter({

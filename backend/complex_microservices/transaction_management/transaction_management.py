@@ -127,7 +127,6 @@ def view_transactions_beneficiary(beneficiary_id):
 @app.route("/transaction_management/corporate/<string:listing_id>", methods=["GET"]) #for corporate view of transactions associated with listings
 def view_transactions_corp(listing_id):
 
-    results = []
 
     #1. Retrieve transactions associated with corporate's listing 
     print('\n-----Retrieving transactions-----')
@@ -137,20 +136,22 @@ def view_transactions_corp(listing_id):
 
     #2. For each transaction, retrieve listing details
 
-    for transaction in transaction_result:
-        listing_id = transaction["listing_id"]
-        print('\n-----Retrieving listing details for each transaction-----')
-        listing_URL_full = listing_URL + f"/{listing_id}"
-        listing_result = invoke_http(listing_URL_full, method="GET", json=None)
-        print('listing_result:', listing_result)
+    # for transaction in transaction_result:
+    #     listing_id = transaction["listing_id"]
+    #     print('\n-----Retrieving listing details for each transaction-----')
+    #     listing_URL_full = listing_URL + f"/{listing_id}"
+    #     listing_result = invoke_http(listing_URL_full, method="GET", json=None)
+    #     print('listing_result:', listing_result)
         
-        #3. add listing details into each transaction
-        transaction["listing_details"] = listing_result
-        print('\nEdited transaction:', transaction)
-        results.append(transaction)
-
-    print(results)
-
+    #     #3. add listing details into each transaction
+    #     transaction["listing_details"] = listing_result
+    #     print('\nEdited transaction:', transaction)
+    #     results.append(transaction)
+    listing_URL_full = listing_URL + f"/{listing_id}"
+    listing_result = invoke_http(listing_URL_full, method="GET", json=None)
+    
+    # print(results)
+    results = {"transactions": transaction_result, 'listing_details': listing_result}
     return {
         "code": 200,
         "message": "Retrieving transactions via corporate_id was successful",

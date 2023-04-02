@@ -20,7 +20,7 @@
         <v-app-bar-title class="text-no-wrap">
           <div>
             <span class="font-weight-regular">Free</span>
-            <span class="font-weight-bold">Bee!</span>
+            <span class="font-weight-bold">Bee! CORPORATE</span>
           </div>
         </v-app-bar-title>
       </v-btn>
@@ -30,24 +30,21 @@
       <!-- right side of app bar -->
 
       <div class="hidden-sm-and-down">
-        <span v-for="(link, i) in links" :key="i">
           <v-btn
-            v-if="i < 4"
             plain
             depressed
             color="grey darken-4"
-            :to="link.route"
+            to="/createlisting"
             class="font-weight-bold hidden-sm-only"
           >
-            <v-icon small left>{{ link.icon }}</v-icon>
+            <v-icon small left>mdi-pencil-outline</v-icon>
             <span
               plain
               color="grey darken-4"
               class="text-body-2 font-weight-bold"
-              >{{ link.text }}</span
+              >Create Listing</span
             >
           </v-btn>
-        </span>
         <v-btn
           v-if="this.$store.state.accessToken"
           @click="onLogout"
@@ -114,16 +111,18 @@ export default {
   },
   computed: {
     links() {
+      console.log("links");
       let linkitems;
       if (this.$store.state.accessToken) {
         linkitems = [
           { text: "Find a FreeBee!", route: "/", icon: "mdi-magnify" },
           // {text: 'Report Pet', route:'/ReportPet', icon: 'mdi-dog-side'},
           // {text: 'Search Pet', route:'/SearchAllPets', icon: 'mdi-magnify'},
-          { text: "My FreeBees", route: "/MyFreeBees", icon: "mdi-beehive-outline" },
+          { text: "My FreeBees", route: "/usertransactions", icon: "mdi-beehive-outline" },
           { text: "My Account", route: "/Account", icon: "mdi-account" },
           // {text: 'Matched Pets', route:'/MatchedPets', icon: 'mdi-paw'},
         ];
+        console.log("login");
       } else {
         linkitems = [
         { text: "Find a FreeBee!", route: "/", icon: "mdi-magnify" },
@@ -140,13 +139,33 @@ export default {
       try {
         this.$store.commit("resetState");
         await axios.get(`http://localhost:3001/signout`);
-        this.$router.push('/')
+        location.reload();
       } catch (error) {
         console.log(error);
       }
     },
     async userLoggedIn() {
       try {
+        // let accessToken = null;
+        // var nameEQ = "accessToken=";
+        // var ca = document.cookie.split(";");
+        // for (var i = 0; i < ca.length; i++) {
+        //   var c = ca[i];
+        //   while (c.charAt(0) == " ") c = c.substring(1, c.length);
+        //   if (c.indexOf(nameEQ) == 0) {
+        //     accessToken = c.substring(nameEQ.length, c.length);
+        //   }
+        // }
+        // if (accessToken) {
+        //   const response = await axios.get(
+        //     ` http://localhost:3001/auth/checkaccess/${accessToken}`
+        //   );
+        //   if (response.data.statusCode == 200) {
+        //     this.authorisation = true;
+        //   } else {
+        //     this.authorisation = false;
+        //   }
+        // }
         if (this.$store.getters.getuser != null) {
           this.authorisation = true;
         }
