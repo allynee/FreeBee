@@ -12,6 +12,7 @@
 
 import pika
 import json
+import os
 from invokes import invoke_http
 
 notification_URL = "http://localhost:5001/"
@@ -27,6 +28,10 @@ connection = pika.BlockingConnection(
         host=hostname, port=port,
         heartbeat=3600, blocked_connection_timeout=3600, # these parameters to prolong the expiration time (in seconds) of the connection
 ))
+# os.environ['AMQP_URL'] = "amqp://guest:guest@localhost:5672/vhost?heartbeat=3600&blocked_connection_timeout=3600"
+# amqp_url = os.environ['AMQP_URL']
+
+# connection = pika.BlockingConnection(pika.URLParameters(amqp_url))
     # Note about AMQP connection: various network firewalls, filters, gateways (e.g., SMU VPN on wifi), may hinder the connections;
     # If "pika.exceptions.AMQPConnectionError" happens, may try again after disconnecting the wifi and/or disabling firewalls.
     # If see: Stream connection lost: ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)
