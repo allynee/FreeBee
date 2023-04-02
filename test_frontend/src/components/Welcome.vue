@@ -89,18 +89,9 @@
   </div>
 
     <!-- scroll to top button -->
-    <!-- <v-btn
-      v-scroll="scroll"
-      v-show="fab"
-      fab
-      fixed
-      bottom
-      right
-      color="amber"
-      @click="toTop"
-    >
+    <v-btn v-scroll="onScroll" v-show="fab" fab fixed bottom right color="amber lighten-3" @click="toTop">
       <v-icon>mdi-chevron-up</v-icon>
-    </v-btn> -->
+    </v-btn>
 
   </div>
 </div>
