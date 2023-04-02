@@ -66,7 +66,7 @@ def create_listing():
         "message": "Invalid JSON input: " + str(request.get_data())
     }), 400
 
-@app.route("/listing_management/<int:listing_id>", methods=['PUT'])
+@app.route("/listing_management/<string:listing_id>", methods=['PUT'])
 def update_listing(listing_id):
     #Simple check of input format and data of the request are JSON
     if request.is_json:
