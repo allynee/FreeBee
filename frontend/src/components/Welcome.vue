@@ -145,7 +145,7 @@ export default {
             }
             // console.log(this.$store.state.area)
             let rec_area = "string" //suppose to be this.$store.state.area
-            if (element.area == rec_area){
+            if (element.area == rec_area || rec_area == null){
               this.recListingsArray.push(element)
             }
 

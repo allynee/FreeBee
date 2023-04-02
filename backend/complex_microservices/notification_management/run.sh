@@ -1,4 +1,4 @@
-#!/bin/bash
+
 
 exec python ./notification.py &
 printf "notification service started"

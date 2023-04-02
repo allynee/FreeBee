@@ -5,13 +5,13 @@
   <v-card-actions>
     <!-- <v-btn v-if="isRed" depressed plain @click="like" class="">
        <v-icon :class="{'red': isRed}">mdi-heart</v-icon>\ -->
-      <div v-if="isRed">
-       <v-btn icon color="pink">
+      <div v-if="isliked">
+       <v-btn icon color="pink" @click="like">
           <v-icon>mdi-heart</v-icon>
         </v-btn>
       </div>
       <div v-else>
-        <v-btn icon color="grey">
+        <v-btn icon color="grey" @click="like">
           <v-icon>mdi-heart</v-icon>
         </v-btn>
       </div>
@@ -58,14 +58,39 @@ export default {
       AOS.init({
         duration: 1600,
       })
+      // this.checklike();
     },
     data(){
         return{ 
-           isRed: false
+           isliked: false
         }
     },
     methods: {
+      checklike(){
+        const user_URL = 'http://localhost:8421/favourite' + "/blabla&" + this.aListing.listing_id
+        axios.get(user_URL, {
+          // params: {
+          //   beneficiary_id: "blabla",
+          //   listing_id: this.aListing.listing_id
+          // }
+          
+          // beneficiary_id: this.$store.state.uid,
+          // listing_id: this.aListing.listing_id
+        }).then((response) => {
+          const response_data = response.data;
+          print(response_data + "this is the response data" + this.aListing.listing_id)
+          if (response_data.statusCode == "200") {
+            console.log(response_data.name)
+            this.isliked = true;
+            console.log("this is the isliked")
+            console.log(this.isliked);
+          } else {
+            console.log("fail");
+          }
+        })
+      },
       like(){
+        console.log("this is the like function")
         const user_URL = 'http://localhost:8421/favourite'
         axios.post(user_URL, {
           // beneficiary_id: this.$store.state.uid,
@@ -76,8 +101,9 @@ export default {
           const response_data = response.data;
           if (response_data.statusCode == "200") {
             console.log(response_data.name)
-            this.isRed = true;
-            console.log(this.isRed);
+            this.isliked = true;
+            console.log("this is the isliked")
+            console.log(this.isliked);
           } else {
             console.log("fail");
           }

@@ -3,5 +3,5 @@ WORKDIR /app
 COPY requirements.txt ./
 RUN python -m pip install --no-cache-dir -r requirements.txt
 COPY . /app
-CMD [ "./run.sh" ]
+CMD [ "sh", "-c", "python notification_management.py & python amqpConsumer.py" ]
 
