@@ -7,7 +7,7 @@ import datetime
 from fastapi import HTTPException
 
 ### BENEFICIARY TABLE ###
-def get_beneficiary(db: Session, beneficiary_id: int):
+def get_beneficiary(db: Session, beneficiary_id: str):
     return db.query(models.Beneficiary).filter(models.Beneficiary.beneficiary_id == beneficiary_id).first()
 
 def get_all_beneficiaries(db: Session, skip: int = 0, limit: int = 100):
@@ -20,7 +20,7 @@ def create_beneficiary(db: Session, beneficiary: schemas.BeneficiaryCreate):
     db.refresh(beneficiary)
     return beneficiary
 
-def update_beneficiary(db: Session, beneficiary_id: int, data: schemas.BeneficiaryUpdate):
+def update_beneficiary(db: Session, beneficiary_id: str, data: schemas.BeneficiaryUpdate):
     beneficiary= db.query(models.Beneficiary).filter(models.Beneficiary.beneficiary_id == beneficiary_id).first()
 
     if not beneficiary:
@@ -36,7 +36,7 @@ def update_beneficiary(db: Session, beneficiary_id: int, data: schemas.Beneficia
 
     return beneficiary
 
-def delete_beneficiary(db: Session, beneficiary_id: int):
+def delete_beneficiary(db: Session, beneficiary_id: str):
     beneficiary = db.query(models.Beneficiary).filter(models.Beneficiary.beneficiary_id == beneficiary_id).first()
 
     if not beneficiary:
@@ -65,7 +65,7 @@ def create_preference(db: Session, preference: schemas.PreferenceCreate):
     db.refresh(preference)
     return preference
 
-def delete_preference(db: Session, beneficiary_id: int, category: str):
+def delete_preference(db: Session, beneficiary_id: str, category: str):
     preference = db.query(models.Beneficiary).filter(models.Beneficiary.beneficiary_id == beneficiary_id,
                                                       models.Beneficiary.category == category).first()
 
@@ -88,7 +88,7 @@ def delete_preference(db: Session, beneficiary_id: int, category: str):
 def get_all_subscriptions(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Subscription).offset(skip).limit(limit).all()
 
-def get_subscriptions_by_corporate(db: Session, corporate_id: int, skip: int = 0, limit: int = 100):
+def get_subscriptions_by_corporate(db: Session, corporate_id: str, skip: int = 0, limit: int = 100):
     return db.query(models.Subscription).filter(models.Subscription.corporate_id == corporate_id).offset(skip).limit(limit).all()
 
 def create_subscription(db: Session, subscription: schemas.SubscriptionCreate):
@@ -98,7 +98,7 @@ def create_subscription(db: Session, subscription: schemas.SubscriptionCreate):
     db.refresh(subscription)
     return subscription
 
-def delete_subscription(db: Session, beneficiary_id: int, corporate_id: int):
+def delete_subscription(db: Session, beneficiary_id: str, corporate_id: str):
     subscription = db.query(models.Subscription).filter(models.Subscription.beneficiary_id == beneficiary_id,
                                                        models.Subscription.corporate_id == corporate_id).first()
     if not subscription:
@@ -127,7 +127,7 @@ def create_favourite(db: Session, favourite: schemas.FavouriteCreate):
     db.refresh(favourite)
     return favourite
 
-def delete_favourite(db: Session, beneficiary_id: int, listing_id: int):
+def delete_favourite(db: Session, beneficiary_id: str, listing_id: str):
     favourite = db.query(models.Favourite).filter(models.Favourite.beneficiary_id == beneficiary_id,
                                                   models.Favourite.listing_id == listing_id).first()
 
@@ -147,7 +147,7 @@ def delete_favourite(db: Session, beneficiary_id: int, listing_id: int):
     }
 
 ### CORPORATE TABLE ###
-def get_corporate(db: Session, corporate_id: int):
+def get_corporate(db: Session, corporate_id: str):
     return db.query(models.Corporate).filter(models.Corporate.corporate_id == corporate_id).first()
 
 def get_all_corporates(db: Session, skip: int = 0, limit: int = 100):
@@ -160,7 +160,7 @@ def create_corporate(db: Session, corporate: schemas.CorporateCreate):
     db.refresh(corporate)
     return corporate
 
-def update_corporate(db: Session, corporate_id: int, data: schemas.CorporateUpdate):
+def update_corporate(db: Session, corporate_id: str, data: schemas.CorporateUpdate):
     corporate = db.query(models.Corporate).filter(models.Corporate.corporate_id == corporate_id).first()
 
     if not corporate:
@@ -176,7 +176,7 @@ def update_corporate(db: Session, corporate_id: int, data: schemas.CorporateUpda
 
     return corporate
 
-def delete_corporate(db: Session, corporate_id: int):
+def delete_corporate(db: Session, corporate_id: str):
     corporate= db.query(models.Beneficiary).filter(models.Corporate.corporate_id == corporate_id).first()
 
     if not corporate:
@@ -184,7 +184,7 @@ def delete_corporate(db: Session, corporate_id: int):
         #     "code": 404,
         #     "message": "Listing not found"
         # }
-        raise HTTPException(status_code=404, detail="Corporatenot found")
+        raise HTTPException(status_code=404, detail="Corporate not found")
 
     db.delete(corporate)
     db.commit()

@@ -146,10 +146,8 @@ export default {
     async fetchListings() {
         const listing_URL = 'http://localhost:8000/listing'
         axios.get(listing_URL).then((response) => {
-          // console.log("hello")
           // console.log(response.data)
           response.data.forEach(element => {
-            // console.log("An ELeemnt")
             // console.log(element)
             if (element.status == "Available"){ //
               this.allListingsArray.push(element)
@@ -167,7 +165,7 @@ export default {
 
     },
     gotoListing(listing_id){
-      console.log("clicked")
+      // console.log("clicked")
       this.$router.push({ name: 'IndividualListing', params: {listingid: listing_id}})
     },
     onScroll (e) {
