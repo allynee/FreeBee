@@ -9,7 +9,7 @@ from invokes import invoke_http
 # import amqp_setup
 import pika
 import json
-
+import amqp_setup
 
 app = Flask(__name__)
 # app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
@@ -17,13 +17,32 @@ CORS(app)
 
 listing_URL = "http://localhost:8000/listing"
 # geocoding_URL = "http://localhost:3000/"
-# notification_URL = "http://localhost:3000/"
+notification_URL = "http://localhost:5001/"
 # authentication_URL = "localhost:3001/"
 sendEmail_URL = "http://localhost:5005/sendmail"
 user_URL = "http://localhost:8421"
 
 
 @app.route("/", methods=['GET'])
+###################################################################
+# def callConsumer():
+#     amqp_setup.check_setup()
+#     amqp_setup.channel.basic_consume(queue='notification', on_message_callback=callback, auto_ack=True)
+
+#     print('AMQP code waiting for messages...')
+#     amqp_setup.channel.start_consuming()
+
+# def callback(ch, method, properties, body):
+#     print("\nCALLBACK>>>>>>> \n" + __file__)
+#     print(json.loads(body))
+#     result = json.loads(body)
+#     print() # print a new line feed
+# #     # can call the next function to publish to another queue
+#     # Call the Flask app here
+#     # For example, you can use the requests library to make an HTTP request to a Flask endpoint
+#     notifAmqp_result = invoke_http(notification_URL, method='GET', json=result)
+#     print('notifAmqp_result:', notifAmqp_result)
+
 ###################################################################
 def recieveMail():
     if request.is_json:
@@ -61,6 +80,7 @@ def sortMail(info):
     elif info['purpose'] == "toBeneficiary":
         toBeneficiary(info)
     elif info['purpose'] == "toCorporate":
+        print("toCorporate")
         toCorporate(info)
     elif info['purpose'] == "cancel":
         cancel(info)
