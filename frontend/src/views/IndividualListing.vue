@@ -21,7 +21,7 @@
             style="width: 450px; height: 450px"
           >
             <v-img
-              :src=this.image
+              :src="this.image"
               class="rounded-circle"
               style="height: 425px; width: 425px"
             ></v-img>
@@ -234,21 +234,25 @@ export default {
       if (this.quantity == 0) {
         return "No";
       } else {
-        const transactionManagement_URL =
-          "http://localhost:5100/transaction_management";
-        axios
-          .post(transactionManagement_URL, {
-            listing: this.listing,
-            beneficiary_id: this.$store.state.uid,
-            token: this.$store.state.accessToken,
-            quantity: this.quantity,
-          })
-          .then((response) => {
-            if(response.data[0].code == 200){
-                alert('Claim Successful !')
-                this.$router.push('/')
-            }
-          });
+        if (this.$store.state.accessToken) {
+          const transactionManagement_URL =
+            "http://localhost:5100/transaction_management";
+          axios
+            .post(transactionManagement_URL, {
+              listing: this.listing,
+              beneficiary_id: this.$store.state.uid,
+              token: this.$store.state.accessToken,
+              quantity: this.quantity,
+            })
+            .then((response) => {
+              if (response.data[0].code == 200) {
+                alert("Claim Successful !");
+                this.$router.push("/");
+              }
+            });
+        } else {
+          this.$router.push("/login");
+        }
       }
     },
     checksubscribe(){
