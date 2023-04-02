@@ -1,0 +1,95 @@
+version: "3.8"
+
+services:
+
+  #################################
+  # SIMPLE MICROSERVICES 
+  #################################
+
+  auth:
+    build: ./backend/simple_microservices/auth
+    restart: always
+    ports:
+      - 3001:3001
+
+  geocoding:
+    build: ./backend/simple_microservices/geocoding
+    restart: always
+    ports:
+      - 3000:3000
+  
+  image:
+    build: ./backend/simple_microservices/image
+    restart: always
+    posts:
+      - 3002:3002
+
+  listing:
+    build: ./backend/simple_microservices/listing
+    restart: always
+    ports:
+      - 8000:8000
+
+  notification:
+    build: ./backend/simple_microservices/notification
+    restart: always
+    ports:
+      - 5005:5005
+
+  transaction:
+    build: ./backend/simple_microservices/transaction
+    restart: always
+    ports:
+      - 9000:9000
+
+  user:
+    build: ./backend/simple_microservices/user
+    restart: always
+    ports:
+      - 8421:8421
+
+  ###############################################
+  # COMPLEX MICROSERVICES
+  ###############################################
+  
+  listing_management:
+    build: ./backend/complex_microservices/listing_management
+    restart: always
+    depends_on:
+      - listing
+      - auth
+      - geocoding
+    ports:
+      - 5000:5000
+
+  transaction_management:
+    build: ./backend/complex_microservices/transaction_management
+    restart: always
+    depends_on:
+      - listing
+      - transaction
+    ports:
+      - 5100:5100
+
+  notification_management:
+    build: ./backend/complex_microservices/notification_management
+    restart: always
+    depends_on:
+      - notification
+      - user
+    ports: 
+      - 5001:5001
+
+  #################################
+  # FRONTEND
+  #################################
+  frontend:
+    build: ./frontend
+    restart: always
+    depends_on: 
+      - listing_management
+      - transaction_management
+      - notification_management
+    ports: 
+      - 8084:8084
+
