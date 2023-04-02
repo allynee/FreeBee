@@ -5,15 +5,15 @@
                 <span class="text-h4 text-capitalize brown--text">These freebies are waiting for you!</span>
             </v-row>
             
-            <v-tabs v-model="tab" fixed-tabs color="orange" bg-color="white">
-                <v-tab>In Progress</v-tab>
-                <v-tab>Ready for Collection</v-tab>
-                <v-tab>Completed</v-tab>
-                <v-tab>Cancelled</v-tab>
+            <v-tabs v-model="tab" grow class="rounded-lg">
+                <v-tab class="amber lighten-2">In Progress</v-tab>
+                <v-tab class="amber lighten-2">Ready for Collection</v-tab>
+                <v-tab class="amber lighten-2">Completed</v-tab>
+                <v-tab class="amber lighten-2">Cancelled</v-tab>
             </v-tabs>
-            <v-tabs-items v-model="tab">
+            <v-tabs-items v-model="tab" class="rounded-lg pa-3 amber lighten-5">
                 <v-tab-item :value="0">
-                    <v-card v-for="aTransaction in inProgressArray" :key="aTransaction.listing_id">
+                    <v-card flat v-for="aTransaction in inProgressArray" :key="aTransaction.transaction_id" class="my-5 mx-5">
                         <Transaction :aTransaction="aTransaction"></Transaction>
                     </v-card>
                 </v-tab-item>
@@ -89,36 +89,7 @@
         loading(){
             return this.$store.getters.loading
         },
-        comparePasswords(){
-            return this.password!=this.confirmpassword ? 'Passwords do not match!': ''
-        },
-        passwordLength(){
-            if (this.password.length < 6){
-                return 'Minimum length is 6 characters'
-            }
-            else if(!this.password.match(/[a-z]/)){
-                return 'Must contain at least 1 lowercase letter'
-            }
-            else if(!this.password.match(/[A-Z]/)){
-                return 'Must contain at least 1 uppercase letter'
-            }
-            else if(!this.password.match(/[`!@#$%^&*()_+\-=[\]{};':"\\|,.<>?~]/)){
-                return 'Must contain at least 1 symbol'
-            }
-            else {
-                return true
-            }
-        },
-        formIsValid(){
-            return this.fullname!='' && 
-            this.email!='' &&
-            this.username!=''&&
-            this.password!='' &&
-            this.confirmpassword!=''&&
-            this.password==this.confirmpassword
-        }
-    
-      
+        
       },
       mounted(){
         this.fetchTransactions()

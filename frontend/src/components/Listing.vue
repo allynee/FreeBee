@@ -77,10 +77,15 @@ export default {
     },
     methods: {
       checkLike(){
-        axios.get('http://localhost:8421/favourite' , 
-          {params : { "beneficiary_id": this.$store.state.uid,
-                        "listing_id": this.aListing.listing.listing_id} }
-        )
+        let config = {
+          headers: { 
+            'Content-Type': 'application/json'
+          },
+          params : {"beneficiary_id": this.$store.state.uid,
+                        "listing_id": this.aListing.listing.listing_id
+          } 
+        }
+        axios.get('http://localhost:8421/favourite' , config)
         .then((response) => {
           return response.data
         })
