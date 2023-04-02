@@ -143,7 +143,7 @@ export default {
             if (element.status == "Available"){ //
               this.allListingsArray.push(element)
             }
-            console.log(this.$store.state.area)
+            // console.log(this.$store.state.area)
             let rec_area = "string" //suppose to be this.$store.state.area
             if (element.area == rec_area){
               this.recListingsArray.push(element)
