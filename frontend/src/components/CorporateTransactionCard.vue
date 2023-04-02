@@ -12,22 +12,25 @@
                             </v-row>    
                             <v-row>
                                 <v-btn tile color="green" style="margin-left: 15px;">
-                                    In Progress
+                                        {{ transaction.status }}
                                 </v-btn>
                             </v-row>
                         </v-col>
                         <v-col>
                             <v-row>
-                                Beneficiary: Melvin
+                                Beneficiary ID: {{ transaction.beneficiary_id }}
                             </v-row>
                             <v-row>
-                                Quantity claimed: 100
+                                Quantity claimed: {{ transaction.quantity }}
                             </v-row>
                             <v-row>
-                                Claimed Item on 10/10/2021 13:01
+                                Claimed Item on {{ transaction.created.split('T')[0] }} {{ transaction.created.split('T')[1] }}
                             </v-row>
-                            <v-row>
-                                Last Status Update: 12/10/2021 08:40
+                            <v-row v-if="transaction.modified">
+                                Last Status Update: {{ transaction.modified.split('T')[0] }} {{ transaction.modified.split('T')[1] }}
+                            </v-row>
+                            <v-row v-else>
+                                Last Status Update: {{ transaction.created.split('T')[0] }} {{ transaction.created.split('T')[1] }}
                             </v-row>
                         </v-col>
                     </v-row>
@@ -41,12 +44,13 @@
     import AOS from 'aos'
     export default {
         props: {
-          aListing: Object,
+          transaction: Object,
         },
         mounted() {
           AOS.init({
             duration: 1600,
           })
+          console.log(this.transaction)
         },
         data(){
             return{ 
