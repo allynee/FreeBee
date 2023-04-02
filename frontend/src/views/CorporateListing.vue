@@ -59,6 +59,11 @@
                 </div>
                 <span class="ml-15 pl-15">
                     <v-col>
+
+                                    <v-btn small class="amber lighten-4 ml-2" depressed outlined @click="subscribe">
+                                        <v-icon left small>mdi-account-multiple</v-icon>
+                                        View Beneficiaries 
+                                    </v-btn>
                                     <v-btn small class="amber lighten-4 ml-2" depressed outlined @click="subscribe">
                                         <v-icon left small>mdi-pencil-outline</v-icon>
                                         Edit Listing

@@ -18,11 +18,11 @@
                         style="margin-left: 15px; margin-right: 15px;"
                         outlined
                         rounded
-                        name="category"
+                        name="status"
                         placeholder="In Progress"
-                        id="category"
-                        v-model="itemCategory"
-                        :items=myCategories>
+                        id="status"
+                        v-model="transactionStatus"
+                        :items=myStatuses>
                     </v-select>
                 </v-row>
             </v-container>
@@ -46,7 +46,7 @@
       data(){
         return{
             fab: false,
-            myCategories: ['Food & Drinks', 'Apparel', 'Electronics', 'Furniture', 'Toys & Hobbies', 'Others'],
+            myStatuses: ['In Progress', 'Ready for Collection', 'Collected', 'Cancelled'],    
 
         }
       },
