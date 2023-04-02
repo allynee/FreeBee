@@ -163,29 +163,10 @@ export default {
   methods: {
     async onSubmit() {
       try {
-        console.log(this.itemImage);
         const formData = new FormData();
 
         formData.append("image", this.itemImage, this.itemImage.name);
-        console.log(formData.get("image"));
-        // let ext = filename.slice(filename.lastIndexOf('.'));
-        // const response = await axios.post(
-        //   `http://localhost:3002/image`,
-        //   formData
-        // );
-        // let listingid = response.data.listingid;
-        // let ext = response.data.extension;
-        // var currentdate = new Date();
-        // var datetime = currentdate.getFullYear() + "-"
-        //         + (currentdate.getMonth())  + "-"
-        //         + currentdate.getDate() + " "
-        //         + currentdate.getHours() + ":"
-        //         + currentdate.getMinutes() + ":"
-        //         + currentdate.getSeconds();
-        // console.log(datetime)
-
         let listing = {
-          //   listing_id: listingid,
           corporate_id: this.$store.state.uid,
           corporate_name: this.$store.state.corporateName,
           name: this.listingName,
@@ -198,7 +179,6 @@ export default {
           category: this.itemCategory,
           quantity: this.quantity,
           status: "Available",
-          //   img_ext: ext,
         };
         // formData.append("listing", listing);
         let token = this.$store.state.accessToken;
