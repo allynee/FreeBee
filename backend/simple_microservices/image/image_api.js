@@ -6,12 +6,12 @@ const app = express();
 const port = 3002;
 app.use(cors(), bodyParser.json());
 const upload = multer();
+
 // const axios = require("axios");
 const imageFn = require("./image");
 
-app.post("/image", upload.single('image'), async (req, res) => {
-  const image = req.file
-  console.log(image)
+app.post("/image", async (req, res) => {
+  const image = req.body
   const authStatus = await imageFn.createListingFirebase(image);
   res.json(authStatus);
 });
