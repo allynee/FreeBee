@@ -1,4 +1,17 @@
 <template>
+   <!-- loading bee -->
+   <div v-if="loaded">
+    <v-row justify="center" class="my-15">
+      <v-col cols="12" align="center" data-aos="fade-left">
+        <video-background
+          :src="require(`@/assets/bee.mp4`)"
+          style="height: 250px; width: 180px"
+        >
+        </video-background>
+      </v-col>
+    </v-row>
+  </div>
+  <div v-else>
   <div fluid class="white pa-12" align="center">
     <div class="pa-5 rounded-xl" style="height: 50%">
       <v-row>
@@ -15,6 +28,8 @@
           </div>
         </v-col>
         <v-col cols="6" align="left">
+          <v-row>
+            <v-col cols="10" align="left">
           <h1
             class="text-h3 font-weight-medium grey--text text--darken-3 my-2"
             data-aos="fade-right"
@@ -24,6 +39,20 @@
           <h1 class="text-subtitle-1 font-weight-light my-1">
             Posted on: {{ listing.created.split("T")[0] }}
           </h1>
+        </v-col>
+          <v-col cols="2" align="center" justify-content-center>
+            <div v-if="favourite">
+              <v-btn x-large icon color="pink" @click="unlike">
+                 <v-icon>mdi-heart</v-icon>
+               </v-btn>
+             </div>
+             <div v-else>
+               <v-btn x-large icon color="grey" @click="like">
+                 <v-icon>mdi-heart</v-icon>
+               </v-btn>
+             </div>
+            </v-col>
+        </v-row>
           <br />
           <!-- v tabs -->
           <div class="">
@@ -48,18 +77,30 @@
                     </span>
                   </v-col>
                   <v-col cols="5">
-                    <span class="">
+                    <div v-if="subscribed">
                       <v-btn
-                        small
-                        class="amber lighten-4"
-                        depressed
-                        outlined
-                        @click="subscribe"
-                      >
-                        <v-icon left small>mdi-bell</v-icon>
-                        Subscribe to company
-                      </v-btn>
-                    </span>
+                      small
+                      class="amber lighten-4"
+                      depressed
+                      outlined
+                      @click="unsubscribe"
+                    >
+                      <v-icon left small>mdi-bell-off</v-icon>
+                      Unsubscribe to company
+                    </v-btn>
+                    </div>
+                    <div v-else>
+                      <v-btn
+                      small
+                      class="amber lighten-3"
+                      depressed
+                      outlined
+                      @click="subscribe"
+                    >
+                      <v-icon left small>mdi-bell</v-icon>
+                      Subscribe to company
+                    </v-btn>
+                    </div>
                   </v-col>
                 </v-row>
                 <v-row>
@@ -80,7 +121,7 @@
               <v-tab-item :value="1">
                 <span
                   class="text-h6 font-weight-medium grey--text text--darken-3"
-                >
+                > 
                   Address:
                 </span>
                 <span class="text-h6 font-weight-light">
@@ -154,6 +195,7 @@
       </v-row>
     </div>
   </div>
+</div>
 </template>
 <script>
 import axios from "axios";
@@ -165,14 +207,17 @@ export default {
       tab: null,
       listing: null,
       quantity: 0,
-      image: null,
+      image:null,
+      favourite: false,
+      subscribed: false,
+      loaded: true,
     };
   },
   methods: {
     async fetchListing() {
       const listing_URL =
-        "http://0.0.0.0:8000/listing/" + this.$route.params.listingid;
-      console.log(listing_URL);
+        "http://localhost:8000/listing/" + this.$route.params.listingid;
+        console.log(listing_URL)
       axios
         .get(listing_URL)
         .then((response) => {
@@ -208,6 +253,9 @@ export default {
         }
       }
     },
+    checksubscribe(){
+      // console.log("this is the checking function")
+    },
     subscribe() {
       const user_URL = "http://localhost:8421/subscription";
       axios
@@ -228,9 +276,70 @@ export default {
           console.log("error " + error);
         });
     },
+    unsubscribe(){
+      // console.log("this is the unsubscribe function")
+    },
+    checkLike(){
+        axios.get('http://localhost:8421/favourite' , 
+          {params : { "beneficiary_id": this.$store.state.uid,
+                        "listing_id": this.listing.listing_id} }
+        )
+        .then((response) => {
+          return response.data
+        })
+        .catch((error) => {
+          console.error(error);
+          return false;
+        });
+      },
+      like(){
+        if(this.$store.state.uid==null){
+          alert("Please register and log in to like this post!")
+        }else{
+          // console.log("this is the like function")
+          const user_URL = 'http://localhost:8421/favourite'
+          axios.post(user_URL, {
+            beneficiary_id: this.$store.state.uid,
+            listing_id: this.listing.listing_id,
+          })
+          .then((response) => {
+            if (response.status == "201") {
+              this.favourite = true;
+              console.log("liked!!!")
+            } else {
+              console.log("fail");
+            }
+          });
+        }
+      },
+      unlike(){
+        // console.log("this is the unlike function")
+        const user_URL = 'http://localhost:8421/favourite'
+        axios.delete(user_URL, {
+            data: {
+              beneficiary_id: this.$store.state.uid,
+              listing_id: this.listing.listing_id,
+            }
+          }).then((response) => {
+            const response_data = response.data;
+            if (response.status == "200") {
+              console.log(response_data.name)
+              this.favourite = false;
+              console.log("deleted!!!")
+            } else {
+              console.log("fail");
+            }
+          });
+      }
   },
   created() {
     this.fetchListing();
+    // this.checkLike();
+    // this.checksubscribe();
+    setTimeout(() => {
+      this.loaded = false
+      // console.log(this.loaded)
+    }, 1250)
   },
 };
 </script>

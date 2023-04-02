@@ -114,7 +114,6 @@ export default {
   },
   computed: {
     links() {
-      console.log("links");
       let linkitems;
       if (this.$store.state.accessToken) {
         linkitems = [
@@ -125,7 +124,6 @@ export default {
           { text: "My Account", route: "/Account", icon: "mdi-account" },
           // {text: 'Matched Pets', route:'/MatchedPets', icon: 'mdi-paw'},
         ];
-        console.log("login");
       } else {
         linkitems = [
         { text: "Find a FreeBee!", route: "/", icon: "mdi-magnify" },
