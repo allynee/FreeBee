@@ -23,11 +23,17 @@ notification_URL = "http://localhost:5001/"
 hostname = "localhost" # default hostname
 port = 5672 # default port
 # connect to the broker and set up a communication channel in the connection
-connection = pika.BlockingConnection(
+try:
+    # establish connection to AMQP server
+    connection = pika.BlockingConnection(
     pika.ConnectionParameters(
         host=hostname, port=port,
         heartbeat=3600, blocked_connection_timeout=3600, # these parameters to prolong the expiration time (in seconds) of the connection
-))
+    ))
+except pika.exceptions.AMQPConnectionError as error:
+    # handle connection error
+    print(f"Failed to establish connection to AMQP server: {error}")
+
 # os.environ['AMQP_URL'] = "amqp://guest:guest@localhost:5672/vhost?heartbeat=3600&blocked_connection_timeout=3600"
 # amqp_url = os.environ['AMQP_URL']
 
