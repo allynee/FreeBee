@@ -140,7 +140,7 @@ export default {
       try {
         this.$store.commit("resetState");
         await axios.get(`http://localhost:3001/signout`);
-        this.$router.push('/')
+        location.reload();
       } catch (error) {
         console.log(error);
       }

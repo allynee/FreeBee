@@ -78,12 +78,12 @@
       <v-divider></v-divider>
 
       <v-list class="hidden-md-and-up">
-        <v-list-item v-for="link in links" :key="link.text" :to="link.route">
+        <v-list-item to="/createlisting">
           <v-list-item-action>
-            <v-icon>{{ link.icon }}</v-icon>
+            <v-icon>mdi-pencil-outline</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>{{ link.text }}</v-list-item-title>
+            <v-list-item-title>Create Listing</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
         <!-- logout -->
