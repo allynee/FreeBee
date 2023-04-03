@@ -15,6 +15,8 @@ const imageFn = require("./image");
 app.post("/image", async (req, res) => {
   const image = req.body
   const authStatus = await imageFn.createListingFirebase(image);
+  console.log(authStatus);
+  console.log("this is authStatus in image_api.js");
   res.json(authStatus);
 });
 

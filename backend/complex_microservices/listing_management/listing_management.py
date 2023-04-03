@@ -31,7 +31,7 @@ def create_listing():
     print('line32', listing)
     print(image_file)
     filename = image_file.filename
-    tempdir = tempfile.mkdtemp()
+    tempdir = "/data"
     filepath = os.path.join(tempdir, filename)
     image_file.save(filepath)
     #Simple check of input format and data of the request are JSON
@@ -127,7 +127,8 @@ def processCreateListing(listing_object, token, image):
             # #3. send address string from listing to geocoding API
             print('\n-----Invoking geocoding microservice-----')
             address = listing_object["address"]
-            geocoding_URL_full = "http://localhost:3000/graphql"
+            # geocoding_URL_full = "http://localhost:3000/graphql"
+            geocoding_URL_full = geocoding_URL + "graphql"
             query = f'''query {{
                 address(address: "{address}") {{
                     address
