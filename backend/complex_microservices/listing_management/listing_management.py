@@ -72,12 +72,13 @@ def update_listing(listing_id):
     #Simple check of input format and data of the request are JSON
     if request.is_json:
         try:
-            listing = request.get_json()
-            print("\nReceived an listing in JSON:", listing)        
-         
+            request_json = request.get_json()
+            listing = request_json['listing']
+            print("\nReceived an listing in JSON:", listing) 
+            token = request_json['token']
             # do the actual work
             # 1. Update listing info 
-            result = processUpdateListing(listing, listing_id)
+            result = processUpdateListing(listing, listing_id, token)
             return jsonify(result)
 
         except Exception as e:
@@ -192,7 +193,7 @@ def processCreateListing(listing_object, token, image):
             "message": "Unauthenticated user. User needs to be logged into a corporate account."
         }, 404
 
-def processUpdateListing(listing, listing_id):
+def processUpdateListing(listing, listing_id,token):
     #2.authenticate that this user is a corporate
     authentication_result = authenticateUser(token) 
     print(authentication_result)

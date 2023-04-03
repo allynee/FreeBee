@@ -8,13 +8,13 @@
             style="width: 450px; height: 450px"
           >
             <v-img
-              :src=this.image
+              :src="this.image"
               class="rounded-circle"
               style="height: 425px; width: 425px"
             ></v-img>
           </div>
         </v-col>
-        <v-col cols="6" align="left"> 
+        <v-col cols="6" align="left">
           <h1
             class="text-h3 font-weight-medium grey--text text--darken-3 my-2"
             data-aos="fade-right"
@@ -22,10 +22,10 @@
             {{ this.listing.name }}
           </h1>
           <h1 class="text-subtitle-1 font-weight-light my-1">
-            Posted on: {{ this.listing.created.split('T')[0] }}
+            Posted on: {{ this.listing.created.split("T")[0] }}
           </h1>
           <br />
-          <v-container style="margin-bottom: 15px;" >
+          <v-container style="margin-bottom: 15px">
             <v-row>
               <v-btn
                 class="amber lighten-4 ml-2"
@@ -36,7 +36,7 @@
                 <v-icon left small>mdi-account-multiple</v-icon>
                 View Transactions
               </v-btn>
-              <v-btn
+              <!-- <v-btn
                 class="amber lighten-4 ml-2"
                 depressed
                 outlined
@@ -44,13 +44,13 @@
               >
                 <v-icon left small>mdi-pencil-outline</v-icon>
                 Edit Listing
-              </v-btn>
+              </v-btn> -->
 
               <v-btn
                 class="amber lighten-4 ml-2"
                 depressed
                 outlined
-                @click="subscribe"
+                @click="deleteListing"
               >
                 <v-icon left small>mdi-delete-empty</v-icon>
                 Delete Listing
@@ -83,9 +83,9 @@
                     Quantity:
                   </h1>
                   <h1
-                  class="text-body-1 font-weight-light grey--text text--darken-3"
+                    class="text-body-1 font-weight-light grey--text text--darken-3"
                   >
-                  {{ this.listing.quantity }}
+                    {{ this.listing.quantity }}
                   </h1>
                 </span>
               </v-tab-item>
@@ -93,23 +93,26 @@
                 <span
                   class="text-h6 font-weight-medium grey--text text--darken-3"
                 >
-                  Address: 
+                  Address:
                 </span>
-                <span class="text-body-1 font-weight-light"> {{ this.listing.address }} </span>
+                <span class="text-body-1 font-weight-light">
+                  {{ this.listing.address }}
+                </span>
                 <br />
                 <span
                   class="text-h6 font-weight-medium grey--text text--darken-3"
                 >
                   Postal Code:
                 </span>
-                <span class="text-body-1 font-weight-light"> {{ this.listing.postal}} </span>
+                <span class="text-body-1 font-weight-light">
+                  {{ this.listing.postal }}
+                </span>
               </v-tab-item>
             </v-tabs-items>
           </div>
           <br />
           <!-- Claim -->
-          <div class="white rounded-xl">
-          </div>
+          <div class="white rounded-xl"></div>
         </v-col>
       </v-row>
     </div>
@@ -136,8 +139,7 @@ export default {
         .then((response) => {
           console.log(response.data);
           this.listing = response.data;
-          this.image = `https://firebasestorage.googleapis.com/v0/b/esdeeznutz.appspot.com/o/listings%2F${this.listing.listing_id}${this.listing.img_ext}?alt=media&token=d96a1b6f-e4a2-42d1-a06b-c9331d4490a4`
-            
+          this.image = `https://firebasestorage.googleapis.com/v0/b/esdeeznutz.appspot.com/o/listings%2F${this.listing.listing_id}${this.listing.img_ext}?alt=media&token=d96a1b6f-e4a2-42d1-a06b-c9331d4490a4`;
         })
         .catch((exception) => {
           console.log(exception);
@@ -180,6 +182,33 @@ export default {
       this.$router.push(
         `/corporatetransactions/${this.$route.params.listingid}`
       );
+    },
+    async deleteListing() {
+      try {
+        this.listing.status = "Unavailable";
+        const listing_management_url = `http://localhost:5000/listing_management/${this.$route.params.listingid}`;
+        axios
+          .put(listing_management_url, {
+            listing: this.listing,
+            token: this.$store.state.accessToken,
+          })
+          .then((response) => {
+            console.log(response.data);
+          });
+        const transaction_management_get = `http://localhost:5100/transaction_management/corporate/${this.$route.params.listingid}`;
+        const transactions = await axios.get(transaction_management_get);
+        const transaction_management_put = `http://localhost:5100/transaction_management`;
+        console.log(transactions.data.result.transactions);
+        const update_result = await axios.put(transaction_management_put, {
+          listing: this.listing,
+          token: this.$store.state.accessToken,
+          transaction: transactions.data.result.transactions,
+          status: "Cancelled",
+        });
+        console.log(update_result.data);
+      } catch (error) {
+        console.log(error);
+      }
     },
   },
   created() {
