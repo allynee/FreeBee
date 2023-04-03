@@ -109,7 +109,7 @@ services:
     environment:
       rabbit_host: rabbitmq
       rabbit_port: 5672
-      listing_URL: http://listing:8000
+      listing_URL: http://listing:8000/listing
       geocoding_URL: http://geocoding:3000
       auth_URL: http://auth:3001/auth/checkaccess/
       image_URL: http://imaging:3002/image
