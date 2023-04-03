@@ -11,9 +11,9 @@
       </v-row>
 
       <v-card>
-        <v-tabs v-model="tab" fixed-tabs color="orange" bg-color="white">
-          <v-tab>User</v-tab>
-          <v-tab>Corporate</v-tab>
+        <v-tabs v-model="tab" grow class="rounded-lg">
+          <v-tab class="amber lighten-2">User</v-tab>
+          <v-tab class="amber lighten-2">Corporate</v-tab>
         </v-tabs>
         <v-tabs-items v-model="tab">
           <v-tab-item :value="0">

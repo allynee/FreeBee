@@ -14,7 +14,7 @@
             ></v-img>
           </div>
         </v-col>
-        <v-col cols="6" align="left">
+        <v-col cols="6" align="left"> 
           <h1
             class="text-h3 font-weight-medium grey--text text--darken-3 my-2"
             data-aos="fade-right"
@@ -34,7 +34,7 @@
                 @click="gotoTransactions"
               >
                 <v-icon left small>mdi-account-multiple</v-icon>
-                View Beneficiaries
+                View Transactions
               </v-btn>
               <v-btn
                 class="amber lighten-4 ml-2"
@@ -76,6 +76,18 @@
                 >
                   {{ this.listing.description }}
                 </h1>
+                <span>
+                  <h1
+                    class="text-h6 font-weight-medium grey--text text--darken-3 mt-3 mb-1"
+                  >
+                    Quantity:
+                  </h1>
+                  <h1
+                  class="text-body-1 font-weight-light grey--text text--darken-3"
+                  >
+                  {{ this.listing.quantity }}
+                  </h1>
+                </span>
               </v-tab-item>
               <v-tab-item :value="1">
                 <span
@@ -83,23 +95,20 @@
                 >
                   Address: 
                 </span>
-                <span class="text-h6 font-weight-light"> {{ this.listing.address }} </span>
+                <span class="text-body-1 font-weight-light"> {{ this.listing.address }} </span>
                 <br />
                 <span
                   class="text-h6 font-weight-medium grey--text text--darken-3"
                 >
                   Postal Code:
                 </span>
-                <span class="text-h6 font-weight-light"> {{ this.listing.postal}} </span>
+                <span class="text-body-1 font-weight-light"> {{ this.listing.postal}} </span>
               </v-tab-item>
             </v-tabs-items>
           </div>
           <br />
           <!-- Claim -->
-          <div class="white rounded-xl my-5">
-            <h1 class="text-h6 grey--text text--darken-4 font-weight-light">
-              Quantity: {{ this.listing.quantity }}
-            </h1>
+          <div class="white rounded-xl">
           </div>
         </v-col>
       </v-row>
