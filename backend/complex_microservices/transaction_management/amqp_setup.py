@@ -13,14 +13,15 @@
 import pika
 import json
 from invokes import invoke_http
+from os import environ
 
 notification_URL = "http://localhost:5001/"
 
 # These module-level variables are initialized whenever a new instance of python interpreter imports the module;
 # In each instance of python interpreter (i.e., a program run), the same module is only imported once (guaranteed by the interpreter).
 
-hostname = "localhost" # default hostname
-port = 5672 # default port
+hostname = environ.get('rabbit_host') or 'localhost' ###
+port = environ.get('rabbit_port') or 5672 ###
 # connect to the broker and set up a communication channel in the connection
 connection = pika.BlockingConnection(
     pika.ConnectionParameters(
