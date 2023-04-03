@@ -111,7 +111,7 @@ export default {
     },
     async updateDB() {
       if (this.update.length > 0) {
-        console.log(this.transactionStatus)
+        console.log(this.transactionStatus);
         axios
           .put(`http://localhost:5100/transaction_management`, {
             listing: this.listing_details,
@@ -147,6 +147,8 @@ export default {
         status = "Ready for Collection";
       } else if (this.transactionStatus == "Done") {
         status = "Collected";
+      } else if (this.transactionStatus == "Cancelled") {
+        status = "Cancelled";
       }
 
       return this.transactions.filter((transaction) => {
