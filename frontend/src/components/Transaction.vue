@@ -1,34 +1,63 @@
 <template>
     <div>
-        <v-card width="100%">
+        <v-card width="100%" class="py-1 px-10">
             <v-card-text>
                 <v-container>
                     <v-row>
-                        <v-col>
-                            <v-row>
-                                <v-img :src="require('../assets/pigbee.jpg')" max-width="70"></v-img>
-                            </v-row>
-                            <v-row>
-                                {{ aTransaction.listing_details.name }}
-                            </v-row>
+                        <v-col cols="8">
+                            <h1 class="text-h4 font-weight-medium grey--text text--darken-3 mb-3">
+                                    {{ aTransaction.listing_details.name }}
+                            </h1>
+                            
+                            <div>
+                                <span class="grey--text text--darken-3">
+                                    Quantity: 
+                                </span>
+                                <span class="font-weight-light">
+                                    {{ aTransaction.quantity }}
+                                </span>
+                            </div>
+
+                            <div>
+                                <span class="grey--text text--darken-3">
+                                    Claimed Item On: 
+                                </span>
+                                <span class="font-weight-light">
+                                    {{ aTransaction.created.split("T")[0] }}
+                                </span>
+                            </div>
+
+                            <div v-if="aTransaction.modified">
+                                <span class="grey--text text--darken-3">
+                                    Last Status Update:
+                                </span>
+                                <span class="font-weight-light">
+                                    {{ aTransaction.modified.split("T")[0] }}
+                                </span>
+                            </div>
+
+                            <div v-else>
+                                <span class="grey--text text--darken-3">
+                                    Last Status Update:
+                                </span>
+                                <span class="font-weight-light">
+                                    {{ aTransaction.created.split("T")[0] }}
+                                </span>
+                            </div>
+
+                            <div>
+                                <span class="grey--text text--darken-3">
+                                    Collection Details:
+                                </span>
+                                <span class="font-weight-light">
+                                    {{ aTransaction.listing_details.collection_details }}
+                                </span>
+                            </div>
+                            
                         </v-col>
                     
-                        <v-col>
-                            <v-row>
-                                Quantity: {{ aTransaction.quantity }}
-                            </v-row>
-                            <v-row>
-                                Claimed Item on {{ aTransaction.created.split("T")[0] }}
-                            </v-row>
-                            <v-row v-if="aTransaction.modified">
-                                Last Status Update: {{ aTransaction.modified.split("T")[0] }}
-                            </v-row>
-                            <v-row v-else>
-                                Last Status Update: {{ aTransaction.created.split("T")[0] }}
-                            </v-row>
-                            <v-row>
-                                Collection Details: {{ aTransaction.listing_details.collection_details }}
-                            </v-row>
+                        <v-col cols="4" align="center" style="max-height: 150px;">
+                            <v-img :src="require('../assets/pigbee.jpg')" style="height: 150px; width: 100%; object-fit: contain;" class=""></v-img>
                         </v-col>
                     </v-row>
                 </v-container>
@@ -38,16 +67,11 @@
 </template>
     
     <script>
-    import AOS from 'aos'
     export default {
         props: {
           aTransaction: Object,
         },
         mounted() {
-          AOS.init({
-            duration: 1600,
-          })
-          console.log(this.aTransaction)
 
         },
         data(){

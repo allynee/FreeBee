@@ -13,8 +13,9 @@
             </v-tabs>
             <v-tabs-items v-model="tab" class="rounded-lg pa-3 amber lighten-5">
                 <v-tab-item :value="0">
-                    <v-card flat v-for="aTransaction in inProgressArray" :key="aTransaction.transaction_id" class="my-5 mx-5">
-                        <Transaction :aTransaction="aTransaction"></Transaction>
+                    <v-card flat v-for="aTransaction in inProgressArray" :key="aTransaction.transaction_id" 
+                    class="my-5 mx-5" data-aos="fade-up">
+                        <Transaction :aTransaction="aTransaction" data-aos="fade-up"></Transaction>
                     </v-card>
                 </v-tab-item>
                     
@@ -46,6 +47,7 @@
   <script>
     import Transaction from '../components/Transaction.vue'
     import axios from 'axios'
+    import AOS from "aos";
   
     export default {
 
@@ -93,6 +95,9 @@
       },
       mounted(){
         this.fetchTransactions()
+        AOS.init({
+            duration: 800,
+        });
       }
     }
   </script>
