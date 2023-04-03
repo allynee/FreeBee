@@ -68,7 +68,7 @@
       </div>
 
       <!-- scroll to top button -->
-      <!-- <v-btn
+      <v-btn
         v-scroll="onScroll"
         v-show="fab"
         fab
@@ -79,7 +79,7 @@
         @click="toTop"
       >
         <v-icon>mdi-chevron-up</v-icon>
-      </v-btn> -->
+      </v-btn>
     </div>
   </div>
 </template>
@@ -110,9 +110,7 @@ export default {
     async fetchListings() {
       const listing_URL = `http://localhost:5000/listing_managemen`;
       axios.get(listing_URL).then((response) => {
-        console.log(response.data);
         response.data.forEach((element) => {
-          console.log(element);
           if (element.listing.corporate_id == this.$store.state.uid) {
             //
             this.allListingsArray.push(element);
@@ -123,6 +121,14 @@ export default {
     },
     gotoListing(listing_id) {
       this.$router.push(`/corporatelisting/${listing_id}`);
+    },
+    onScroll(e) {
+      if (typeof window === "undefined") return;
+      const top = window.pageYOffset || e.target.scrollTop || 0;
+      this.fab = top > 20;
+    },
+    toTop() {
+      this.$vuetify.goTo(0);
     },
   },
   computed: {},

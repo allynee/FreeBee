@@ -56,10 +56,9 @@ def create_corporate(corporate: schemas.CorporateCreate, db: Session = Depends(g
     return crud.create_corporate(db, corporate=corporate)
 
 ### CREATE SINGLE SUBSCRIPTION ###
-@app.post('/subscription', response_model=schemas.Subscription)
+@app.post('/subscription', response_model=schemas.Subscription, status_code=201)
 def create_subscription(subscription: schemas.SubscriptionCreate, db: Session = Depends(get_db)):
     return crud.create_subscription(db, subscription=subscription)
-
 ### CREATE SINGLE FAVOURITE ###
 @app.post('/favourite', response_model=schemas.Favourite, status_code=201)
 def create_favourite(favourite: schemas.FavouriteCreate, db: Session = Depends(get_db)):
@@ -131,6 +130,10 @@ def get_favourite(beneficiary_id: str, listing_id:str, db: Session = Depends(get
 def delete_favourite(favourite: schemas.Favourite, db: Session = Depends(get_db)):
     return crud.delete_favourite(db, favourite=favourite)
 
+### DELETE SINGLE FAVOURITE###
+@app.delete('/subscription')
+def delete_subscription(subscription: schemas.Subscription, db: Session = Depends(get_db)):
+    return crud.delete_subscription(db, subscription=subscription)
 
 if __name__ == '__main__':
     import uvicorn
