@@ -3,6 +3,7 @@ from flask_cors import CORS
 import tempfile
 
 import os, sys
+from os import environ
 
 import requests
 from invokes import invoke_http
@@ -14,11 +15,11 @@ import json
 app = Flask(__name__)
 CORS(app)
 
-listing_URL = "http://localhost:8000/listing"
-geocoding_URL = "http://localhost:3000/"
-notification_URL = "http://localhost:3000/"
-authentication_URL = "http://localhost:3001/auth/checkaccess/"
-image_URL = "http://localhost:3002/image"
+listing_URL = environ.get('listing_URL') or "http://localhost:8000/listing"
+geocoding_URL = environ.get('geocoding_URL') or "http://localhost:3000/"
+# notification_URL = environ.get('notification_URL') or "http://localhost:5005/"
+authentication_URL = environ.get('auth_URL') or "http://localhost:3001/auth/checkaccess/"
+image_URL = environ.get('image_URL') or "http://localhost:3002/image"
 
 
 @app.route("/listing_management", methods=['POST'])

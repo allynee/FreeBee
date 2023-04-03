@@ -15,13 +15,13 @@ app = Flask(__name__)
 # app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
 CORS(app)
 
-listing_URL = "http://localhost:8000/listing"
-transaction_URL = "http://localhost:9000/transaction"
+listing_URL = environ.get('listing_URL') or "http://localhost:8000/listing"
+transaction_URL = environ.get('transaction_URL') or "http://localhost:9000/transaction"
 # geocoding_URL = "http://localhost:3000/"
 # notification_URL = "http://localhost:5001/" #this is this page
 # authentication_URL = "localhost:3001/"
-sendEmail_URL = "http://localhost:5005/sendmail"
-user_URL = "http://localhost:8421"
+notification_URL = environ.get('notification_URL') or "http://localhost:5005/sendmail"
+user_URL = environ.get('user_URL') or "http://localhost:8421"
 
 
 @app.route("/", methods=['GET'])

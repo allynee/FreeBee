@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 
 import os, sys
+from os import environ
 
 import requests
 from invokes import invoke_http
@@ -13,9 +14,9 @@ import json
 app = Flask(__name__)
 CORS(app)
 
-transaction_URL = "http://localhost:9000/transaction"
-listing_URL = "http://localhost:8000/listing"
-authentication_URL = "http://localhost:3001/auth/checkaccess/"
+transaction_URL = environ.get('transaction_URL') or "http://localhost:9000/transaction"
+listing_URL = environ.get('listing_URL') or "http://localhost:8000/listing"
+authentication_URL = environ.get('auth_URL') or "http://localhost:3001/auth/checkaccess/"
 
 status = "Cancelled"
 

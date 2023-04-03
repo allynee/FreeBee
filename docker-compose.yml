@@ -24,8 +24,8 @@ services:
   auth:
     build: 
       context: ./backend/simple_microservices/auth
-      dockerfile: auth.dockerfile
-    image: <dockerid>/auth:freebee
+      dockerfile: auth.Dockerfile
+    image: lixuenlow/auth:freebee
     restart: always
     ports:
       - 3001:3001
@@ -33,8 +33,8 @@ services:
   geocoding:
     build: 
       context: ./backend/simple_microservices/geocoding
-      dockerfile: geocoding.dockerfile
-    image: <dockerid>/geocoding:freebee
+      dockerfile: geocoding.Dockerfile
+    image: lixuenlow/geocoding:freebee
     restart: always
     ports:
       - 3000:3000
@@ -42,17 +42,17 @@ services:
   imaging:
     build: 
       context: ./backend/simple_microservices/image
-      dockerfile: image.dockerfile
-    image: <dockerid>/image:freebee
+      dockerfile: image.Dockerfile
+    image: lixuenlow/image:freebee
     restart: always
-    posts:
+    ports:
       - 3002:3002
 
   listing:
     build: 
       context: ./backend/simple_microservices/listing
-      dockerfile: listing.dockerfile
-    image: <dockerid>/listing:freebee
+      dockerfile: listing.Dockerfile
+    image: lixuenlow/listing:freebee
     restart: always
     environment:
       PYTHONUNBUFFERED: 1
@@ -62,8 +62,8 @@ services:
   notification:
     build: 
       context: ./backend/simple_microservices/notification
-      dockerfile: notification.dockerfile
-    image: <dockerid>/notification:freebee
+      dockerfile: notification.Dockerfile
+    image: lixuenlow/notification:freebee
     restart: always
     ports:
       - 5005:5005
@@ -71,8 +71,8 @@ services:
   transaction:
     build: 
       context: ./backend/simple_microservices/transaction
-      dockerfile: transaction.dockerfile
-    image: <dockerid>/transaction:freebee
+      dockerfile: transaction.Dockerfile
+    image: lixuenlow/transaction:freebee
     restart: always
     environment:
       PYTHONUNBUFFERED: 1
@@ -82,8 +82,8 @@ services:
   user:
     build: 
       context: ./backend/simple_microservices/user
-      dockerfile: user.dockerfile
-    image: <dockerid>/user:freebee
+      dockerfile: user.Dockerfile
+    image: lixuenlow/user:freebee
     restart: always
     environment:
       PYTHONUNBUFFERED: 1
@@ -97,16 +97,22 @@ services:
   listing_management:
     build: 
       context: ./backend/complex_microservices/listing_management
-      dockerfile: listing_management.dockerfile
+      dockerfile: listing_management.Dockerfile
+    image: lixuenlow/listing_management:freebee
     restart: always
     depends_on:
-      -rabbitmq
+      - rabbitmq
       - listing
       - auth
       - geocoding
+      - imaging
     environment:
       rabbit_host: rabbitmq
       rabbit_port: 5672
+      listing_URL: http://listing:8000
+      geocoding_URL: http://geocoding:3000
+      auth_URL: http://auth:3001/auth/checkaccess/
+      image_URL: http://imaging:3002/image
       PYTHONUNBUFFERED: 1
     ports:
       - 5000:5000
@@ -114,7 +120,8 @@ services:
   transaction_management:
     build: 
       context: ./backend/complex_microservices/transaction_management
-      dockerfile: transaction_management.dockerfile
+      dockerfile: transaction_management.Dockerfile
+    image: lixuenlow/transaction_management:freebee
     restart: always
     depends_on:
       - rabbitmq
@@ -123,6 +130,9 @@ services:
     environment:
       rabbit_host: rabbitmq
       rabbit_port: 5672
+      transaction_URL: http://transaction:9000/transaction
+      listing_URL: http://listing:8000/listing
+      auth_URL: http://auth:3001/auth/checkaccess/
       PYTHONUNBUFFERED: 1
     ports:
       - 5100:5100
@@ -130,33 +140,39 @@ services:
   notification_management:
     build: 
       context: ./backend/complex_microservices/notification_management
-      dockerfile: notification_management.dockerfile
+      dockerfile: notification_management.Dockerfile
+    image: lixuenlow/notification_management:freebee
     restart: always
     depends_on:
       - rabbitmq
       - notification
+      - transaction
       - user
+      - listing
     environment:
       rabbit_host: rabbitmq
       rabbit_port: 5672
+      listing_URL: http://listing:8000/listing
+      user_URL: http://user:8421
+      notification_URL: http://notification:5005/sendmail
+      transaction_URL: http://transaction:9000/transaction
       PYTHONUNBUFFERED: 1
     ports: 
       - 5001:5001
 
-  #################################
-  # FRONTEND
-  #################################
-  frontend:
-    build: 
-      context: ./frontend
-      dockerfile: frontend.dockerfile
-    restart: always
-    depends_on: 
-      - listing_management
-      - transaction_management
-      - notification_management
-    environment:
-      PYTHONUNBUFFERED: 1
-    ports: 
-      - 8080:8080
+  # #################################
+  # # FRONTEND
+  # #################################
+  # frontend:
+  #   build: 
+  #     context: ./frontend
+  #     dockerfile: frontend.dockerfile
+  #   restart: always
+  #   depends_on: 
+  #     - listing_management
+  #     - transaction_management
+  #     - notification_management
+  #   environment:
+  #   ports: 
+  #     - 8080:8080
 
