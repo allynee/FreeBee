@@ -99,16 +99,16 @@ def create_subscription(db: Session, subscription: schemas.SubscriptionCreate):
     db.refresh(subscription)
     return subscription
 
-def delete_subscription(db: Session, beneficiary_id: str, corporate_id: str):
-    subscription = db.query(models.Subscription).filter(models.Subscription.beneficiary_id == beneficiary_id,
-                                                       models.Subscription.corporate_id == corporate_id).first()
+def delete_subscription(db: Session,subscription:schemas.Favourite):
+    subscription = db.query(models.Subscription).filter(models.Subscription.beneficiary_id == subscription.beneficiary_id,
+                                                       models.Subscription.corporate_id == subscription.corporate_id).first()
+    
     if not subscription:
         # return{
         #     "code": 404,
         #     "message": "Listing not found"
-        # }
+        # 
         raise HTTPException(status_code=404, detail="Subscription not found")
-
     db.delete(subscription)
     db.commit()
 

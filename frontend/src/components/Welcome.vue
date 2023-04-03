@@ -80,7 +80,7 @@
           >
             <Listing
               :aListing="aListing"
-              @gotoListing="gotoListing(aListing.listing_id)"
+              @gotoListing="gotoListing(aListing.listing.listing_id)"
             ></Listing>
           </v-col>
         </v-row>
@@ -198,6 +198,7 @@ export default {
       // console.log(this.allListingsArray)
     },
     gotoListing(listing_id) {
+      // console.log(listing_id)
       // console.log("clicked")
       this.$router.push({
         name: "IndividualListing",
