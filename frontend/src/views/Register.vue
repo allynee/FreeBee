@@ -240,7 +240,7 @@
                 </v-container>
 
                 <v-container>
-                  <v-btn type="submit" block brown outlined :loading="loading">
+                  <v-btn type="submit" class="amber lighten-2" block brown outlined :loading="loading">
                     Register
                     <!-- button loader -->
                     <template v-slot:loader>

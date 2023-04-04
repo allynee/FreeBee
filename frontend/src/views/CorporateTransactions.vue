@@ -5,19 +5,9 @@
         <div class="text-h4 brown--text text-darken-1">Transactions for</div>
         <v-icon large right class="brown--text text-darken-3">mdi-bee</v-icon>
       </v-row>
-      <v-container style="margin-bottom: 15px;">
-        <div
-          class="d-flex justify-content-center align-items-center amber lighten-2 rounded-circle pa-3"
-          style="width: 250px; height: 250px"
-        >
-          <v-img
-            :src="image_url"
-            class="rounded-circle"
-            style="height: 225px; width: 225px"
-          ></v-img>
-        </div>
-      </v-container>
+
       <v-container>
+        
         <v-row> View Transaction Status of : </v-row>
         <v-row>
           <v-select
@@ -42,18 +32,64 @@
             Update Status
           </v-btn>
         </v-row>
-        <v-row
-          v-for="transaction in shownTransactions"
-          :key="transaction.transaction_id"
-        >
-          <CorporateTransactionCard
-            :transaction="transaction"
-            v-on:update:addUpdate="addUpdate($event)"
-          ></CorporateTransactionCard>
-        </v-row>
+        <v-tabs v-model="tab" grow class="rounded-lg">
+                <v-tab class="amber lighten-2">In Progress</v-tab>
+                <v-tab class="amber lighten-2">Ready for Collection</v-tab>
+                <v-tab class="amber lighten-2">Completed</v-tab>
+                <v-tab class="amber lighten-2">Cancelled</v-tab>
+        </v-tabs>
+          <v-tabs-items v-model="tab" class="rounded-lg pa-3 amber lighten-5">
+            <v-tab-item :value="0">
+              <v-card flat v-for="aTransaction in inProgressArray" :key="aTransaction.transaction_id"
+              class="my-5 mx-5" data-aos="fade-up">
+                <CorporateTransactionCard :aTransaction="aTransaction" data-aos="fade-up"></CorporateTransactionCard>
+              </v-card>
+              <!-- <v-row v-for="transaction in shownTransactions" :key="transaction.transaction_id">
+                <CorporateTransactionCard
+                  :transaction="transaction"
+                  v-on:update:addUpdate="addUpdate($event)"
+                ></CorporateTransactionCard>
+              </v-row> -->
+              <v-btn
+                  color="amber lighten-3"
+                  style="margin-top: 10px"
+                  @click="updateDB"
+                >
+                  Update Status
+                </v-btn>
+            </v-tab-item>
+                    
+            <v-tab-item :value="1">
+              <v-card flat v-for="aTransaction in readyArray" :key="aTransaction.transaction_id"
+              class="my-5 mx-5" data-aos="fade-up">
+                <CorporateTransactionCard :aTransaction="aTransaction" data-aos="fade-up"></CorporateTransactionCard>
+              </v-card>
+              <v-btn
+                  color="amber lighten-3"
+                  style="margin-top: 10px"
+                  @click="updateDB"
+                >
+                  Update Status
+                </v-btn>
+            </v-tab-item>
+
+            <v-tab-item :value="2">
+              <v-card flat v-for="aTransaction in completedArray" :key="aTransaction.transaction_id"
+              class="my-5 mx-5" data-aos="fade-up">
+                <CorporateTransactionCard :aTransaction="aTransaction" data-aos="fade-up"></CorporateTransactionCard>
+              </v-card>
+            </v-tab-item>
+
+            <v-tab-item :value="3">
+              <v-card flat v-for="aTransaction in cancelledArray" :key="aTransaction.transaction_id"
+              class="my-5 mx-5" data-aos="fade-up">
+                <CorporateTransactionCard :aTransaction="aTransaction" data-aos="fade-up"></CorporateTransactionCard>
+              </v-card>
+            </v-tab-item>
+          </v-tabs-items>
+        </v-container>
       </v-container>
-    </v-container>
-  </div>
+    </div>
 </template>
 
 <style src="../style/style.css"></style>
@@ -73,6 +109,10 @@ export default {
         { name: "Collected", value: "Done" },
         { name: "Cancelled", value: "Cancelled" },
       ],
+      inProgressArray:[],
+      readyArray:[],
+      completedArray:[],
+      cancelledArray:[],
       transactions: [],
       image_url: "",
       listing_details: null,
@@ -84,18 +124,25 @@ export default {
 
   methods: {
     async fetchTransactions() {
-      const transaction_URL =
-        "http://localhost:5100//transaction_management/corporate/" +
-        this.$route.params.listingid;
-      axios.get(transaction_URL).then((response) => {
-        // response.data.transactions.forEach((transaction) => {
-        //   if(transaction.status == 'In Progress'))
-        this.transactions = response.data.result.transactions;
-        this.listing_details = response.data.result.listing_details;
-        console.log(response.data);
-        this.image_url = `https://firebasestorage.googleapis.com/v0/b/esdeeznutz.appspot.com/o/listings%2F${this.listing_details.listing_id}${this.listing_details.img_ext}?alt=media&token=d96a1b6f-e4a2-42d1-a06b-c9331d4490a4`;
-      });
-    },
+            const transaction_URL = 'http://localhost:5100/transaction_management/corporate/' + this.$route.params.listingid
+            axios.get(transaction_URL).then((response) => {
+                console.log(response.data.result)
+                response.data.result.forEach((transaction) => {
+                    if (transaction.status == 'In Progress') {
+                        this.inProgressArray.push(transaction)
+                    }
+                    else if (transaction.status == 'Ready for Collection') {
+                        this.readyArray.push(transaction)
+                    }
+                    else if (transaction.status == 'Completed') {
+                        this.completedArray.push(transaction)
+                    }
+                    else if (transaction.status == 'Cancelled') {
+                        this.cancelledArray.push(transaction)
+                    }
+                })
+            })
+        },
     addUpdate(value) {
       console.log(value);
       if (value.value != null) {

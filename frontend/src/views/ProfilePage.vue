@@ -26,28 +26,28 @@
             </v-col>
 
             <v-col>
-                <v-card height="450">
+                <v-card height="500">
                     <br/>
-                    <span
-                    class="text-h7 font-weight-medium grey--text text--darken-3 mx-5" 
-                    >
+                    <span class="text-h7 font-weight-medium grey--text text--darken-3 mx-5">
                         Username:
                     </span>
-                    <span class="text-body-1 font-weight-light"> username </span>
-                    <br />
-                    <span
-                    class="text-h7 font-weight-medium grey--text text--darken-3 mx-5"
-                    >
+                    <br/>
+                    <v-text-field outlined style="margin-left: 15px; max-width: 300px;" disabled label="username">
+                    </v-text-field>
+                    
+                    <span class="text-h7 font-weight-medium grey--text text--darken-3 mx-5">
                         Email:
                     </span>
-                    <span class="text-body-1 font-weight-light"> email </span>
-                    <br />
-                    <span
-                    class="text-h7 font-weight-medium grey--text text--darken-3 mx-5"
-                    >
-                        Address
+                    <br/>
+                    <v-text-field outlined style="margin-left: 15px; max-width: 400px;" disabled label="email">
+                    </v-text-field>
+
+                    <span class="text-h7 font-weight-medium grey--text text--darken-3 mx-5">
+                        Address:
                     </span>
-                    <span class="text-body-1 font-weight-light"> address </span>
+                    <br/>
+                    <v-text-field outlined style="margin-left: 15px; max-width: 400px;" disabled label="address">
+                    </v-text-field>
                 </v-card>
             </v-col>
         </v-row>
