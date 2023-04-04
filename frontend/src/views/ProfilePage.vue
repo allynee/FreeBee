@@ -61,6 +61,7 @@ export default {
         items: [
           { title: 'Profile', icon: 'mdi-account' },
           { title: 'Liked Listings', icon: 'mdi-heart' },
+          { title: 'Subscribed', icon: 'mdi-email'},
           { title: 'Logout', icon: 'mdi-logout' },
         ],
       }

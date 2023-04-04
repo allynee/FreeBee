@@ -24,7 +24,7 @@
                     </v-navigation-drawer>
                 </v-card>
             </v-col>
-                <Listing></Listing>
+                <Subscribed></Subscribed>
             <v-col>
                 
             </v-col>
@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import Listing from "../components/Listing.vue"
+import Subscribed from "../components/Subscribed.vue"
 
 export default {
     data () {
@@ -46,7 +46,7 @@ export default {
         ],
       }
     },
-    components: { Listing },
+    components: { Subscribed },
   }
 </script>
 

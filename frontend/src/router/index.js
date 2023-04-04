@@ -23,6 +23,7 @@ import CorporateListing from "../views/CorporateListing.vue";
 
 import Profile from "../views/ProfilePage.vue";
 import Liked from "../views/ProfileLiked.vue";
+import Subscribed from "../views/ProfileSubscribed.vue";
 import IndividualListing from "../views/IndividualListing.vue";
 
 Vue.use(VueRouter);
@@ -100,6 +101,11 @@ const routes = [
     path: "/liked",
     name: "Liked",
     component: Liked,
+  },
+  {
+    path: "/subscribed",
+    name: "Subscribed",
+    component: Subscribed,
   }
 ];
 
