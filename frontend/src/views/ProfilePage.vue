@@ -27,27 +27,27 @@
 
             <v-col>
                 <v-card height="450">
+                    <br/>
                     <span
-                    class="text-h7 font-weight-medium grey--text text--darken-3"
+                    class="text-h7 font-weight-medium grey--text text--darken-3 mx-5" 
                     >
                         Username:
                     </span>
                     <span class="text-body-1 font-weight-light"> username </span>
                     <br />
                     <span
-                    class="text-h7 font-weight-medium grey--text text--darken-3"
+                    class="text-h7 font-weight-medium grey--text text--darken-3 mx-5"
                     >
                         Email:
                     </span>
                     <span class="text-body-1 font-weight-light"> email </span>
                     <br />
                     <span
-                    class="text-h7 font-weight-medium grey--text text--darken-3"
+                    class="text-h7 font-weight-medium grey--text text--darken-3 mx-5"
                     >
                         Address
                     </span>
                     <span class="text-body-1 font-weight-light"> address </span>
-                    <br />
                 </v-card>
             </v-col>
         </v-row>
@@ -59,9 +59,9 @@ export default {
     data () {
       return {
         items: [
-          { title: 'Profile', icon: 'mdi-account'},
-          { title: 'Liked Listings', icon: 'mdi-heart'},
-          { title: 'Subscribed', icon: 'mdi-email', route:'/subscribedListings'},
+          { title: 'Profile', icon: 'mdi-account', route:'/profile'},
+          { title: 'Liked Listings', icon: 'mdi-heart', route:'/liked'},
+          { title: 'Subscribed', icon: 'mdi-email', route:'/subscribedlistings'},
           { title: 'Logout', icon: 'mdi-logout' },
         ],
       }
