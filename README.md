@@ -12,8 +12,11 @@ FreeBee! strives to address this problem by providing a user-friendly web applic
 ## 2) Run our App
 
 1. docker-compose up 
-2. localhost:8080 on web browser
-
+2. open new terminal window 
+3. cd frontend
+4. npm install 
+5. npm run serve 
+6. press the link given!
 
 ## 3) Tech Used
 
