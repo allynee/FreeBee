@@ -108,7 +108,7 @@ export default {
 
   methods: {
     async fetchListings() {
-      const listing_URL = `http://localhost:5000/listing_managemen`;
+      const listing_URL = `http://localhost:5000/listing_management`;
       axios.get(listing_URL).then((response) => {
         response.data.forEach((element) => {
           if (element.listing.corporate_id == this.$store.state.uid) {

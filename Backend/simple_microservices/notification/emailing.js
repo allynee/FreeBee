@@ -23,7 +23,9 @@ async function sendingMail(toMail, subject, content) {
         subject: subject,
         html: content,
       })
-    console.log("Message sent: " + info.messageId);
+    response = "Message sent: " + info.messageId
+    console.log(response);
+    return response
 
   } catch (error){
     console.log(error);

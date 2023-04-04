@@ -184,7 +184,12 @@ def processCreateListing(listing_object, token, image):
                 print(f"sending message: {message} to subscribers in Notification complex MS")
 
                 print('\n-----Sending notification to corporate of successful listing-----')
-                amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="subscribers.notif", 
+                obj2 = {
+                    "purpose": "toCorporate",
+                    "listing_result": listing_result
+                } 
+                message = json.dumps(obj2)
+                amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="toCorporate.notif", 
                     body=message, properties=pika.BasicProperties(delivery_mode = 2))
                 print(f"sending message: {message} to corporate in Notification complex MS")
 
