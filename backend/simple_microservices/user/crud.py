@@ -92,6 +92,9 @@ def get_all_subscriptions(db: Session, skip: int = 0, limit: int = 100):
 def get_subscriptions_by_corporate(db: Session, corporate_id: str, skip: int = 0, limit: int = 100):
     return db.query(models.Subscription).filter(models.Subscription.corporate_id == corporate_id).offset(skip).limit(limit).all()
 
+def get_subscriptions_by_beneficiary(db: Session, beneficiary_id: str, skip: int = 0, limit: int = 100):
+    return db.query(models.Subscription).filter(models.Subscription.beneficiary_id == beneficiary_id).offset(skip).limit(limit).all()
+
 def create_subscription(db: Session, subscription: schemas.SubscriptionCreate):
     subscription = models.Subscription(**subscription.dict())
     db.add(subscription)
