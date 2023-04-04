@@ -241,12 +241,14 @@ def processCreateListing(listing_object, token, image):
                 amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="toCorporate.notif", 
                     body=message, properties=pika.BasicProperties(delivery_mode = 2))
                 print(f"sending message: {message} to corporate in Notification complex MS")
+                return {"code": 200, "message": "Listing successful"}
 
             else:
                 return {
                     "code": 500,
                     "message": "Creation of listing failed. Check if listing service is running."
                 }, 500
+            
     else:
         return {
             "code": 404,
