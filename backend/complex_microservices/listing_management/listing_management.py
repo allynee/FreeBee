@@ -143,6 +143,29 @@ def display_subscriptions(beneficiary_id):
             listings.append(return_listing)
     return listings
 
+@app.route("/favourites/<string:beneficiary_id>", methods=['GET'])
+def get_all_favourites(beneficiary_id):
+    list_of_subscriptions = []
+    print("------ Retrieving Subscriptions ------")
+    favourite_get_URL = user_URL + "all_favourite/" + beneficiary_id
+
+    favourites = invoke_http(favourite_get_URL,method='GET',json=None)
+    
+    print("Favourites results: ",favourites)
+    listings = []
+    for favourite in favourites:
+        print(favourite)
+        listing_id = favourite['listing_id']
+        listing_id_URL = listing_URL + "listing/" + listing_id
+        listing= invoke_http(listing_id_URL,method='GET',json=None)
+        print(listing)
+        img_ext = listing["img_ext"]
+        firebase_url = f"https://firebasestorage.googleapis.com/v0/b/esdeeznutz.appspot.com/o/listings%2F{listing_id}{img_ext}?alt=media&token=d96a1b6f-e4a2-42d1-a06b-c9331d4490a4"
+        return_listing = {'listing': listing,
+                        "firebase_url": firebase_url}
+        listings.append(return_listing)
+    return listings
+
 def processCreateListing(listing_object, token, image):
     #2. authenticate that this is a corporate user
     authentication_result = authenticateUser(token) 
