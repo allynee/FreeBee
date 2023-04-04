@@ -49,7 +49,7 @@ FreeBee! strives to address this problem by providing a user-friendly web applic
 - GraphQL
 
 
-## 4) Team members
+## 4) Team Members
 
 - Allyne 
 - Amanda
