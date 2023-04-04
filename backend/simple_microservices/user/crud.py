@@ -125,8 +125,8 @@ def get_favourite(db: Session, beneficiary_id: str, listing_id: str):
     return db.query(models.Favourite).filter(models.Favourite.beneficiary_id == beneficiary_id,
                                             models.Favourite.listing_id == listing_id).first()
     
-def get_all_favourites(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.Favourite).offset(skip).limit(limit).all()
+def get_all_favourites(db: Session,beneficiary_id:str, skip: int = 0, limit: int = 100):
+    return db.query(models.Favourite).filter(models.Favourite.beneficiary_id == beneficiary_id).offset(skip).limit(limit).all()
 
 def create_favourite(db: Session, favourite: schemas.FavouriteCreate):
     favourite = models.Favourite(**favourite.dict())

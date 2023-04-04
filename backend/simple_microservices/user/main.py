@@ -155,6 +155,22 @@ def delete_favourite(favourite: schemas.Favourite, db: Session = Depends(get_db)
 def delete_subscription(subscription: schemas.Subscription, db: Session = Depends(get_db)):
     return crud.delete_subscription(db, subscription=subscription)
 
+@app.get('/all_favourite/{beneficiary_id}')
+# def recieveReq(request: Request):
+#     beneficiary_id = request.query_params.get('beneficiary_id')
+#     listing_id = request.query_params.get('listing_id')
+#     print(beneficiary_id, listing_id)
+#     # get_favourite(beneficiary_id=beneficiary_id, listing_id=listing_id)
+def get_all_favourites(beneficiary_id: str, db: Session = Depends(get_db)):
+    # favourite = crud.get_favourite(db, favourite)
+    # beneficiary_id = request.query_params.get('beneficiary_id')
+    # listing_id = request.query_params.get('listing_id')
+    # print(beneficiary_id, listing_id)
+    favourites = crud.get_all_favourites(db, beneficiary_id=beneficiary_id)
+    if favourites is None:
+        return None
+    return favourites
+
 if __name__ == '__main__':
     import uvicorn
     uvicorn.run(app, host='0.0.0.0', port=8421)

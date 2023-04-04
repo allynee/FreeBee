@@ -242,11 +242,11 @@ def processUpdateTransaction(transactions, listing, token, status):
         #4. Notify users if theres is a change in the status of the transaction
 
         #4a. If transaction is Cancelled from Corporate
-        
-            if transaction_result["status"] == "Cancelled":
+        # CHANGED transaction_result['status'] to status because AMQP was recieving the outdated status
+            if status == "Cancelled":
                 print('\n-----Send to Notification microservice-----')
                 obj = {
-                    "purpose": "Cancelled",
+                    "purpose": "cancelled",
                     "listing_result": listing
                 } 
                 message = json.dumps(obj)
@@ -255,7 +255,7 @@ def processUpdateTransaction(transactions, listing, token, status):
                 print(f"sending message: {message} to 'cancel'")
 
             #4c. If items are Ready to Collect
-            if transaction_result["status"] != "Cancelled":
+            if status != "Cancelled":
                 obj = {
                     "purpose": "toBeneficiary",
                     "listing_result": listing,

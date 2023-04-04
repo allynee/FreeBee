@@ -196,7 +196,12 @@ export default {
           headers: {
             "Content-Type": "multipart/form-data",
           },
-        });
+        }).then((response) =>{
+          if(response.data.code == 200){
+            alert("Listing Successful !")
+            this.$router.push('/')
+          }
+        })
       } catch (error) {
         console.log(error);
       }

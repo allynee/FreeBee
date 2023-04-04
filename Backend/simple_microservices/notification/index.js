@@ -39,7 +39,7 @@ app.get('/sendmail/:email?', async (req, res) => {
             console.log(result)
             // res.status(200).send('ITS OKAY!!')
             // If the email sending is successful, it will return a string
-            if (typeof result.response == 'string'){
+            if ( result.includes("Message sent") ){
                 console.log('email sent ' + 250)
                 let result = { result: "successful", statusCode: '250' };
                 res.json(result);

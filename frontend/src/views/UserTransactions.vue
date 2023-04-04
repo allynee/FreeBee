@@ -2,7 +2,7 @@
     <div class="white pa-5 bground" style="height:50%">
         <v-container class="pb-15" style="width:50%;" data-aos="fade-down">
             <v-row class="mb-7 ml-1 mt-1">
-                <span class="text-h4 brown--text text-darken-1">Status of my Freebees</span>
+                <span class="text-h4 brown--text text-darken-1">Status of my FreeBees</span>
                 <v-icon large right class="brown--text text-darken-3">mdi-bee</v-icon>
             </v-row>
             
@@ -21,21 +21,24 @@
                 </v-tab-item>
                     
                 <v-tab-item :value="1">
-                    <v-card-text>
-                            
-                    </v-card-text>
+                    <v-card flat v-for="aTransaction in readyArray" :key="aTransaction.transaction_id" 
+                    class="my-5 mx-5" data-aos="fade-up">
+                        <Transaction :aTransaction="aTransaction" data-aos="fade-up"></Transaction>
+                    </v-card>
                 </v-tab-item>
 
                 <v-tab-item :value="2">
-                    <v-card-text>
-                            
-                    </v-card-text>
+                    <v-card flat v-for="aTransaction in completedArray" :key="aTransaction.transaction_id" 
+                    class="my-5 mx-5" data-aos="fade-up">
+                        <Transaction :aTransaction="aTransaction" data-aos="fade-up"></Transaction>
+                    </v-card>
                 </v-tab-item>
 
                 <v-tab-item :value="3">
-                    <v-card-text>
-                            
-                    </v-card-text>
+                    <v-card flat v-for="aTransaction in cancelledArray" :key="aTransaction.transaction_id" 
+                    class="my-5 mx-5" data-aos="fade-up">
+                        <Transaction :aTransaction="aTransaction" data-aos="fade-up"></Transaction>
+                    </v-card>
                 </v-tab-item>
             </v-tabs-items>
         </v-container>                    

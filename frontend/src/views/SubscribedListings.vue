@@ -1,6 +1,6 @@
 <template>
   <div class="white pa-5 bground" style="height: 50%">
-    <v-container class="pb-15" style="width: 50%" data-aos="fade-down">
+    <v-container class="pb-15" style="width: 100%" data-aos="fade-down">
       <v-row class="mb-7 ml-1 mt-1">
         <span class="text-h4 text-capitalize brown--text"
           >These freebies are waiting for you!</span
@@ -25,7 +25,15 @@
         </v-tab-item>
 
         <v-tab-item :value="1">
-          <v-card-text> </v-card-text>
+          <v-card-text> 
+            <v-row>
+              <v-col
+                v-for="aListing in favourites"
+                :key="aListing.listing_id"
+              >
+                <Listing :aListing="aListing" @gotoListing="gotoListing(aListing.listing.listing_id)"></Listing> </v-col
+            ></v-row>
+          </v-card-text>
         </v-tab-item>
       </v-tabs-items>
     </v-container>
@@ -49,32 +57,16 @@ export default {
       completedArray: [],
       cancelledArray: [],
       subscriptions:null,
+      favourites:null,
     };
   },
   components: { Listing },
 
   methods: {
-    async fetchTransactions() {
-      const transaction_URL = "http://localhost:9000/transactions";
-      axios.get(transaction_URL).then((response) => {
-        response.data.forEach((transaction) => {
-          if (transaction.status == "In Progress") {
-            this.inProgressArray.push(transaction);
-          } else if (transaction.status == "Ready for Collection") {
-            this.readyArray.push(transaction);
-          } else if (transaction.status == "Completed") {
-            this.completedArray.push(transaction);
-          } else if (transaction.status == "Cancelled") {
-            this.cancelledArray.push(transaction);
-          }
-        });
-      });
-    },
     fetchSubscriptions() {
       const user_url = `http://localhost:5000/subscriptions/${this.$store.state.uid}`;
       axios.get(user_url).then((subscriptions) => {
         this.subscriptions = subscriptions.data;
-        console.log(subscriptions.data);
       });
     },
     gotoListing(listing_id) {
@@ -83,6 +75,12 @@ export default {
       this.$router.push({
         name: "IndividualListing",
         params: { listingid: listing_id },
+      });
+    },
+    fetchLikes() {
+      const user_url = `http://localhost:5000/favourites/${this.$store.state.uid}`;
+      axios.get(user_url).then((favourites) => {
+        this.favourites = favourites.data;
       });
     },
   },
@@ -122,6 +120,7 @@ export default {
   },
   mounted() {
     this.fetchSubscriptions();
+    this.fetchLikes();
   },
 };
 </script>
