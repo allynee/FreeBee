@@ -113,9 +113,14 @@ def view_transactions_beneficiary(beneficiary_id):
         listing_URL_full = listing_URL + f"/{listing_id}"
         listing_result = invoke_http(listing_URL_full, method="GET", json=None)
         print('listing_result:', listing_result)
+
+        print('\n-----Retrieving image details for listing-----')
+        img_ext = listing_result["img_ext"]
+        firebase_url = f"https://firebasestorage.googleapis.com/v0/b/esdeeznutz.appspot.com/o/listings%2F{listing_id}{img_ext}?alt=media&token=d96a1b6f-e4a2-42d1-a06b-c9331d4490a4"
         
         #3. add listing details into each transaction
         transaction["listing_details"] = listing_result
+        transaction["image_url"] = firebase_url
         print('\nEdited transaction:', transaction)
         results.append(transaction)
 
@@ -130,26 +135,14 @@ def view_transactions_beneficiary(beneficiary_id):
 @app.route("/transaction_management/corporate/<string:listing_id>", methods=["GET"]) #for corporate view of transactions associated with listings
 def view_transactions_corp(listing_id):
 
-
     #1. Retrieve transactions associated with corporate's listing 
     print('\n-----Retrieving transactions-----')
     transaction_URL_full = transaction_URL + f"/listing/{listing_id}"
     transaction_result = invoke_http(transaction_URL_full, method="GET", json=None)
     print('transaction_result:', transaction_result)
 
-    #2. For each transaction, retrieve listing details
+    #2. Retrieve listing details
 
-    # for transaction in transaction_result:
-    #     listing_id = transaction["listing_id"]
-    #     print('\n-----Retrieving listing details for each transaction-----')
-    #     listing_URL_full = listing_URL + f"/{listing_id}"
-    #     listing_result = invoke_http(listing_URL_full, method="GET", json=None)
-    #     print('listing_result:', listing_result)
-        
-    #     #3. add listing details into each transaction
-    #     transaction["listing_details"] = listing_result
-    #     print('\nEdited transaction:', transaction)
-    #     results.append(transaction)
     listing_URL_full = listing_URL + f"/{listing_id}"
     listing_result = invoke_http(listing_URL_full, method="GET", json=None)
     
@@ -259,7 +252,7 @@ def processUpdateTransaction(transactions, listing, token, status):
                     body=message, properties=pika.BasicProperties(delivery_mode = 2))
                 print(f"sending message: {message} to 'collect'")
         return { "code": 200 ,"message": "Success"}
-        #5. Update Listing (need meh ?)
+        #5. Update Listing (need meh ?) need lah
         # print('\n-----Updating listings-----')
         # listing_URL_full = listing_URL + "/" + str(listing_id)
         # listing_update = {
