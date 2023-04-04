@@ -120,6 +120,11 @@ def view_transactions_beneficiary(beneficiary_id):
                 transaction["image_url"] = firebase_url
             print('\nEdited transaction:', transaction)
             results.append(transaction)
+    else:
+        return {
+            "code": transaction_result["code"],
+            "message": "Unable to return transactions"
+        }
 
     return {
         "code": 200,
@@ -181,8 +186,11 @@ def processCreateTransaction(listing, beneficiary_id, quantityDeducted, token):
                 listing_URL_full = listing_URL + "/" + str(listing_id)
                 listing_result = invoke_http(listing_URL_full, method='PUT', json=new_listing) 
                 print('listing_result:', listing_result)
-                if listing_result["code"] != 200:
-                    return listing_result
+                if listing_result["code"] != 200: #terminate process
+                    return {
+                        "code": listing_result["code"],
+                        "message": "Listing not found or listing update was not successful. View error code for more info."
+                    }, listing_result["code"]
             else: #terminate process
                 return{
                     "code": 500,
@@ -206,11 +214,21 @@ def processCreateTransaction(listing, beneficiary_id, quantityDeducted, token):
                 listing_update = {"status": "Unavailable"}
                 listing_result = invoke_http(listing_URL_full, method='PUT', json=listing_update)
                 print('listing_result:', listing_result)
+                if listing_result["code"] != 200:
+                    return {
+                        "code": listing_result["code"],
+                        "message": "Listing not found or listing update was not successful. View error code for more info."
+                    }, listing_result["code"]
 
             # 6. Invoke the transaction microservice
             print('\n-----Invoking transaction microservice-----')
             transaction_result = invoke_http(transaction_URL, method='POST', json=transaction)
             print('transaction_result:', transaction_result)
+            if transaction_result["code"] != 200:
+                return {
+                    "code": transaction_result["code"],
+                    "message": "Transaction creation not successful."
+                }, transaction_result["code"]
             
             print("------------------Sending AMQP for successful claim to beneficiary------------------")
             # 7. Notify beneficiaries that claim has been successful
