@@ -216,61 +216,58 @@ def processCreateTransaction(listing, beneficiary_id, quantityDeducted, token):
             "message": "Unauthenticated user. User needs to be logged into a beneficiary account."
         }, 404
 
-def processUpdateTransaction(transactions, listing, token, status):
-
-    listing_id = listing["listing_id"]
+def processUpdateTransaction(transaction, listing, token, status):
 
     #2. Authenticate user
-    authentication_result = authenticateUser(token) 
+    authentication_result = authenticateUser(token)
 
     if authentication_result["statusCode"] == "200":
-        for transaction in transactions:
-            transaction_id = transaction["transaction_id"]
-        
-        #3. Update transaction
-            transaction_URL_full = transaction_URL + "/" + str(transaction_id)
-            print('\n-----Invoking transaction microservice-----')
-            transaction_update = {
-                "status": status
+        transaction_id = transaction["transaction_id"]
+            #3. Update transaction
+        transaction_URL_full = transaction_URL + "/" + str(transaction_id)
+        print('\n-----Invoking transaction microservice-----')
+        transaction_update = {
+            "status": status
+        }
+        transaction_result = invoke_http(transaction_URL_full, method='PUT', json=transaction_update)
+        print('transaction_results:', transaction_result)    
+
+    #4. Notify users if theres is a change in the status of the transaction
+
+    #4a. If transaction is Cancelled from Corporate
+    # CHANGED transaction_result['status'] to status because AMQP was recieving the outdated status
+        if status == "Cancelled":
+            print('\n-----Send to Notification microservice-----')
+            obj = {
+                "purpose": "cancelled",
+                "listing_result": listing
+            } 
+            message = json.dumps(obj)
+            amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="cancel.notif", 
+                body=message, properties=pika.BasicProperties(delivery_mode = 2))
+            print(f"sending message: {message} to 'cancel'")
+
+        #4c. If items are Ready to Collect
+        if status == "Ready to Collect":
+            obj = {
+                "purpose": "toBeneficiary",
+                "listing_result": listing,
+                "transaction_result": transaction
             }
-            transaction_result = invoke_http(transaction_URL_full, method='PUT', json=transaction_update)
-            print('transaction_results:', transaction_result)    
-
-        #4. Notify users if theres is a change in the status of the transaction
-
-        #4a. If transaction is Cancelled from Corporate
-        # CHANGED transaction_result['status'] to status because AMQP was recieving the outdated status
-            if status == "Cancelled":
-                print('\n-----Send to Notification microservice-----')
-                obj = {
-                    "purpose": "cancelled",
-                    "listing_result": listing
-                } 
-                message = json.dumps(obj)
-                amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="cancel.notif", 
-                    body=message, properties=pika.BasicProperties(delivery_mode = 2))
-                print(f"sending message: {message} to 'cancel'")
-
-            #4c. If items are Ready to Collect
-            if status != "Cancelled":
-                obj = {
-                    "purpose": "toBeneficiary",
-                    "listing_result": listing,
-                    "transaction_result": transaction
-                }
-                message = json.dumps(obj)
-                amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="change.notif", 
-                    body=message, properties=pika.BasicProperties(delivery_mode = 2))
-                print(f"sending message: {message} to 'collect'")
+            message = json.dumps(obj)
+            amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="change.notif", 
+                body=message, properties=pika.BasicProperties(delivery_mode = 2))
+            print(f"sending message: {message} to 'collect'")
+        
         return { "code": 200 ,"message": "Success"}
-        #5. Update Listing (need meh ?) need lah
-        # print('\n-----Updating listings-----')
-        # listing_URL_full = listing_URL + "/" + str(listing_id)
-        # listing_update = {
-        #     "status": status
-        # }
-        # listing_result = invoke_http(listing_URL_full, method="PUT", json=listing_update)
-        # print('listing_result:', listing_result)
+    #5. Update Listing (need meh ?) need lah
+    # print('\n-----Updating listings-----')
+    # listing_URL_full = listing_URL + "/" + str(listing_id)
+    # listing_update = {
+    #     "status": status
+    # }
+    # listing_result = invoke_http(listing_URL_full, method="PUT", json=listing_update)
+    # print('listing_result:', listing_result)
 
 
 def authenticateUser(token_input):
@@ -278,7 +275,7 @@ def authenticateUser(token_input):
     authentication_URL_full = authentication_URL + token_input #need to get token from the front-end, currently HARDCODED
     authentication_result = invoke_http(authentication_URL_full, method="GET", json=None)
     print('authentication_result:', authentication_result)
-    return authentication_result
+    return authentication_result["result"]
 
 if __name__ == "__main__":
     print("This is flask " + os.path.basename(__file__) + " for managing a transaction...")
