@@ -1,12 +1,11 @@
 <template>
   <div class="white pa-5 bground" style="height: 50%">
     <v-container class="pb-15" style="width: 50%" data-aos="fade-down">
-      <v-row class="mb-7 ml-1 mt-1">
-        <div class="text-h4 brown--text text-darken-1">Transactions for</div>
+      <v-row class="mb-2 ml-1 mt-1">
         <div class="text-h4 brown--text text-darken-1">Transactions for</div>
         <v-icon large right class="brown--text text-darken-3">mdi-bee</v-icon>
       </v-row>
-      <v-container>
+      <v-container style="margin-bottom: 15px;">
         <div
           class="d-flex justify-content-center align-items-center amber lighten-2 rounded-circle pa-3"
           style="width: 250px; height: 250px"
