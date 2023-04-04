@@ -75,7 +75,7 @@
             cols="12"
             md="4"
             lg="3"
-            v-for="aListing in recListingsArray.slice(0, 4)"
+            v-for="aListing in recListingsArray.slice(-4)"
             :key="aListing.listing_id"
           >
             <Listing

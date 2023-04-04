@@ -97,12 +97,18 @@ def subscription(info):
     subscription_result = invoke_http(full_user_URL, method='GET', json=None)
     print('subscription_result:', subscription_result) #this returns a list of the beneficiary info
     corporate_name =info['listing_result']['corporate_name']
+    print("subscribers")
     if subscription_result != []:
+        print('there are subs')
         for sub in subscription_result:
-            email = sub['email']
-            username = sub['username']
+            ben_id = sub["beneficiary_id"]
+            each_user_URL = user_URL + f"/beneficiary/" + ben_id
+            sub_details = invoke_http(each_user_URL, method='GET', json=None)
+            email = sub_details['email']
+            username = sub_details['username']
             subject = f"{corporate_name} has posted a new listing!"
-            message = f"Hi {username} aka {email}! <br><br>{corporate_name} has posted a new listing! <br>Please check it out at {listing_URL}{str(info['listing_result']['listing_id'])}<br><br>Thank you for using FreeBee!"
+            message = f"Hi {username} aka {email}! <br><br>{corporate_name} has posted a new listing! <br>Please check it out at http://localhost:8080/findFreeBee/{str(info['listing_result']['listing_id'])}<br><br>Thank you for using FreeBee!"
+            print("calling sendEmail function")
             sendEmail('lixuen.low.2021@scis.smu.edu.sg', subject, message);
     # doEmail();
 
@@ -171,7 +177,7 @@ def cancel(info):
                 beneficiary_result = invoke_http(full_user_URL, method='GET', json=None)
                 username = beneficiary_result['username']
                 email = beneficiary_result['email']
-                message = f"Hi {username} aka {email}!<br><br>Your item - {info['listing_result']['name']} has been cancelled by {corporate_name}!<br>We apologize for any inconvinience caused<br><br>Thank you for using FreeBee!"
+                message = f"Hi {username} aka {email}!<br><br>Your item - {info['listing_result']['name']} has been cancelled by {corporate_name}!<br>We apologize for any inconvinience caused.<br><br>Thank you for using FreeBee!"
                 sendEmail('lixuen.low.2021@scis.smu.edu.sg', subject, message);
         else:
             print("No transactions found")
