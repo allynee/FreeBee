@@ -4,12 +4,16 @@
 
 ## 1) About
 
-According to the World Bank, global waste is projected to increase to 3.4 billion tons by 2050, more than double the population growth over the same period. A significant contributor to this waste is the corporate sector, which frequently discards large batches of excess inventory that are overstocked or unsold and are no longer of use to the corporation.FreeBee! strives to address this problem by providing a user-friendly web application that enables corporations to donate their excess inventory to beneficiaries in need. 
+According to the World Bank, global waste is projected to increase to 3.4 billion tons by 2050, more than double the population growth over the same period. A significant contributor to this waste is the corporate sector, which frequently discards large batches of excess inventory that are overstocked or unsold and are no longer of use to the corporation.
+
+FreeBee! strives to address this problem by providing a user-friendly web application that enables corporations to donate their excess inventory to beneficiaries in need. 
+
 
 ## 2) Run our App
 
 1. docker-compose up 
 2. localhost:8080 on web browser
+
 
 ## 3) Tech Used
 
@@ -40,6 +44,7 @@ According to the World Bank, global waste is projected to increase to 3.4 billio
 ### APIs
 - REST
 - GraphQL
+
 
 ## 4) Team members
 
