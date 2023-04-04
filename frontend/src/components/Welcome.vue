@@ -194,15 +194,6 @@ export default {
         }
       });
     },
-    // searchForListings() {
-    //   return this.allListingsArray.filter((listing) => {
-    //     if (listing.name.includes(this.search)) {
-    //       return true;
-    //     } else {
-    //       return false;
-    //     }
-    //   });
-    // },
   },
 
   components: { Category, Listing },
