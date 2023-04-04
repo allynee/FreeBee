@@ -195,6 +195,20 @@ def processCreateTransaction(listing, beneficiary_id, quantityDeducted, token):
             print('\n-----Invoking transaction microservice-----')
             transaction_result = invoke_http(transaction_URL, method='POST', json=transaction)
             print('transaction_result:', transaction_result)
+            
+            print("------------------sending amqp for successful claim to beneficiary------------------")
+            # fire and forget
+            if transaction_result["status"] == "In Progress":
+                obj = {
+                    "purpose": "toBeneficiary",
+                    "listing_result": listing,
+                    "transaction_result": transaction
+                }
+                message = json.dumps(obj)
+                amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="change.notif", 
+                    body=message, properties=pika.BasicProperties(delivery_mode = 2))
+                print(f"sending message: {message} to 'collect'")
+
             return {
                 "code": 200,
                 "message": "Congrats transaction claim successful"

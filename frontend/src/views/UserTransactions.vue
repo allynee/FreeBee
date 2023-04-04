@@ -2,7 +2,8 @@
     <div class="white pa-5 bground" style="height:50%">
         <v-container class="pb-15" style="width:50%;" data-aos="fade-down">
             <v-row class="mb-7 ml-1 mt-1">
-                <span class="text-h4 text-capitalize brown--text">These freebies are waiting for you!</span>
+                <span class="text-h4 brown--text text-darken-1">Status of my Freebees</span>
+                <v-icon large right class="brown--text text-darken-3">mdi-bee</v-icon>
             </v-row>
             
             <v-tabs v-model="tab" grow class="rounded-lg">

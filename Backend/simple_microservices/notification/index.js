@@ -1,7 +1,8 @@
 // npm install express (to install expressjs)
 process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = 0
 
-const mail = require('./samplemail')
+// const mail = require('./samplemail')
+const mail = require('./emailing')
 const express = require('express')
 const app = express()
 const port = 5005

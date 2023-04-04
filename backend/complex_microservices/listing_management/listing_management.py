@@ -199,7 +199,7 @@ def processCreateListing(listing_object, token, image):
             if "detail" not in listing_result: 
                 #5. Send the notification to users who are subscribed to the corporate
                 ############  Publish to subscribe queue   #############
-                print('\n-----Sending notification to RabbitMQ-----')
+                print('\n-----Sending notification to subscribers-----')
                 obj = {
                     "purpose": "subscription",
                     "listing_result": listing_result
@@ -207,7 +207,12 @@ def processCreateListing(listing_object, token, image):
                 message = json.dumps(obj)
                 amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="subscribers.notif", 
                     body=message, properties=pika.BasicProperties(delivery_mode = 2))
-                print(f"sending message: {message} to queue 'subscribers' in Notification complex MS")
+                print(f"sending message: {message} to subscribers in Notification complex MS")
+
+                print('\n-----Sending notification to corporate of successful listing-----')
+                amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="subscribers.notif", 
+                    body=message, properties=pika.BasicProperties(delivery_mode = 2))
+                print(f"sending message: {message} to corporate in Notification complex MS")
 
             else:
                 return {
