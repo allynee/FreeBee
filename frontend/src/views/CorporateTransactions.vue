@@ -2,9 +2,9 @@
   <div class="white pa-5 bground" style="height: 50%">
     <v-container class="pb-15" style="width: 50%" data-aos="fade-down">
       <v-row class="mb-7 ml-1 mt-1">
-        <span class="text-h4 text-capitalize brown--text"
-          >Existing Transactions</span
-        >
+        <span class="text-h4 brown--text">
+            Existing Transactions
+        </span>
       </v-row>
       <v-container>
         <div

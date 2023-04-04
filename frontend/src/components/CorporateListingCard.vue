@@ -5,7 +5,7 @@
         flat
         :elevation="hover ? 10 : 2"
         :class="{ 'on-hover': hover }"
-        style="width: 350px; height: 470px"
+        style="width: 350px; height: 350px"
         outlined
         class="pa-2"
       >
