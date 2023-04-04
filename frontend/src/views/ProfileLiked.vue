@@ -24,9 +24,12 @@
                     </v-navigation-drawer>
                 </v-card>
             </v-col>
-                <Listing></Listing>
+
             <v-col>
-                
+                <v-row class="mb-2 ml-1 mt-1">
+                    <span class="text-h4 text-capitalize brown--text">Liked Listings</span>
+                </v-row>
+                <Listing></Listing>
             </v-col>
         </v-row>
     </v-container>

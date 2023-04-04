@@ -203,6 +203,7 @@
                     id="description"
                     v-model="description"
                     type="text"
+                    height="150"
                     required
                   >
                   </v-text-field>

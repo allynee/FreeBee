@@ -24,7 +24,6 @@ FreeBee! strives to address this problem by providing a user-friendly web applic
 - Flask
 - SQLAlchemy
 - FastAPI
-- NodeJS
 - ExpressJS
 - Vue, Veutify for building the web app 
 

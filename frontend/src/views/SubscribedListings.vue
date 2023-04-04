@@ -26,37 +26,10 @@
           </v-col>
 
           <v-col>
-              <v-tabs v-model="tab" fixed-tabs color="orange" bg-color="white">
-                  <v-tab>Subscribed Corporations</v-tab>
-                  <v-tab>Liked Listings</v-tab>
-              </v-tabs>
-              <v-tabs-items v-model="tab">
-                  <v-tab-item :value="0">
-                      <v-card-text>
-                          <v-row>
-                              <v-col
-                              v-for="aListing in subscriptions"
-                              :key="aListing.listing_id"
-                              >
-                                  <Listing :aListing="aListing" @gotoListing="gotoListing(aListing.listing.listing_id)"></Listing> 
-                              </v-col>
-                          </v-row>
-                      </v-card-text>
-                  </v-tab-item>
-
-                  <v-tab-item :value="1">
-                      <v-card-text> 
-                          <v-row>
-                              <v-col
-                              v-for="aListing in favourites"
-                              :key="aListing.listing_id"
-                              >
-                                  <Listing :aListing="aListing" @gotoListing="gotoListing(aListing.listing.listing_id)"></Listing> 
-                              </v-col>
-                          </v-row>
-                      </v-card-text>
-                  </v-tab-item>
-              </v-tabs-items>
+            <v-row class="mb-2 ml-1 mt-1">
+              <span class="text-h4 text-capitalize brown--text">Listings from your Subscribed Corporations</span>
+            </v-row>
+            <Listing></Listing>
           </v-col>
       </v-row>
   </v-container>

@@ -85,7 +85,7 @@
                   Description:
                 </h1>
                 <h1
-                  class="text-body-1 font-weight-light grey--text text--darken-3"
+                  class="text-h6 font-weight-light grey--text text--darken-3"
                 >
                   {{ this.listing.description }}
                 </h1>
@@ -93,10 +93,10 @@
                   <h1
                     class="text-h6 font-weight-medium grey--text text--darken-3 mt-3 mb-1"
                   >
-                    Quantity:
+                    Quantity Left:
                   </h1>
                   <h1
-                    class="text-body-1 font-weight-light grey--text text--darken-3"
+                    class="text-h6 font-weight-light grey--text text--darken-3"
                   >
                     {{ this.listing.quantity }}
                   </h1>
@@ -108,7 +108,7 @@
                 >
                   Address:
                 </span>
-                <span class="text-body-1 font-weight-light">
+                <span class="text-h6 font-weight-light grey--text text--darken-3">
                   {{ this.listing.address }}
                 </span>
                 <br />
@@ -117,7 +117,7 @@
                 >
                   Postal Code:
                 </span>
-                <span class="text-body-1 font-weight-light">
+                <span class="text-h6 font-weight-light grey--text text--darken-3">
                   {{ this.listing.postal }}
                 </span>
               </v-tab-item>
