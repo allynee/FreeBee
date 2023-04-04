@@ -198,3 +198,6 @@ def delete_corporate(db: Session, corporate_id: str):
             "code": 200,
             "message": "Corporate deleted successfully"
         }
+
+def get_subscriptions_by_beneficiary(db: Session, beneficiary_id: str, skip: int = 0, limit: int = 100):
+    return db.query(models.Subscription).filter(models.Subscription.beneficiary_id == beneficiary_id).offset(skip).limit(limit).all()

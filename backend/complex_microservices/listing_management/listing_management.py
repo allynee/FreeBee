@@ -15,12 +15,12 @@ import json
 app = Flask(__name__)
 CORS(app)
 
-listing_URL = environ.get('listing_URL') or "http://localhost:8000/listing"
+listing_URL = environ.get('listing_URL') or "http://localhost:8000/"
 geocoding_URL = environ.get('geocoding_URL') or "http://localhost:3000/"
 # notification_URL = environ.get('notification_URL') or "http://localhost:5005/"
 authentication_URL = environ.get('auth_URL') or "http://localhost:3001/auth/checkaccess/"
 image_URL = environ.get('image_URL') or "http://localhost:3002/image"
-
+user_URL = environ.get('user_URL') or "http://localhost:8421/"
 
 @app.route("/listing_management", methods=['POST'])
 def create_listing():
@@ -104,7 +104,8 @@ def display_listings():
     #1. Retrieve all listings
     #Invoking the listing MS
     print('\n-----Retrieving listings-----')
-    listing_result = invoke_http(listing_URL, method="GET", json=None)
+    listing_URL_FULL = listing_URL + "listing"
+    listing_result = invoke_http(listing_URL_FULL, method="GET", json=None)
     print('listing_result:', listing_result)
 
     for listing in listing_result:
@@ -118,6 +119,30 @@ def display_listings():
         list_of_listings.append(listing_and_image)
     return list_of_listings
     
+
+@app.route("/subscriptions/<string:beneficiary_id>", methods=['GET'])
+def display_subscriptions(beneficiary_id):
+    list_of_subscriptions = []
+    print("------ Retrieving Subscriptions ------")
+    subscription_get_URL = user_URL + "subscription/beneficiary/" + beneficiary_id
+
+    subscriptions = invoke_http(subscription_get_URL,method='GET',json=None)
+    
+    print("Subscription results: ",subscriptions)
+    listings = []
+    for subscription in subscriptions:
+        corporate_id = subscription['corporate_id']
+        listing_corporate_URL = listing_URL + "listings/" + corporate_id
+        corporate_listings = invoke_http(listing_corporate_URL,method='GET',json=None)
+        for corporate_listing in corporate_listings:
+            listing_id = corporate_listing["listing_id"]
+            img_ext = corporate_listing["img_ext"]
+            firebase_url = f"https://firebasestorage.googleapis.com/v0/b/esdeeznutz.appspot.com/o/listings%2F{listing_id}{img_ext}?alt=media&token=d96a1b6f-e4a2-42d1-a06b-c9331d4490a4"
+            return_listing = {'listing': corporate_listing,
+                              "firebase_url": firebase_url}
+            listings.append(return_listing)
+    return listings
+
 def processCreateListing(listing_object, token, image):
     #2. authenticate that this is a corporate user
     authentication_result = authenticateUser(token) 
@@ -166,7 +191,8 @@ def processCreateListing(listing_object, token, image):
             #5. Send the listing info to database
             #Invoke the listing microservice
             print('\n-----Invoking listing microservice-----')
-            listing_result = invoke_http(listing_URL, method='POST', json=listing_object)
+            listing_URL_FULL = listing_URL + "listing"
+            listing_result = invoke_http(listing_URL_FULL, method="POST", json=listing_object)
             print('listing_result:', listing_result)
 
         
@@ -202,7 +228,7 @@ def processUpdateListing(listing, listing_id,token):
     if ("role" in authentication_result) and (authentication_result['role'] == "corporate"):
         #3. Update listing info in the database
         #Invoke the listing microservice
-        listing_URL_full = listing_URL + "/" + str(listing_id)
+        listing_URL_full = listing_URL + "listing/" + str(listing_id)
         print('\n-----Invoking listing microservice-----')
         listing_result = invoke_http(listing_URL_full, method='PUT', json=listing)
         print('listing_result:', listing_result)

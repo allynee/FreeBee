@@ -107,6 +107,15 @@ def get_subscribers_by_corporate(corporate_id: str, db: Session = Depends(get_db
 
     return subscribers
 
+### GET SUBSCRIPTION INFO BASED ON BENEFICIARY ID ###
+@app.get('/subscription/beneficiary/{beneficiary_id}')
+def get_subscribers_by_corporate(beneficiary_id: str, db: Session = Depends(get_db), skip: int = 0, limit: int = 100,):
+    subscriptions = crud.get_subscriptions_by_beneficiary(db, beneficiary_id=beneficiary_id, skip=skip,limit=limit)
+    if subscriptions is None:
+        raise HTTPException(status_code=404, detail="Beneficiary has no subscribers.")
+    
+    return subscriptions
+
 ### GET FAVOURITE ###
 @app.get('/favourite')
 # def recieveReq(request: Request):

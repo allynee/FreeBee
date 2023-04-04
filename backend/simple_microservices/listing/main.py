@@ -74,6 +74,13 @@ def update_listing(listing_id: str, listing: schemas.ListingUpdate, db: Session 
 def delete_listing(listing_id: str, db: Session = Depends(get_db)):
     return crud.delete_listing(db, listing_id=listing_id)
 
+@app.get('/listings/{corporate_id}', response_model=List[schemas.Listing])
+def get_corporate_listings(corporate_id: str, db: Session = Depends(get_db)):
+    listing = crud.get_corporate_listings(db, corporate_id=corporate_id)
+    if listing is None:
+        raise HTTPException(status_code=404, detail="Listing not found")
+    return listing
+
 if __name__ == '__main__':
     import uvicorn
     uvicorn.run(app, host='0.0.0.0', port=8000)

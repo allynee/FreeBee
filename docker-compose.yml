@@ -124,10 +124,11 @@ services:
     environment:
       rabbit_host: rabbitmq
       rabbit_port: 5672
-      listing_URL: http://listing:8000/listing
+      listing_URL: http://listing:8000/
       geocoding_URL: http://geocoding:3000/
       auth_URL: http://auth:3001/auth/checkaccess/
       image_URL: http://imaging:3002/image
+      user_URL: http://user:8421/
       PYTHONUNBUFFERED: 1
     ports:
       - 5000:5000
