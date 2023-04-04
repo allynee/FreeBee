@@ -1,8 +1,5 @@
 // node index.js
-
-
 const cors = require('cors')
-
 const express = require("express");
 const expressGraphQL = require("express-graphql").graphqlHTTP;
 const { 
@@ -89,24 +86,12 @@ const schema = new GraphQLSchema({
 //   }),
 // });
 const port = 3000;
-// const axios = require("axios");
 
-// app.get("/:address", async (req, res) => {
-//   const address = req.params.address;
-//   const geocodeResult = await geocoding.geocode(address);
-//   res.json(geocodeResult);
-// });
 app.use('/graphql', expressGraphQL({
   schema: schema,
   graphiql: true,
   rootValue: root,
 }));
-// app.post('/graphql', express.json(), async (req, res) => {
-//   const { query } = "123";
-//   const result = await expressGraphQL(schema, query);
-//   res.send(result);
-// });
-
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
