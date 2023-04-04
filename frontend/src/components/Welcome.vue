@@ -49,7 +49,6 @@
             label="Search for a FreeBee"
             clearable
             v-model="search"
-            @change="searchForListings()"
           >
           </v-text-field>
         </v-row>
@@ -187,22 +186,23 @@ export default {
   computed: {
     filteredListings() {
       return this.allListingsArray.filter((listing) => {
-        if (this.filteredCategories.includes(listing.listing.category)) {
+        console.log(listing)
+        if (this.filteredCategories.includes(listing.listing.category) && ((listing.listing.name).toLowerCase()).includes(this.search)) {
           return true
         } else {
           return false;
         }
       });
     },
-    searchForListings() {
-      return this.allListingsArray.filter((listing) => {
-        if (listing.name.includes(this.search)) {
-          return true;
-        } else {
-          return false;
-        }
-      });
-    },
+    // searchForListings() {
+    //   return this.allListingsArray.filter((listing) => {
+    //     if (listing.name.includes(this.search)) {
+    //       return true;
+    //     } else {
+    //       return false;
+    //     }
+    //   });
+    // },
   },
 
   components: { Category, Listing },
