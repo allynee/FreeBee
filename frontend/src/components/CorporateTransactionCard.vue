@@ -6,7 +6,7 @@
           <v-row>
             <v-list-item>
               <v-checkbox
-                v-if="transaction.status != 'Collected'"
+                v-if="transaction.status != 'Collected' & transaction.status != 'Cancelled'"
                 value="checked"
                 v-model="checkbox"
                 @click="addTransaction()"

@@ -178,7 +178,7 @@ export default {
 
   methods: {
     async fetchListings() {
-      const listing_URL = `http://localhost:5000/listing_managemen`;
+      const listing_URL = `http://localhost:5000/listing_management`;
       axios.get(listing_URL).then((response) => {
         // console.log(response.data)
         response.data.forEach((element) => {

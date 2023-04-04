@@ -21,6 +21,9 @@ import CorporateTransactions from "../views/CorporateTransactions.vue";
 import CorporateListing from "../views/CorporateListing.vue";
 // import CorporateHomePage from "../views/CorporateHomePage.vue";
 
+import Profile from "../views/ProfilePage.vue";
+import Liked from "../views/ProfileLiked.vue";
+import Subscribed from "../views/ProfileSubscribed.vue";
 import IndividualListing from "../views/IndividualListing.vue";
 
 Vue.use(VueRouter);
@@ -89,6 +92,21 @@ const routes = [
     beforeEnter: isCorp
 
   },
+  {
+    path: "/profile",
+    name: "Profile",
+    component: Profile,
+  },
+  {
+    path: "/liked",
+    name: "Liked",
+    component: Liked,
+  },
+  {
+    path: "/subscribed",
+    name: "Subscribed",
+    component: Subscribed,
+  }
 ];
 
 const router = new VueRouter({

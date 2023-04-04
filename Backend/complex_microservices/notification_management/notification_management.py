@@ -193,7 +193,7 @@ def sendEmail(email, subject, message):
         print('<br>-----Invoking Email API-----')
         # full_sendEmail_URL = sendEmail_URL + "/" + email + "/" + subject + "/" + message
         print("calling callInvoke")
-        full_sendEmail_URL = sendEmail_URL + "/" + email
+        full_sendEmail_URL = notification_URL + "/" + email
         toEmail = {'email': email, 'subject': subject, 'message': message}
         email_result = invoke_http(full_sendEmail_URL, method='GET', json=toEmail)
         print('email_result:', email_result)

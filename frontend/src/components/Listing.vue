@@ -12,18 +12,18 @@
         <v-card-actions>
           <!-- <v-btn v-if="isRed" depressed plain @click="like" class="">
        <v-icon :class="{'red': isRed}">mdi-heart</v-icon>\ -->
-      <div v-if="favourite">
-       <v-btn icon color="pink" @click="unlike">
-          <v-icon>mdi-heart</v-icon>
-        </v-btn>
-      </div>
-      <div v-else>
-        <v-btn icon color="grey" @click="like">
-          <v-icon>mdi-heart</v-icon>
-        </v-btn>
-      </div>
-    <!-- </v-btn> -->
-    <!-- <v-btn v-else depressed plain @click="like" class="">
+          <div v-if="favourite">
+            <v-btn icon color="pink" @click="unlike">
+              <v-icon>mdi-heart</v-icon>
+            </v-btn>
+          </div>
+          <div v-else>
+            <v-btn icon color="grey" @click="like">
+              <v-icon>mdi-heart</v-icon>
+            </v-btn>
+          </div>
+          <!-- </v-btn> -->
+          <!-- <v-btn v-else depressed plain @click="like" class="">
       <v-icon :class="{'red': isRed}">mdi-circle</v-icon>
       this not is red
    </v-btn> -->
@@ -31,7 +31,7 @@
 
         <v-img
           cover
-          style="width: 250px; max-height:200px"
+          style="width: 250px; max-height: 200px"
           :src="aListing.firebase_url"
           class="mx-auto"
           contain
@@ -63,94 +63,101 @@
 import axios from "axios";
 
 export default {
-    emits:['gotoListing'],
-    props: {
-      aListing: Object,
-    },
-    data(){
-        return{ 
-          favourite: false,
-          loaded: true
-        }
-    },
-    computed: {
-    },
-    methods: {
-      checkLike(){
-        let config = {
-          headers: { 
-            'Content-Type': 'application/json'
-          },
-          params : {"beneficiary_id": this.$store.state.uid,
-                        "listing_id": this.aListing.listing.listing_id
-          } 
-        }
-        axios.get('http://localhost:8421/favourite' , config)
+  emits: ["gotoListing"],
+  props: {
+    aListing: Object,
+  },
+  data() {
+    return {
+      favourite: false,
+      loaded: true,
+    };
+  },
+  computed: {},
+  methods: {
+    checkLike() {
+      let config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        params: {
+          beneficiary_id: this.$store.state.uid,
+          listing_id: this.aListing.listing.listing_id,
+        },
+      };
+      axios
+        .get("http://localhost:8421/favourite", config)
         .then((response) => {
-          return response.data
+          return response.data;
         })
         .catch((error) => {
           console.error(error);
           return false;
         });
-      },
-      like(){
-        if(this.$store.state.uid==null){
-          alert("Please register and log in to like this post!")
-        }else{
-          // console.log("this is the like function")
-          const user_URL = 'http://localhost:8421/favourite'
-          axios.post(user_URL, {
+    },
+    like() {
+      if (this.$store.state.uid == null) {
+        alert("Please register and log in to like this post!");
+      } else {
+        // console.log("this is the like function")
+        const user_URL = "http://localhost:8421/favourite";
+        axios
+          .post(user_URL, {
             beneficiary_id: this.$store.state.uid,
             listing_id: this.aListing.listing.listing_id,
           })
           .then((response) => {
             if (response.status == "201") {
               this.favourite = true;
-              console.log("liked!!!")
-            } else {
-              console.log("fail");
-            }
-          });
-        }
-      },
-      unlike(){
-        // console.log("this is the unlike function")
-        const user_URL = 'http://localhost:8421/favourite'
-        axios.delete(user_URL, {
-            data: {
-              beneficiary_id: this.$store.state.uid,
-              listing_id: this.aListing.listing.listing_id,
-            }
-          }).then((response) => {
-            const response_data = response.data;
-            if (response.status == "200") {
-              console.log(response_data.name)
-              this.favourite = false;
-              console.log("deleted!!!")
+              console.log("liked!!!");
             } else {
               console.log("fail");
             }
           });
       }
-
-  },
-  created(){
-  },
-  mounted(){
-    // checking if listing is favourited
-    axios.get('http://localhost:8421/favourite' , 
-          {params : { "beneficiary_id": this.$store.state.uid,
-                        "listing_id": this.aListing.listing.listing_id} }
-        )
+    },
+    unlike() {
+      // console.log("this is the unlike function")
+      const user_URL = "http://localhost:8421/favourite";
+      axios
+        .delete(user_URL, {
+          data: {
+            beneficiary_id: this.$store.state.uid,
+            listing_id: this.aListing.listing.listing_id,
+          },
+        })
         .then((response) => {
-          this.favourite = response.data
+          const response_data = response.data;
+          if (response.status == "200") {
+            console.log(response_data.name);
+            this.favourite = false;
+            console.log("deleted!!!");
+          } else {
+            console.log("fail");
+          }
+        });
+    },
+  },
+  created() {},
+  mounted() {
+    // checking if listing is favourited
+    if (this.$store.state.uid != null) {
+      axios
+        .get("http://localhost:8421/favourite", {
+          params: {
+            beneficiary_id: this.$store.state.uid,
+            listing_id: this.aListing.listing.listing_id,
+          },
+        })
+        .then((response) => {
+          this.favourite = response.data;
         })
         .catch((error) => {
           console.error(error);
           this.favourite = false;
         });
-  }
+    }
+  },
 };
 </script>
 
