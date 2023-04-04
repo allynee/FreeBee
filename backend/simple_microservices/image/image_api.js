@@ -20,6 +20,13 @@ app.post("/image", async (req, res) => {
   res.json(authStatus);
 });
 
+app.get("/image", async (req, res) => {
+  const authStatus = imageFn.getImageUrl();
+  console.log(authStatus);
+  console.log("image getting");
+  res.json(authStatus);
+});
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });

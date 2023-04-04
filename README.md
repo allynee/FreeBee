@@ -39,7 +39,6 @@ FreeBee! strives to address this problem by providing a user-friendly web applic
 - AWS RDS for MySQL database
 
 ### External Services
-- SMTP for Email Notification
 - Google Geocoding
 - Firebase Authentication
 
@@ -47,6 +46,9 @@ FreeBee! strives to address this problem by providing a user-friendly web applic
 - REST
 - GraphQL
 
+### Protocols
+- HTTP 
+- SMTP for Email Notification
 
 ## 4) Team Members
 
