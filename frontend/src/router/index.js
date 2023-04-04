@@ -9,7 +9,7 @@ import notCorp from "./notCorp.js";
 import isCorp from './isCorp.js'
 
 // import SignUp from "../views/SignUp.vue";
-import Account from "../views/Account.vue";
+import Account from "../views/ProfilePage.vue";
 // import MatchedPets from "../views/MatchedPets.vue";
 import Register from "../views/Register.vue";
 // import BeneficiarySignUp from "../views/RegisterBeneficiary.vue";
@@ -25,6 +25,7 @@ import Profile from "../views/ProfilePage.vue";
 import Liked from "../views/ProfileLiked.vue";
 import Subscribed from "../views/ProfileSubscribed.vue";
 import IndividualListing from "../views/IndividualListing.vue";
+import SubscribedView from "../views/SubscribedListings.vue";
 
 Vue.use(VueRouter);
 
@@ -106,7 +107,12 @@ const routes = [
     path: "/subscribed",
     name: "Subscribed",
     component: Subscribed,
-  }
+  },
+  {
+    path: "/subscribedListings",
+    name: "Subscribed",
+    component: SubscribedView,
+  },
 ];
 
 const router = new VueRouter({

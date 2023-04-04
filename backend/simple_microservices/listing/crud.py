@@ -53,3 +53,5 @@ def delete_listing(db: Session, listing_id: str):
         "message": "Listing deleted successfully"
     }
 
+def get_corporate_listings(db: Session,corporate_id: str ,skip: int = 0, limit: int = 100):
+    return db.query(models.Listing).filter(models.Listing.corporate_id == corporate_id).offset(skip).limit(limit).all()

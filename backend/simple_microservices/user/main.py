@@ -118,6 +118,15 @@ def get_subscribers_by_beneficiary(beneficiary_id: str, db: Session = Depends(ge
 
     return subscriptions
 
+### GET SUBSCRIPTION INFO BASED ON BENEFICIARY ID ###
+@app.get('/subscription/beneficiary/{beneficiary_id}')
+def get_subscribers_by_corporate(beneficiary_id: str, db: Session = Depends(get_db), skip: int = 0, limit: int = 100,):
+    subscriptions = crud.get_subscriptions_by_beneficiary(db, beneficiary_id=beneficiary_id, skip=skip,limit=limit)
+    if subscriptions is None:
+        raise HTTPException(status_code=404, detail="Beneficiary has no subscribers.")
+    
+    return subscriptions
+
 ### GET FAVOURITE ###
 @app.get('/favourite')
 # def recieveReq(request: Request):
@@ -145,6 +154,22 @@ def delete_favourite(favourite: schemas.Favourite, db: Session = Depends(get_db)
 @app.delete('/subscription')
 def delete_subscription(subscription: schemas.Subscription, db: Session = Depends(get_db)):
     return crud.delete_subscription(db, subscription=subscription)
+
+@app.get('/all_favourite/{beneficiary_id}')
+# def recieveReq(request: Request):
+#     beneficiary_id = request.query_params.get('beneficiary_id')
+#     listing_id = request.query_params.get('listing_id')
+#     print(beneficiary_id, listing_id)
+#     # get_favourite(beneficiary_id=beneficiary_id, listing_id=listing_id)
+def get_all_favourites(beneficiary_id: str, db: Session = Depends(get_db)):
+    # favourite = crud.get_favourite(db, favourite)
+    # beneficiary_id = request.query_params.get('beneficiary_id')
+    # listing_id = request.query_params.get('listing_id')
+    # print(beneficiary_id, listing_id)
+    favourites = crud.get_all_favourites(db, beneficiary_id=beneficiary_id)
+    if favourites is None:
+        return None
+    return favourites
 
 if __name__ == '__main__':
     import uvicorn

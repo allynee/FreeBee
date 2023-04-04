@@ -11,7 +11,7 @@
                     permanent
                     >
                         <v-list>
-                            <v-list-item v-for="item in items" :key="item.title" link>
+                            <v-list-item v-for="item in items" :key="item.title" link :to="item.route">
                                 <v-list-item-icon>
                                     <v-icon>{{item.icon}}</v-icon>
                                 </v-list-item-icon>
@@ -59,9 +59,9 @@ export default {
     data () {
       return {
         items: [
-          { title: 'Profile', icon: 'mdi-account' },
-          { title: 'Liked Listings', icon: 'mdi-heart' },
-          { title: 'Subscribed', icon: 'mdi-email'},
+          { title: 'Profile', icon: 'mdi-account'},
+          { title: 'Liked Listings', icon: 'mdi-heart'},
+          { title: 'Subscribed', icon: 'mdi-email', route:'/subscribedListings'},
           { title: 'Logout', icon: 'mdi-logout' },
         ],
       }
