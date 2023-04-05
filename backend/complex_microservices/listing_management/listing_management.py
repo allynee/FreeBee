@@ -24,17 +24,18 @@ user_URL = environ.get('user_URL') or "http://localhost:8421/"
 
 @app.route("/listing_management", methods=['POST'])
 def create_listing():
-    image_file = request.files['image']
-    data = json.loads(request.form.get('data'))
-    listing = json.loads(data['listing'])
 
-    filename = image_file.filename
-    tempdir = "/data"
-    filepath = os.path.join(tempdir, filename)
-    image_file.save(filepath)
     #Simple check of input format and data of the request are JSON
     if request.files:
         try:
+            image_file = request.files['image']
+            data = json.loads(request.form.get('data'))
+            listing = json.loads(data['listing'])
+
+            filename = image_file.filename
+            tempdir = "/data"
+            filepath = os.path.join(tempdir, filename)
+            image_file.save(filepath)
             data = json.loads(request.form.get('data'))
             listing = json.loads(data['listing'])
             print("\nReceived an listing in JSON:", listing)  
@@ -234,6 +235,7 @@ def processCreateListing(listing_object, token, image):
             geocoding_URL_full = geocoding_URL + "graphql"
             query = f'''query {{
                 address(address: "{address}") {{
+                    code    
                     address
                     postal_code
                     area
@@ -244,6 +246,13 @@ def processCreateListing(listing_object, token, image):
             r = requests.post(geocoding_URL_full, json={'query': query})
             print(json.dumps(r.json()))
             r = r.json()
+            print(type(r['data']['address']['code']))
+            if(r['data']['address']['code']=="400"):
+                return {
+                    "code": 400,
+                    "message": "Please enter the full address."
+                }, 400
+            
 
             area = r["data"]["address"]["area"]
             district = r["data"]["address"]["district"]
@@ -301,7 +310,7 @@ def processCreateListing(listing_object, token, image):
                 amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="toCorporate.notif", 
                     body=message, properties=pika.BasicProperties(delivery_mode = 2))
                 print(f"sending message: {message} to corporate in Notification complex MS")
-                return {"code": 200, "message": "Listing successful"}
+                return {"code": 200, "message": "Listing successful"},200
 
             else:
                 return {

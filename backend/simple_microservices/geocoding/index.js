@@ -1,21 +1,22 @@
 // node index.js
-const cors = require('cors')
+const cors = require("cors");
 const express = require("express");
 const expressGraphQL = require("express-graphql").graphqlHTTP;
-const { 
+const {
   GraphQLSchema,
   GraphQLObjectType,
   GraphQLString,
-  GraphQLNonNull
- } = require("graphql");
+  GraphQLNonNull,
+} = require("graphql");
 
-const geocoding = require('./geocoding');
+const geocoding = require("./geocoding");
 
 const app = express();
-app.use(cors())
+app.use(cors());
 const AddressType = new GraphQLObjectType({
-  name: 'Address',
+  name: "Address",
   fields: () => ({
+    code: { type: GraphQLString },
     address: { type: GraphQLString },
     postal_code: { type: GraphQLString },
     area: { type: GraphQLString },
@@ -24,7 +25,7 @@ const AddressType = new GraphQLObjectType({
 });
 
 const RootQueryType = new GraphQLObjectType({
-  name: 'Query',
+  name: "Query",
   fields: () => ({
     address: {
       type: AddressType,
@@ -41,7 +42,7 @@ const RootQueryType = new GraphQLObjectType({
 
 var root = {
   hello: () => {
-    return 'Hello world!';
+    return "Hello world!";
   },
 };
 
@@ -87,11 +88,14 @@ const schema = new GraphQLSchema({
 // });
 const port = 3000;
 
-app.use('/graphql', expressGraphQL({
-  schema: schema,
-  graphiql: true,
-  rootValue: root,
-}));
+app.use(
+  "/graphql",
+  expressGraphQL({
+    schema: schema,
+    graphiql: true,
+    rootValue: root,
+  })
+);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
