@@ -1,4 +1,4 @@
-// not using this 
+// not using this refer to backend code for firebase 
 
 import { initializeApp} from 'firebase/app'
 import { 
