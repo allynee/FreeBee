@@ -1,32 +1,37 @@
 <template>
   <div>
-    <v-card width="100%" style="margin-bottom: 15px">
+    <v-card style="margin-bottom: 15px">
       <v-card-text>
         <v-container>
-          <v-row>
+          <v-col>
+            <v-row> Beneficiary ID: {{ transaction.beneficiary_id }} </v-row>
+            <v-row> Quantity claimed: {{ transaction.quantity }} </v-row>
+            <v-row>
+              Claimed Item on {{ transaction.created.split("T")[0] }}
+              {{ transaction.created.split("T")[1] }}
+            </v-row>
+            <v-row v-if="transaction.modified">
+              Last Status Update: {{ transaction.modified.split("T")[0] }}
+              {{ transaction.modified.split("T")[1] }}
+            </v-row>
+            <v-row v-else>
+              Last Status Update: {{ transaction.created.split("T")[0] }}
+              {{ transaction.created.split("T")[1] }}
+            </v-row>
+          </v-col>
+          <v-col>
             <v-list-item>
               <v-checkbox
-                v-if="transaction.status != 'Collected' & transaction.status != 'Cancelled'"
+                v-if="
+                  (transaction.status != 'Collected') &
+                  (transaction.status != 'Cancelled')
+                "
                 value="checked"
                 v-model="checkbox"
                 @click="addTransaction()"
               />
             </v-list-item>
-          </v-row>
-          <v-row> Beneficiary ID: {{ transaction.beneficiary_id }} </v-row>
-          <v-row> Quantity claimed: {{ transaction.quantity }} </v-row>
-          <v-row>
-            Claimed Item on {{ transaction.created.split("T")[0] }}
-            {{ transaction.created.split("T")[1] }}
-          </v-row>
-          <v-row v-if="transaction.modified">
-            Last Status Update: {{ transaction.modified.split("T")[0] }}
-            {{ transaction.modified.split("T")[1] }}
-          </v-row>
-          <v-row v-else>
-            Last Status Update: {{ transaction.created.split("T")[0] }}
-            {{ transaction.created.split("T")[1] }}
-          </v-row>
+          </v-col>
         </v-container>
       </v-card-text>
     </v-card>
