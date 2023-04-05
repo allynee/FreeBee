@@ -147,7 +147,7 @@ def toBeneficiary(info):
         username = beneficiary_result['username']
         if status == "In Progress":
             subject = f"Your claim is in progress!"
-            message = f"Hi {username} aka {email}!<br><br>You have successfully claimed an item - {info['listing_result']['name']}!<br>Please may check the collection details in FreeBee and you'll be notified again when the item is ready for collection!<br><br>Thank you for using FreeBee!"
+            message = f"Hi {username} aka {email}!<br><br>You have successfully claimed an item - {info['listing_result']['name']}!<br>You may check the collection details in FreeBee and you'll be notified again when the item is ready for collection!<br><br>Thank you for using FreeBee!"
         if status == "Ready for Collection":
             subject = f"Your claim is ready for collection!"
             message = f"Hi {username} aka {email}!<br><br>Your item - {info['listing_result']['name']} is ready for collection!<br>The collection details are as follows:<br>{info['listing_result']['collection_details']}<br>Collect at: {info['listing_result']['address']}, {info['listing_result']['postal']}<br><br>Thank you for using FreeBee!"
@@ -191,8 +191,12 @@ def toCorporate(info):
     if 'detail' not in str(corporate_result):
         corporate_name = info['listing_result']['corporate_name']
         email = corporate_result['email']
-        subject = f"Successfully posted listing!"
-        message = f"Hi {corporate_name} aka {email}! <br><br>You have successfully posted a new listing - {info['listing_result']['name']}! <br><br>Thank you for using FreeBee!"
+        if info['listing_result']['quantity'] == 0:
+            subject = f"Your listing has been fully claimed on Freebee!"
+            message = f"Hi {corporate_name} aka {email}! <br><br>Your listing - {info['listing_result']['name']} has been fully claimed on FreeBee!<br>Please check it out at http://localhost:8080/findFreeBee/{str(info['listing_result']['listing_id'])}<br><br>Thank you for using FreeBee!"
+        else:
+            subject = f"Successfully posted listing!"
+            message = f"Hi {corporate_name} aka {email}! <br><br>You have successfully posted a new listing - {info['listing_result']['name']}! <br><br>Thank you for using FreeBee!"
         result = sendEmail('lixuen.low.2021@scis.smu.edu.sg', subject, message);
         if result['code'] == 200:
             return {

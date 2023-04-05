@@ -117,8 +117,8 @@ export default {
       tab: false,
       myStatuses: [
         { name: "In Progress", value: "Ready for Collection" },
-        { name: "Ready for Collection", value: "Collected" },
-        { name: "Collected", value: "Done" },
+        { name: "Ready for Collection", value: "Completed" },
+        { name: "Completed", value: "Done" },
         { name: "Cancelled", value: "Cancelled" },
       ],
       inProgressArray: [],
