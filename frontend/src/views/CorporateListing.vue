@@ -167,7 +167,7 @@ export default {
         if (transactions.data.code != 200) {
           return alert(transactions.data.message);
         }
-        if (transactions.data.length > 0) {
+      if (transactions.data.result.transactions.result.length > 0) {
           const transaction_management_put = `http://localhost:5100/transaction_management`;
           const update_result = await axios.put(transaction_management_put, {
             listing: this.listing,
