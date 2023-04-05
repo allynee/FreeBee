@@ -24,7 +24,6 @@ import Profile from "../views/ProfilePage.vue";
 import Liked from "../views/ProfileLiked.vue";
 import Subscribed from "../views/ProfileSubscribed.vue";
 import IndividualListing from "../views/IndividualListing.vue";
-import SubscribedView from "../views/SubscribedListings.vue";
 
 Vue.use(VueRouter);
 
@@ -78,6 +77,7 @@ const routes = [
     path: "/subscribedlistings",
     name: "Subscribed Listings",
     component: SubscribedListings,
+    beforeEnter: notCorp
   },
   {
     path: "/corporatetransactions/:listingid",
@@ -96,21 +96,19 @@ const routes = [
     path: "/profile",
     name: "Profile",
     component: Profile,
+    beforeEnter: notCorp
   },
   {
     path: "/liked",
     name: "Liked",
     component: Liked,
+    beforeEnter: notCorp
   },
   {
     path: "/subscribed",
     name: "Subscribed",
     component: Subscribed,
-  },
-  {
-    path: "/subscribedListings",
-    name: "Subscribed",
-    component: SubscribedView,
+    beforeEnter: notCorp
   },
 ];
 
