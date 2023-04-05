@@ -18,8 +18,6 @@ transaction_URL = environ.get('transaction_URL') or "http://localhost:9000/trans
 listing_URL = environ.get('listing_URL') or "http://localhost:8000/listing"
 authentication_URL = environ.get('auth_URL') or "http://localhost:3001/auth/checkaccess/"
 
-status = "Cancelled"
-
 @app.route("/transaction_management", methods=['POST'])
 def create_transaction():
         # Simple check of input format and data of the request are JSON
@@ -65,12 +63,12 @@ def update_transaction():
             required_details = request.get_json()
             print("\nJSON with details to update in transaction:", required_details)
             listing = required_details["listing"]
-            transaction = required_details["transaction"]
+            transactions = required_details["transactions"]
             token = required_details["token"]
             status = required_details["status"]
             # do the actual work
             # 1. initiate update of transaction
-            result = processUpdateTransaction(transaction, listing, token, status)
+            result = processUpdateTransaction(transactions, listing, token, status)
             print('\n------------------------')
             print('\nresult: ', result)
             
@@ -122,6 +120,11 @@ def view_transactions_beneficiary(beneficiary_id):
                 transaction["image_url"] = firebase_url
             print('\nEdited transaction:', transaction)
             results.append(transaction)
+    else:
+        return {
+            "code": transaction_result["code"],
+            "message": "Unable to return transactions"
+        }
 
     return {
         "code": 200,
@@ -151,7 +154,6 @@ def view_transactions_corp(listing_id):
         "result":  results
     }
 
-
 def processCreateTransaction(listing, beneficiary_id, quantityDeducted, token):
     listing_id = listing["listing_id"]
     corporate_id = listing["corporate_id"]
@@ -178,24 +180,59 @@ def processCreateTransaction(listing, beneficiary_id, quantityDeducted, token):
             #4b. Deduct quantity from  listing
             new_quantity = existing_quantity - int(quantityDeducted)
             new_listing = {"quantity": new_quantity}
+            print(new_quantity)
             if new_quantity >= 0: #if sufficient quantity
                 print('\n-----Updating listing-----')
                 listing_URL_full = listing_URL + "/" + str(listing_id)
                 listing_result = invoke_http(listing_URL_full, method='PUT', json=new_listing) 
                 print('listing_result:', listing_result)
+                if listing_result["code"] != 200: #terminate process
+                    return {
+                        "code": listing_result["code"],
+                        "message": "Listing not found or listing update was not successful. View error code for more info."
+                    }, listing_result["code"]
             else: #terminate process
                 return{
                     "code": 500,
                     "message": "Insufficient quantity to claim."
                 }, 500
-            # 5. Invoke the transaction microservice
+
+            # 5. If quantity has depleted to 0, send AMQP to corporate
+            if new_quantity == 0:
+                print("\n------------------Sending AMQP for no more qty to corporate------------------")
+                obj = {
+                    "purpose": "toCorporate",
+                    "listing_result": listing
+                }
+                message = json.dumps(obj)
+                amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="corporate.notif", 
+                    body=message, properties=pika.BasicProperties(delivery_mode = 2))
+                print(f"sending message: {message} to 'notify corporate'")
+                
+                # 5a. Change listing status to unavailable
+                listing_URL_full = listing_URL + "/" + str(listing_id)
+                listing_update = {"status": "Unavailable"}
+                listing_result = invoke_http(listing_URL_full, method='PUT', json=listing_update)
+                print('listing_result:', listing_result)
+                if listing_result["code"] != 200:
+                    return {
+                        "code": listing_result["code"],
+                        "message": "Listing not found or listing update was not successful. View error code for more info."
+                    }, listing_result["code"]
+
+            # 6. Invoke the transaction microservice
             print('\n-----Invoking transaction microservice-----')
             transaction_result = invoke_http(transaction_URL, method='POST', json=transaction)
             print('transaction_result:', transaction_result)
+            if transaction_result["code"] != 200:
+                return {
+                    "code": transaction_result["code"],
+                    "message": "Transaction creation not successful."
+                }, transaction_result["code"]
             
-            print("------------------sending amqp for successful claim to beneficiary------------------")
-            # fire and forget
-            if transaction_result["status"] == "In Progress":
+            print("------------------Sending AMQP for successful claim to beneficiary------------------")
+            # 7. Notify beneficiaries that claim has been successful
+            if transaction_result["result"]["status"] == "In Progress":
                 obj = {
                     "purpose": "toBeneficiary",
                     "listing_result": listing,
@@ -204,7 +241,7 @@ def processCreateTransaction(listing, beneficiary_id, quantityDeducted, token):
                 message = json.dumps(obj)
                 amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="change.notif", 
                     body=message, properties=pika.BasicProperties(delivery_mode = 2))
-                print(f"sending message: {message} to 'collect'")
+                print(f"sending message: {message} to 'claim successful'")
 
             return {
                 "code": 200,
@@ -216,58 +253,61 @@ def processCreateTransaction(listing, beneficiary_id, quantityDeducted, token):
             "message": "Unauthenticated user. User needs to be logged into a beneficiary account."
         }, 404
 
-def processUpdateTransaction(transaction, listing, token, status):
+def processUpdateTransaction(transactions, listing, token, status):
+
+    listing_id = listing["listing_id"]
 
     #2. Authenticate user
     authentication_result = authenticateUser(token)
 
     if authentication_result["statusCode"] == "200":
-        transaction_id = transaction["transaction_id"]
+        for transaction in transactions:
+            transaction_id = transaction["transaction_id"]
             #3. Update transaction
-        transaction_URL_full = transaction_URL + "/" + str(transaction_id)
-        print('\n-----Invoking transaction microservice-----')
-        transaction_update = {
-            "status": status
-        }
-        transaction_result = invoke_http(transaction_URL_full, method='PUT', json=transaction_update)
-        print('transaction_results:', transaction_result)    
-
-    #4. Notify users if theres is a change in the status of the transaction
-
-    #4a. If transaction is Cancelled from Corporate
-    # CHANGED transaction_result['status'] to status because AMQP was recieving the outdated status
-        if status == "Cancelled":
-            print('\n-----Send to Notification microservice-----')
-            obj = {
-                "purpose": "cancelled",
-                "listing_result": listing
-            } 
-            message = json.dumps(obj)
-            amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="cancel.notif", 
-                body=message, properties=pika.BasicProperties(delivery_mode = 2))
-            print(f"sending message: {message} to 'cancel'")
-
-        #4c. If items are Ready to Collect
-        if status == "Ready to Collect":
-            obj = {
-                "purpose": "toBeneficiary",
-                "listing_result": listing,
-                "transaction_result": transaction
+            transaction_URL_full = transaction_URL + "/" + str(transaction_id)
+            print('\n-----Invoking transaction microservice-----')
+            transaction_update = {
+                "status": status
             }
-            message = json.dumps(obj)
-            amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="change.notif", 
-                body=message, properties=pika.BasicProperties(delivery_mode = 2))
-            print(f"sending message: {message} to 'collect'")
-        
-        return { "code": 200 ,"message": "Success"}
-    #5. Update Listing (need meh ?) need lah
-    # print('\n-----Updating listings-----')
-    # listing_URL_full = listing_URL + "/" + str(listing_id)
-    # listing_update = {
-    #     "status": status
-    # }
-    # listing_result = invoke_http(listing_URL_full, method="PUT", json=listing_update)
-    # print('listing_result:', listing_result)
+            transaction_result = invoke_http(transaction_URL_full, method='PUT', json=transaction_update)
+            print('transaction_results:', transaction_result)    
+
+        #4. Notify users if theres is a change in the status of the transaction
+
+        #4a. If transaction is Cancelled from Corporate
+        # CHANGED transaction_result['status'] to status because AMQP was recieving the outdated status
+            if status == "Cancelled":
+                print('\n-----Send to Notification microservice-----')
+                obj = {
+                    "purpose": "cancelled",
+                    "listing_result": listing
+                } 
+                message = json.dumps(obj)
+                amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="cancel.notif", 
+                    body=message, properties=pika.BasicProperties(delivery_mode = 2))
+                print(f"sending message: {message} to 'cancel'")
+                #4b. update listing to unavailable
+                listing_URL_full = listing_URL + "/" + str(listing_id)
+                listing_update = {"status": "Unavailable"}
+                listing_result = invoke_http(listing_URL_full, method='PUT', json=listing_update)
+                print('listing_result:', listing_result)
+                return {"code": 200, "message": "Transaction status successfully updated, cancelled."}
+
+            #4c. If items are Ready to Collect or Completed
+            elif status == "Ready for Collection" or "Completed":
+                obj = {
+                    "purpose": "toBeneficiary",
+                    "listing_result": listing,
+                    "transaction_result": transaction
+                }
+                message = json.dumps(obj)
+                amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="change.notif", 
+                    body=message, properties=pika.BasicProperties(delivery_mode = 2))
+                print(f"sending message: {message} to 'collect'")
+                return {"code": 200 ,"message": f"Success transaction status changed to {status}"}
+            
+            else:
+                return {"code": 500, "message": "Invalid status."}
 
 
 def authenticateUser(token_input):

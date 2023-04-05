@@ -1,9 +1,9 @@
 <template>
   <div class="white pa-5 bground" style="height: 50%">
     <v-container class="pb-15" style="width: 50%" data-aos="fade-down">
-      <span class="text-h6 text-capitalize orange--text">Good!</span><br />
+      <span class="text-h6 text-capitalize orange--text">Give back to the Community</span><br />
       <v-row class="mb-7 ml-1 mt-1">
-        <span class="text-h4 text-capitalize brown--text">Donate is good.</span>
+        <span class="text-h4 text-capitalize brown--text">Create a listing</span>
       </v-row>
 
       <v-card>
@@ -37,7 +37,7 @@
               </v-file-input>
             </v-container>
             <v-container>
-              <v-textarea
+              <v-text-field
                 outlined
                 rounded
                 name="itemDescription"
@@ -48,7 +48,7 @@
                 type="text"
                 required
               >
-              </v-textarea>
+              </v-text-field>
             </v-container>
 
             <v-container>

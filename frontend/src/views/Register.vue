@@ -65,26 +65,37 @@
                 <v-container>
                   <v-row>
                     <v-text-field
-                    style="margin-left: 15px;"
-                    outlined
-                    rounded
-                    name="address"
-                    
-                    id="address"
-                    v-model="address"
-                    type="text"
-                    required
+                      style="margin-left: 15px"
+                      outlined
+                      rounded
+                      name="address"
+                      id="address"
+                      v-model="address"
+                      type="text"
+                      required
                     >
                     </v-text-field>
-                    <v-btn style="margin-right: 15px;" plain @click="geocode">Find My Location</v-btn>
+                    <v-btn style="margin-right: 15px" plain @click="geocode"
+                      >Find My Location</v-btn
+                    >
                   </v-row>
                 </v-container>
-                
+
                 <v-container>
                   <v-row>
-                    <v-text-field style="margin-left: 15px; margin-right: 15px;" label="Postal Code" v-model="postal" :disabled="true">
+                    <v-text-field
+                      style="margin-left: 15px; margin-right: 15px"
+                      label="Postal Code"
+                      v-model="postal"
+                      :disabled="true"
+                    >
                     </v-text-field>
-                    <v-text-field style="margin-right: 15px;" label="Area" v-model="area" :disabled="true">
+                    <v-text-field
+                      style="margin-right: 15px"
+                      label="Area"
+                      v-model="area"
+                      :disabled="true"
+                    >
                     </v-text-field>
                   </v-row>
                 </v-container>
@@ -203,6 +214,7 @@
                     id="description"
                     v-model="description"
                     type="text"
+                    height="150"
                     required
                   >
                   </v-text-field>
@@ -239,7 +251,14 @@
                 </v-container>
 
                 <v-container>
-                  <v-btn type="submit" block brown outlined :loading="loading">
+                  <v-btn
+                    type="submit"
+                    class="amber lighten-2"
+                    block
+                    brown
+                    outlined
+                    :loading="loading"
+                  >
                     Register
                     <!-- button loader -->
                     <template v-slot:loader>
@@ -345,68 +364,64 @@ export default {
     },
   },
   methods: {
-    onRegister(role) {
-      console.log(role);
-      let name;
-      let email;
-      if (role == "corporate") {
-        name = this.corporatename;
-        email = this.corporateEmail;
-      } else {
-        name = null;
-        email = this.email;
-      }
-      axios
-        .post("http://localhost:3001/register", {
+    async onRegister(role) {
+      try {
+        console.log(role);
+        let name;
+        let email;
+        if (role == "corporate") {
+          name = this.corporatename;
+          email = this.corporateEmail;
+        } else {
+          name = null;
+          email = this.email;
+        }
+        const response = await axios.post("http://localhost:3001/register", {
           email: email,
           password: this.password,
           role: role,
           name: name,
-        })
-        .then((response) => {
-          const response_data = response.data;
-          if (response_data.statusCode == "200") {
-            // console.log(response_data.name);
-            this.$store.commit("access", {
-              accessToken: response_data.accessToken,
-              uid: response_data.uid,
-              corporateName: response_data.name,
+        });
+
+        const response_data = response.data;
+        if (response_data.statusCode == "200") {
+          // console.log(response_data.name);
+          this.$store.commit("access", {
+            accessToken: response_data.accessToken,
+            uid: response_data.uid,
+            corporateName: response_data.name,
+            area: this.area,
+          });
+
+          // if function to push to sql db
+          if (role == "corporate") {
+            await axios.post("http://localhost:8421/corporate", {
+              corporate_id: this.$store.state.uid,
+              email: this.corporateEmail,
+              name: this.corporatename,
+              description: this.description,
+            });
+          } else {
+            await axios.post("http://localhost:8421/beneficiary", {
+              beneficiary_id: this.$store.state.uid,
+              email: this.email,
+              username: this.username,
+              phone: parseInt(this.phone),
+              address: this.address,
+              postal: parseInt(this.postal),
+              district: parseInt(this.district),
               area: this.area,
             });
-
-            // if function to push to sql db
-            if (role == "corporate") {
-              axios.post("http://localhost:8421/corporate", {
-                corporate_id: this.$store.state.uid,
-                email: this.corporateEmail,
-                name: this.corporatename,
-                description: this.description,
-              });
-            } else {
-              axios.post("http://localhost:8421/beneficiary", {
-                beneficiary_id: this.$store.state.uid,
-                email: this.email,
-                username: this.username,
-                phone: parseInt(this.phone),
-                address: this.address,
-                postal: parseInt(this.postal),
-                district: parseInt(this.district),
-                area: this.area,
-              });
-            }
-
-            // end of sql db code
-
-            this.$router.push("/");
-          } else {
-            console.log("fail");
-            alert(`${response_data.authStatus},${response_data.errorMessage}`);
           }
-          console.log(this.$store.state.accessToken, this.$store.state.uid);
-        })
-        .catch((error) => {
-          console.log("error " + error);
-        });
+
+          // end of sql db code
+
+          this.$router.push("/");
+        }
+      } catch (error) {
+        console.log("fail");
+        // alert(`${response_data.authStatus},${response_data.errorMessage}`);
+      }
     },
     loadGoogleMaps(apiKey) {
       return new Promise((resolve, reject) => {

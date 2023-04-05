@@ -41,7 +41,16 @@
           </span>
         </v-row>
         <v-row class="my-15">
-          <SearchBar></SearchBar>
+          <!-- <SearchBar @search="searchForListings($event)"></SearchBar> -->
+          <v-text-field
+            outlined
+            prepend-icon="mdi-magnify"
+            class="rounded-xl px-5"
+            label="Search for a FreeBee"
+            clearable
+            v-model="search"
+          >
+          </v-text-field>
         </v-row>
       </div>
 
@@ -61,8 +70,11 @@
             v-for="category in myCategories"
             :key="category.title"
           >
-            <Category :title="category.title" :image="category.image" 
-            @chooseCat="chooseCat(category.title)">
+            <Category
+              :title="category.title"
+              :image="category.image"
+              @chooseCat="chooseCat(category.title)"
+            >
             </Category>
           </v-col>
         </v-row>
@@ -132,54 +144,67 @@
 <script>
 import AOS from "aos";
 import Category from "./Category.vue";
-import SearchBar from "./SearchBar.vue";
+// import SearchBar from "./SearchBar.vue";
 import Listing from "./Listing.vue";
 import axios from "axios";
 export default {
   name: "HelloWorld",
   mounted() {
-        AOS.init({
-            duration: 1600,
-        });
-        // console.log(this.$store.getters.getAccessToken)
-        // console.log(this.$store.state)
-  },  
-  data(){
-    return{
-    fab: false,
-    myCategories: [
-                { title: 'Food & Drinks', image: 'Honey.png' },
-                { title: 'Apparel', image: 'yellowshirt.jpg' },
-                { title: 'Electronics', image: 'beeelectronic.jpg' },
-                { title: 'Furniture', image: 'beefurniture.jpg' },
-                { title: 'Toys & Hobbies', image: 'pigbee.jpg' },
-                { title: 'Everything Else', image: 'manybees.jpg' },
-            ],
+    AOS.init({
+      duration: 1600,
+    });
+    // console.log(this.$store.getters.getAccessToken)
+    // console.log(this.$store.state)
+  },
+  data() {
+    return {
+      fab: false,
+      myCategories: [
+        { title: "Food & Drinks", image: "Honey.png" },
+        { title: "Apparel", image: "yellowshirt.jpg" },
+        { title: "Electronics", image: "beeelectronic.jpg" },
+        { title: "Furniture", image: "beefurniture.jpg" },
+        { title: "Toys & Hobbies", image: "pigbee.jpg" },
+        { title: "Everything Else", image: "manybees.jpg" },
+      ],
       //listings array retrieved from MS:
       allListingsArray: [],
       recListingsArray: [],
-      filteredCategories: ['Food & Drinks', 'Apparel', 'Electronics', 'Furniture', 'Toys & Hobbies', 'Everything Else'],
+      filteredCategories: [
+        "Food & Drinks",
+        "Apparel",
+        "Electronics",
+        "Furniture",
+        "Toys & Hobbies",
+        "Everything Else",
+      ],
       loaded: true,
+      search: "",
     };
   },
-  computed:{
-    filteredListings(){
-      return this.allListingsArray.filter(listing => {
-        if(this.filteredCategories.includes(listing.listing.category)){
-          return true
-        }else{
-          return false
+  computed: {
+    filteredListings() {
+      return this.allListingsArray.filter((listing) => {
+        console.log(listing);
+        if (
+          this.filteredCategories.includes(listing.listing.category) &&
+          listing.listing.name.toLowerCase().includes(this.search)
+        ) {
+          return true;
+        } else {
+          return false;
         }
-    })
+      });
     },
   },
 
-  components: { SearchBar, Category, Listing },
+  components: { Category, Listing },
 
   methods: {
     async fetchListings() {
-      const listing_URL = `http://localhost:5000/listing_management`;
-      axios.get(listing_URL).then((response) => {
+      try {
+        const listing_URL = `http://localhost:5000/listing_management`;
+        const response = await axios.get(listing_URL);
         // console.log(response.data)
         response.data.forEach((element) => {
           // console.log(element)
@@ -188,13 +213,18 @@ export default {
             this.allListingsArray.push(element);
           }
           // console.log(this.$store.state.area)
-          let rec_area = this.$store.state.area
-          if ((element.area == rec_area || rec_area == null) && element.listing.status == "Available") {
+          let rec_area = this.$store.state.area;
+          if (
+            (element.area == rec_area || rec_area == null) &&
+            element.listing.status == "Available"
+          ) {
             this.recListingsArray.push(element);
           }
         });
         console.log(this.allListingsArray);
-      });
+      } catch (error) {
+        console.log(error);
+      }
       // console.log(this.allListingsArray)
     },
     gotoListing(listing_id) {
@@ -205,12 +235,22 @@ export default {
         params: { listingid: listing_id },
       });
     },
-    chooseCat(cat){
-      if(this.filteredCategories.length==1 && this.filteredCategories.includes(cat)){
-        this.filteredCategories = ['Food & Drinks', 'Apparel', 'Electronics', 'Furniture', 'Toys & Hobbies', 'Everything Else']
-      }else{
-        this.filteredCategories = []
-        this.filteredCategories.push(cat)
+    chooseCat(cat) {
+      if (
+        this.filteredCategories.length == 1 &&
+        this.filteredCategories.includes(cat)
+      ) {
+        this.filteredCategories = [
+          "Food & Drinks",
+          "Apparel",
+          "Electronics",
+          "Furniture",
+          "Toys & Hobbies",
+          "Everything Else",
+        ];
+      } else {
+        this.filteredCategories = [];
+        this.filteredCategories.push(cat);
       }
     },
     onScroll(e) {
@@ -221,14 +261,13 @@ export default {
     toTop() {
       this.$vuetify.goTo(0);
     },
-
   },
   created() {
     this.fetchListings();
     setTimeout(() => {
-      this.loaded = false
+      this.loaded = false;
       // console.log(this.loaded)
-    }, 1250)
-  }
-} 
+    }, 1250);
+  },
+};
 </script>

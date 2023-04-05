@@ -107,11 +107,12 @@ def display_listings():
     listing_URL_FULL = listing_URL + "listing"
     listing_result = invoke_http(listing_URL_FULL, method="GET", json=None)
     print('listing_result:', listing_result)
+    image_result = invoke_http(image_URL, method="GET", json=None)
 
     for listing in listing_result:
         listing_id = listing["listing_id"]
         img_ext = listing["img_ext"]
-        firebase_url = f"https://firebasestorage.googleapis.com/v0/b/esdeeznutz.appspot.com/o/listings%2F{listing_id}{img_ext}?alt=media&token=d96a1b6f-e4a2-42d1-a06b-c9331d4490a4"
+        firebase_url = image_result["front_url"] + listing_id + img_ext + image_result["back_url"]
         listing_and_image = {
             "listing": listing,
             "firebase_url": firebase_url
@@ -129,6 +130,8 @@ def display_subscriptions(beneficiary_id):
     subscriptions = invoke_http(subscription_get_URL,method='GET',json=None)
     
     print("Subscription results: ",subscriptions)
+    image_result = invoke_http(image_URL, method="GET", json=None)
+
     listings = []
     for subscription in subscriptions:
         corporate_id = subscription['corporate_id']
@@ -137,7 +140,7 @@ def display_subscriptions(beneficiary_id):
         for corporate_listing in corporate_listings:
             listing_id = corporate_listing["listing_id"]
             img_ext = corporate_listing["img_ext"]
-            firebase_url = f"https://firebasestorage.googleapis.com/v0/b/esdeeznutz.appspot.com/o/listings%2F{listing_id}{img_ext}?alt=media&token=d96a1b6f-e4a2-42d1-a06b-c9331d4490a4"
+            firebase_url = image_result["front_url"] + listing_id + img_ext + image_result["back_url"]
             return_listing = {'listing': corporate_listing,
                               "firebase_url": firebase_url}
             listings.append(return_listing)
@@ -160,7 +163,9 @@ def get_all_favourites(beneficiary_id):
         listing= invoke_http(listing_id_URL,method='GET',json=None)
         print(listing)
         img_ext = listing["img_ext"]
-        firebase_url = f"https://firebasestorage.googleapis.com/v0/b/esdeeznutz.appspot.com/o/listings%2F{listing_id}{img_ext}?alt=media&token=d96a1b6f-e4a2-42d1-a06b-c9331d4490a4"
+        image_result = invoke_http(image_URL, method="GET", json=None)
+
+        firebase_url = image_result["front_url"] + listing_id + img_ext + image_result["back_url"]
         return_listing = {'listing': listing,
                         "firebase_url": firebase_url}
         listings.append(return_listing)

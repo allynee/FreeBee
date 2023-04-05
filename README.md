@@ -24,7 +24,6 @@ FreeBee! strives to address this problem by providing a user-friendly web applic
 - Flask
 - SQLAlchemy
 - FastAPI
-- NodeJS
 - ExpressJS
 - Vue, Veutify for building the web app 
 
@@ -37,10 +36,9 @@ FreeBee! strives to address this problem by providing a user-friendly web applic
 
 ### Database
 - Firebase
-- AWS RDS for MySQL database
+- AWS RDS for MySQL 
 
 ### External Services
-- SMTP for Email Notification
 - Google Geocoding
 - Firebase Authentication
 
@@ -48,6 +46,9 @@ FreeBee! strives to address this problem by providing a user-friendly web applic
 - REST
 - GraphQL
 
+### Protocols
+- HTTP 
+- SMTP for Email Notification
 
 ## 4) Team Members
 
