@@ -172,12 +172,7 @@ def delete_favourite(db: Session, favourite:schemas.Favourite):
 ### CORPORATE TABLE ###
 def get_corporate(db: Session, corporate_id: str):
 
-    corporate = db.query(models.Corporate).filter(models.Corporate.corporate_id == corporate_id).first()
-
-    if not corporate:
-        raise HTTPException(status_code=404, detail="No corporate with input id")
-    
-    return corporate
+    return db.query(models.Corporate).filter(models.Corporate.corporate_id == corporate_id).first()
 
 def get_all_corporates(db: Session, skip: int = 0, limit: int = 100):
     corporates = db.query(models.Corporate).offset(skip).limit(limit).all()
@@ -190,8 +185,10 @@ def get_all_corporates(db: Session, skip: int = 0, limit: int = 100):
 
 def create_corporate(db: Session, corporate: schemas.CorporateCreate):
     c = get_corporate(db, corporate_id = corporate.corporate_id)
+
     if c:
         raise HTTPException(status_code=400, detail="Corporate already exists")
+    
     corporate = models.Corporate(**corporate.dict())
     db.add(corporate)
     db.commit() 

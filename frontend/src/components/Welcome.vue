@@ -42,6 +42,7 @@
         </v-row>
         <v-row class="my-15">
           <!-- <SearchBar @search="searchForListings($event)"></SearchBar> -->
+          <v-container class="px-15">
           <v-text-field
             outlined
             prepend-icon="mdi-magnify"
@@ -51,6 +52,7 @@
             v-model="search"
           >
           </v-text-field>
+        </v-container>
         </v-row>
       </div>
 
