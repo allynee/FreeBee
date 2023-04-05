@@ -272,9 +272,12 @@ export default {
               token: this.$store.state.accessToken,
               quantity: this.quantity,
             });
-            if (response.data[0].code == 200) {
-              alert("Claim Successful !");
+            console.log(response.data[1])
+            if (response.data[1] == 200) {
+              alert(response.data[0].message);
               this.$router.push("/");
+            }else{
+              alert(response.data[0].message)
             }
           } else {
             this.$router.push("/login");
@@ -389,9 +392,7 @@ export default {
     }, 1250);
   },
   mounted() {
-    console.log("Mounted");
     let listing_id = this.$route.params.listingid;
-    console.log(this.listing);
     axios
       .get("http://localhost:8421/favourite", {
         params: {
