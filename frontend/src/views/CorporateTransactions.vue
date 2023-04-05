@@ -141,18 +141,19 @@ export default {
           "http://localhost:5100/transaction_management/corporate/" +
           this.$route.params.listingid;
         const response = await axios.get(transaction_URL);
-        console.log(response.data.result)
-        response.data.result.transactions.result.forEach((transaction) => {
-          if (transaction.status == "In Progress") {
-            this.inProgressArray.push(transaction);
-          } else if (transaction.status == "Ready for Collection") {
-            this.readyArray.push(transaction);
-          } else if (transaction.status == "Completed") {
-            this.completedArray.push(transaction);
-          } else if (transaction.status == "Cancelled") {
-            this.cancelledArray.push(transaction);
-          }
-        });
+        if (response.data.code == 200) {
+          response.data.result.transactions.result.forEach((transaction) => {
+            if (transaction.status == "In Progress") {
+              this.inProgressArray.push(transaction);
+            } else if (transaction.status == "Ready for Collection") {
+              this.readyArray.push(transaction);
+            } else if (transaction.status == "Completed") {
+              this.completedArray.push(transaction);
+            } else if (transaction.status == "Cancelled") {
+              this.cancelledArray.push(transaction);
+            }
+          });
+        }
         this.listing_details = response.data.result.listing_details.result;
       } catch (error) {
         console.log(error);
@@ -171,23 +172,27 @@ export default {
       }
     },
     async updateDB(status) {
-      if (this.update.length > 0) {
-        console.log(this.transactionStatus);
-        axios
-          .put(`http://localhost:5100/transaction_management`, {
-            listing: this.listing_details,
-            transactions: this.update,
-            token: this.$store.state.accessToken,
-            status: status,
-          })
-          .then((response) => {
-            if (response.data.code == 404) {
-              alert("Invalid update request");
-            } else {
-              alert("Success");
-              location.reload();
+      try {
+        if (this.update.length > 0) {
+          console.log(this.transactionStatus);
+          const response = await axios.put(
+            `http://localhost:5100/transaction_management`,
+            {
+              listing: this.listing_details,
+              transactions: this.update,
+              token: this.$store.state.accessToken,
+              status: status,
             }
-          });
+          );
+          if (response.data.code == 404) {
+            return alert("Invalid update request");
+          } else {
+            alert("Success");
+            location.reload();
+          }
+        }
+      } catch (error) {
+        alert(error.message);
       }
     },
   },
