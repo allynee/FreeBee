@@ -30,11 +30,11 @@
             >FreeBees from Corporations you follow</span
           >
         </v-row>
-        <v-row>
-          <v-col
+        <v-row class="px-5">
+          <v-col cols="5" class="mx-5"
             v-for="aListing in subscriptions"
             :key="aListing.listing_id"
-            style="margin-right: 0;width:15vw"
+            style=""
             
           >
             <Listing

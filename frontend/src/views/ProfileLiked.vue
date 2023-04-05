@@ -31,7 +31,7 @@
           >
         </v-row>
         <v-row>
-          <v-col cols="6" v-for="aListing in favourites" :key="aListing.listing_id">
+          <v-col cols="5" v-for="aListing in favourites" :key="aListing.listing_id">
             <Listing
               :aListing="aListing"
               @gotoListing="gotoListing(aListing.listing.listing_id)"
