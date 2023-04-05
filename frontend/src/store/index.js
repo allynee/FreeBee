@@ -12,8 +12,8 @@ export const store = new Vuex.Store({
     accessToken: null,
     uid: null,
     corporateName: null,
-    area:null,
-    district:null,
+    area: null,
+    district: null,
   },
   plugins: [persistedState],
   mutations: {
@@ -28,27 +28,7 @@ export const store = new Vuex.Store({
       Object.assign(state, getDefaultState());
     },
   },
-  actions: {
-   
-  },
   getters: {
-    getuser(state) {
-      console.log(state.user);
-      return state.user;
-    },
-    loading(state) {
-      return state.loading;
-    },
-    loadedpet(state) {
-      return state.loadedPet;
-    },
-    listedpet(state) {
-      return state.user.listedPets;
-    },
-
-    getOthers(state) {
-      return state.others;
-    },
     getAccessToken(state) {
       return state.accessToken;
     },
@@ -63,5 +43,7 @@ function getDefaultState() {
     accessToken: null,
     uid: null,
     corporateName: null,
+    area: null,
+    district: null,
   };
 }

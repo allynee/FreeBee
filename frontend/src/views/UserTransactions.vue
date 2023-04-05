@@ -102,22 +102,28 @@ export default {
 
   methods: {
     async fetchTransactions() {
-      const transaction_URL =
-        "http://localhost:5100/transaction_management/beneficiary/" +
-        this.$store.state.uid;
-      axios.get(transaction_URL).then((response) => {
-        response.data.result.forEach((transaction) => {
-          if (transaction.status == "In Progress") {
-            this.inProgressArray.push(transaction);
-          } else if (transaction.status == "Ready for Collection") {
-            this.readyArray.push(transaction);
-          } else if (transaction.status == "Completed") {
-            this.completedArray.push(transaction);
-          } else if (transaction.status == "Cancelled") {
-            this.cancelledArray.push(transaction);
-          }
-        });
-      });
+      try {
+        const transaction_URL =
+          "http://localhost:5100/transaction_management/beneficiary/" +
+          this.$store.state.uid;
+        const response = await axios.get(transaction_URL);
+        console.log(response)
+        if (response.data.result.length > 0) {
+          response.data.result.forEach((transaction) => {
+            if (transaction.status == "In Progress") {
+              this.inProgressArray.push(transaction);
+            } else if (transaction.status == "Ready for Collection") {
+              this.readyArray.push(transaction);
+            } else if (transaction.status == "Completed") {
+              this.completedArray.push(transaction);
+            } else if (transaction.status == "Cancelled") {
+              this.cancelledArray.push(transaction);
+            }
+          });
+        }
+      } catch (error) {
+        console.log(error);
+      }
     },
   },
 
