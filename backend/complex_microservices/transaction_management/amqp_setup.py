@@ -41,7 +41,7 @@ channel = connection.channel()
 
 # Set up the exchange if the exchange doesn't exist
 # - use a 'topic' exchange to enable interaction
-exchangename="Notification_topic"
+exchangename="Notification_fanout"
 exchangetype="fanout"
 channel.exchange_declare(exchange=exchangename, exchange_type=exchangetype, durable=True)
     # 'durable' makes the exchange survive broker restarts
