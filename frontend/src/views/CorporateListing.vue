@@ -45,7 +45,7 @@
                   @click="deleteListing"
                 >
                   <v-icon left small>mdi-delete-empty</v-icon>
-                  Listing deleted
+                  Listing unavailable to public
                 </v-btn>
               </div>
               <div v-else>
