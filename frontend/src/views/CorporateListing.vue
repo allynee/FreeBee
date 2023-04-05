@@ -47,27 +47,27 @@
               </v-btn> -->
               <div v-if="notAvailable">
                 <v-btn
-                class="amber lighten-4 ml-2"
-                depressed
-                outlined
-                disabled
-                @click="deleteListing"
-              >
-                <v-icon left small>mdi-delete-empty</v-icon>
-                Listing deleted
-              </v-btn>
+                  class="amber lighten-4 ml-2"
+                  depressed
+                  outlined
+                  disabled
+                  @click="deleteListing"
+                >
+                  <v-icon left small>mdi-delete-empty</v-icon>
+                  Listing deleted
+                </v-btn>
               </div>
               <div v-else>
-              <v-btn
-                class="amber lighten-4 ml-2"
-                depressed
-                outlined
-                @click="deleteListing"
-              >
-                <v-icon left small>mdi-delete-empty</v-icon>
-                Delete Listing
-              </v-btn>
-            </div>
+                <v-btn
+                  class="amber lighten-4 ml-2"
+                  depressed
+                  outlined
+                  @click="deleteListing"
+                >
+                  <v-icon left small>mdi-delete-empty</v-icon>
+                  Delete Listing
+                </v-btn>
+              </div>
             </v-row>
           </v-container>
           <!-- v tabs -->
@@ -84,9 +84,7 @@
                 >
                   Description:
                 </h1>
-                <h1
-                  class="text-h6 font-weight-light grey--text text--darken-3"
-                >
+                <h1 class="text-h6 font-weight-light grey--text text--darken-3">
                   {{ this.listing.description }}
                 </h1>
                 <span>
@@ -108,7 +106,9 @@
                 >
                   Address:
                 </span>
-                <span class="text-h6 font-weight-light grey--text text--darken-3">
+                <span
+                  class="text-h6 font-weight-light grey--text text--darken-3"
+                >
                   {{ this.listing.address }}
                 </span>
                 <br />
@@ -117,7 +117,9 @@
                 >
                   Postal Code:
                 </span>
-                <span class="text-h6 font-weight-light grey--text text--darken-3">
+                <span
+                  class="text-h6 font-weight-light grey--text text--darken-3"
+                >
                   {{ this.listing.postal }}
                 </span>
               </v-tab-item>
@@ -141,7 +143,7 @@ export default {
       tab: null,
       listing: null,
       quantity: 0,
-      notAvailable: false
+      notAvailable: false,
     };
   },
   methods: {
@@ -154,8 +156,8 @@ export default {
           console.log(response.data);
           this.listing = response.data;
           this.image = `https://firebasestorage.googleapis.com/v0/b/esdeeznutz.appspot.com/o/listings%2F${this.listing.listing_id}${this.listing.img_ext}?alt=media&token=d96a1b6f-e4a2-42d1-a06b-c9331d4490a4`;
-          if (this.listing.status == "Unavailable"){
-            this.notAvailable = true
+          if (this.listing.status == "Unavailable") {
+            this.notAvailable = true;
           }
         })
         .catch((exception) => {
@@ -203,26 +205,31 @@ export default {
     async deleteListing() {
       try {
         this.listing.status = "Unavailable";
-        const listing_management_url = `http://localhost:5000/listing_management/${this.$route.params.listingid}`;
-        axios
-          .put(listing_management_url, {
-            listing: this.listing,
-            token: this.$store.state.accessToken,
-          })
-          .then((response) => {
-            console.log(response.data);
-          });
         const transaction_management_get = `http://localhost:5100/transaction_management/corporate/${this.$route.params.listingid}`;
         const transactions = await axios.get(transaction_management_get);
+        if (transactions.data.code != 200) {
+          return alert(transactions.data.message);
+        }
         const transaction_management_put = `http://localhost:5100/transaction_management`;
-        console.log(transactions.data.result.transactions);
         const update_result = await axios.put(transaction_management_put, {
           listing: this.listing,
           token: this.$store.state.accessToken,
-          transaction: transactions.data.result.transactions,
+          transactions: transactions.data.result.transactions.result,
           status: "Cancelled",
         });
-        console.log(update_result.data);
+        if (update_result.data.code != 200) {
+          return alert(update_result.data.message);
+        }
+        const listing_management_url = `http://localhost:5000/listing_management/${this.$route.params.listingid}`;
+        const listing_update = await axios.put(listing_management_url, {
+          listing: this.listing,
+          token: this.$store.state.accessToken,
+        });
+        if (listing_update.data.code != 200) {
+          return alert(listing_update.data.message);
+        }
+        this.notAvailable = true;
+        return alert()
       } catch (error) {
         console.log(error);
       }

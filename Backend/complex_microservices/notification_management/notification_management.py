@@ -18,7 +18,7 @@ CORS(app)
 listing_URL = environ.get('listing_URL') or "http://localhost:8000/listing"
 transaction_URL = environ.get('transaction_URL') or "http://localhost:9000/transaction"
 # geocoding_URL = "http://localhost:3000/"
-# notification_URL = "http://localhost:5001/" #this is this page
+# notification_management_URL = "http://localhost:5001/" #this is this page
 # authentication_URL = "localhost:3001/"
 notification_URL = environ.get('notification_URL') or "http://localhost:5005/sendmail"
 user_URL = environ.get('user_URL') or "http://localhost:8421"
@@ -54,7 +54,7 @@ def recieveMail():
             # do the actual work
             # 1. recieve info 
             result = sortMail(info)
-            return jsonify(result)
+            return result #this is always None cus nvr return reply
 
         except Exception as e:
             # Unexpected error in code
@@ -77,14 +77,14 @@ def recieveMail():
 def sortMail(info):
     #sort mail here
     if info['purpose'] == "subscription":
-        subscription(info)
+        return subscription(info)
     elif info['purpose'] == "toBeneficiary":
-        toBeneficiary(info)
+        return toBeneficiary(info)
     elif info['purpose'] == "toCorporate":
-        print("toCorporate")
-        toCorporate(info)
+        # print("toCorporate")
+        return toCorporate(info)
     elif info['purpose'] == "cancelled":
-        cancel(info)
+        return cancel(info)
 
 def subscription(info):
 #     ############ This is for mass sending to all subscribers ## FROM listing_manage ##########
@@ -93,13 +93,14 @@ def subscription(info):
     print('<br>-----Invoking user microservice-----')
     corporate_id = info['listing_result']['corporate_id']
     print(corporate_id)
-    full_user_URL = user_URL + f"/subscription/corporate/{corporate_id}"
+    full_user_URL = user_URL + f"/subscriber/corporate/{corporate_id}"
     subscription_result = invoke_http(full_user_URL, method='GET', json=None)
     print('subscription_result:', subscription_result) #this returns a list of the beneficiary info
     corporate_name =info['listing_result']['corporate_name']
     print("subscribers")
-    if subscription_result != []:
+    if "detail" not in str(subscription_result):
         print('there are subs')
+        result_codes = []
         for sub in subscription_result:
             ben_id = sub["beneficiary_id"]
             each_user_URL = user_URL + f"/beneficiary/" + ben_id
@@ -109,7 +110,25 @@ def subscription(info):
             subject = f"{corporate_name} has posted a new listing!"
             message = f"Hi {username} aka {email}! <br><br>{corporate_name} has posted a new listing! <br>Please check it out at http://localhost:8080/findFreeBee/{str(info['listing_result']['listing_id'])}<br><br>Thank you for using FreeBee!"
             print("calling sendEmail function")
-            sendEmail('lixuen.low.2021@scis.smu.edu.sg', subject, message);
+            result = sendEmail('lixuen.low.2021@scis.smu.edu.sg', subject, message);
+            result_codes += [result['code']]
+        print(set(result_codes))
+        if set(result_codes) == {200}:
+            return {
+                'code': 200,
+                'message': "Successful sending to beneficiaries"
+            }
+        else:
+            return {
+                'code': 429,
+                'message': "Not all beneficiaries were successfully sent an email"
+            }
+    else:
+        return {
+            'code': 400,
+            'response': subscription_result,
+            'message': "Unsuccessful call of transaction ms"
+        }
     # doEmail();
 
 def toBeneficiary(info):
@@ -122,23 +141,41 @@ def toBeneficiary(info):
     status = info['transaction_result']['status'] #In Progress, Ready for Collection, Completed, Cancelled
     full_user_URL = user_URL + f"/beneficiary/{beneficiary_id}"
     beneficiary_result = invoke_http(full_user_URL, method='GET', json=None) #returns beneficiary details
-    print('beneficiary_result:', beneficiary_result) #this returns a list of the beneficiary info
-    email = beneficiary_result['email']
-    username = beneficiary_result['username']
-    if status == "In Progress":
-        subject = f"Your claim is in progress!"
-        message = f"Hi {username} aka {email}!<br><br>You have successfully claimed an item - {info['listing_result']['name']}!<br>Please may check the collection details in FreeBee and you'll be notified again when the item is ready for collection!<br><br>Thank you for using FreeBee!"
-    if status == "Ready for Collection":
-        subject = f"Your claim is ready for collection!"
-        message = f"Hi {username} aka {email}!<br><br>Your item - {info['listing_result']['name']} is ready for collection!<br>The collection details are as follows:<br>{info['listing_result']['collection_details']}<br>Collect at: {info['listing_result']['address']}, {info['listing_result']['postal']}<br><br>Thank you for using FreeBee!"
-    if status == "Completed":
-        subject = f"Your item has been successfully collected!"
-        message = f"Hi {username} aka {email}!<br><br>Your item - {info['listing_result']['name']} has been collected!<br><br>Thank you for using FreeBee!"
-    # if status == "Cancelled":
-    #     subject = f"Your item collection has been cancelled!"
-    #     message = f"Hi {username} aka {email}!<br><br>Your item - {info['listing_result']['name']} has been cancelled by {corporate_name}!<br>We apologize for any inconvinience caused<br><br>Thank you for using FreeBee!"
-    sendEmail('lixuen.low.2021@scis.smu.edu.sg', subject, message);
-    # doEmail();
+    if 'detail' not in str(beneficiary_result):
+        print('beneficiary_result:', beneficiary_result) #this returns a list of the beneficiary info
+        email = beneficiary_result['email']
+        username = beneficiary_result['username']
+        if status == "In Progress":
+            subject = f"Your claim is in progress!"
+            message = f"Hi {username} aka {email}!<br><br>You have successfully claimed an item - {info['listing_result']['name']}!<br>Please may check the collection details in FreeBee and you'll be notified again when the item is ready for collection!<br><br>Thank you for using FreeBee!"
+        if status == "Ready for Collection":
+            subject = f"Your claim is ready for collection!"
+            message = f"Hi {username} aka {email}!<br><br>Your item - {info['listing_result']['name']} is ready for collection!<br>The collection details are as follows:<br>{info['listing_result']['collection_details']}<br>Collect at: {info['listing_result']['address']}, {info['listing_result']['postal']}<br><br>Thank you for using FreeBee!"
+        if status == "Completed":
+            subject = f"Your item has been successfully collected!"
+            message = f"Hi {username} aka {email}!<br><br>Your item - {info['listing_result']['name']} has been collected!<br><br>Thank you for using FreeBee!"
+        # if status == "Cancelled":
+        #     subject = f"Your item collection has been cancelled!"
+        #     message = f"Hi {username} aka {email}!<br><br>Your item - {info['listing_result']['name']} has been cancelled by {corporate_name}!<br>We apologize for any inconvinience caused<br><br>Thank you for using FreeBee!"
+        result = sendEmail('lixuen.low.2021@scis.smu.edu.sg', subject, message);
+        if result['code'] == 200:
+            return {
+                    'code': 200,
+                    'message': "Successful sending to beneficiaries"
+                }
+        else:
+            return {
+                'code': 400,
+                'response': result,
+                'message': "sendEmail returned an error"
+            }
+    else:
+        return {
+                'code': 400,
+                'response': beneficiary_result,
+                'message': "Unsuccessful call of user ms"
+            }
+
 
 
 def toCorporate(info):
@@ -150,13 +187,30 @@ def toCorporate(info):
     print(corporate_id)
     full_user_URL = user_URL + f"/corporate/{corporate_id}"
     corporate_result = invoke_http(full_user_URL, method='GET', json=None)
-    print('subscription_result:', corporate_result) #this returns coportate details
-    corporate_name = info['listing_result']['corporate_name']
-    email = corporate_result['email']
-    subject = f"Successfully posted listing!"
-    message = f"Hi {corporate_name} aka {email}! <br><br>You have successfully posted a new listing - {info['listing_result']['name']}! <br><br>Thank you for using FreeBee!"
-    sendEmail('lixuen.low.2021@scis.smu.edu.sg', subject, message);
-
+    print('corporate_result:', corporate_result) #this returns coportate details
+    if 'detail' not in str(corporate_result):
+        corporate_name = info['listing_result']['corporate_name']
+        email = corporate_result['email']
+        subject = f"Successfully posted listing!"
+        message = f"Hi {corporate_name} aka {email}! <br><br>You have successfully posted a new listing - {info['listing_result']['name']}! <br><br>Thank you for using FreeBee!"
+        result = sendEmail('lixuen.low.2021@scis.smu.edu.sg', subject, message);
+        if result['code'] == 200:
+            return {
+                    'code': 200,
+                    'message': "Successful sending to beneficiaries"
+                }
+        else:
+            return {
+                'code': 400,
+                'response': result,
+                'message': "sendEmail returned an error"
+            }
+    else:
+        return {
+                'code': 400,
+                'response': corporate_result,
+                'message': "Unsuccessful call of transaction ms"
+            }
 
 def cancel(info):
 #     ############ This is for mass sending cancellation to involved users ## FROM trans_manage ##########
@@ -169,7 +223,8 @@ def cancel(info):
         transaction_result = invoke_http(transaction_URL_full, method="GET", json=None)
         print('transaction_result:', transaction_result) #this returns a list of transactions
         subject = f"Your item collection has been cancelled!"
-        if str(transaction_result) != "{'detail': 'Not Found'}":
+        if 'detail' not in str(transaction_result):
+            result_codes = []
             for transaction in transaction_result:
                 #cannot test because the transaction does not make sense at the moment
                 beneficiary_id = transaction['beneficiary_id']
@@ -178,22 +233,38 @@ def cancel(info):
                 username = beneficiary_result['username']
                 email = beneficiary_result['email']
                 message = f"Hi {username} aka {email}!<br><br>Your item - {info['listing_result']['name']} has been cancelled by {corporate_name}!<br>We apologize for any inconvinience caused.<br><br>Thank you for using FreeBee!"
-                sendEmail('lixuen.low.2021@scis.smu.edu.sg', subject, message);
+                result = sendEmail('lixuen.low.2021@scis.smu.edu.sg', subject, message);
+                result_codes += [result['code']]
+            print(set(result_codes))
+            if set(result_codes) == {200}:
+                return {
+                    'code': 200,
+                    'message': "Successful sending to beneficiaries"
+                }
+            else:
+                return {
+                    'code': 429,
+                    'message': "Not all beneficiaries were successfully sent an email"
+                }
         else:
-            print("No transactions found")
+            return {
+                'code': 400,
+                'response': transaction_result,
+                'message': "Unsuccessful call of transaction ms"
+            }
 # then go user and user details to send
 #     #needs transaction objs, then hv a list of beneficiaryID
 #     #needs to get userEmails + CompanyName
     # doEmail();
 
 ###################################################################
-def doEmail():
-    email = "lixuen.low.2021@scis.smu.edu.sg"
-    subject = "test from FreeBee2222222222"
-    message = "This is a test from FreeBee2222222!"
-    # loop = asyncio.get_event_loop()
-    # loop.run_until_complete(
-    return sendEmail(email, subject, message);
+# def doEmail():
+#     email = "lixuen.low.2021@scis.smu.edu.sg"
+#     subject = "test from FreeBee2222222222"
+#     message = "This is a test from FreeBee2222222!"
+#     # loop = asyncio.get_event_loop()
+#     # loop.run_until_complete(
+#     return sendEmail(email, subject, message);
 
 def sendEmail(email, subject, message):
         print('<br>-----Invoking Email API-----')
@@ -203,8 +274,19 @@ def sendEmail(email, subject, message):
         toEmail = {'email': email, 'subject': subject, 'message': message}
         email_result = invoke_http(full_sendEmail_URL, method='GET', json=toEmail)
         print('email_result:', email_result)
-        # loop.close()
-        return email_result
+        if int(email_result["statusCode"]) not in range(200,300):
+            return {
+                'code': 400,
+                'response': email_result,
+                'message': "Unsuccessful call of notification ms"
+            }
+        else:
+            return {
+                'code': 200,
+                'response': email_result,
+                'message': "Successful call of notification ms"
+            }
+
 ###################################################################
 
 if __name__ == "__main__":
