@@ -89,7 +89,7 @@
             cols="12"
             md="4"
             lg="3"
-            v-for="aListing in recListingsArray.slice(-4)"
+            v-for="aListing in recListingsArray"
             :key="aListing.listing_id"
           >
             <Listing
@@ -215,6 +215,7 @@ export default {
             this.allListingsArray.push(element);
           }
         });
+        console.log("this.filter_recc called")
         this.filter_recc();
         console.log(this.allListingsArray);
       } catch (error) {
@@ -257,25 +258,33 @@ export default {
       this.$vuetify.goTo(0);
     },
     filter_recc(){
+      console.log("filter_recc called")
+      console.log (this.allListingsArray)
       let rec_area = this.$store.state.area;
       let rec_district = this.$store.state.district;
+      console.log(rec_area)
+      console.log(rec_district)
       if(this.allListingsArray.length <= 4){
         this.recListingsArray = this.allListingsArray
+        console.log("this.allListingsArray.length <= 4")
       }
       else if(rec_area == null){
         this.recListingsArray = this.allListingsArray.slice(-4)
+        console.log("rec_area == null")
       }
       else{
+        console.log("filtering")
         for (let i = 0; i < this.allListingsArray.length; i++){
           let each_listing = this.allListingsArray[i]
-          if(each_listing.district == rec_district){
+          if(each_listing['listing']['district'] == rec_district && !(this.recListingsArray.includes(each_listing))){
+
             this.recListingsArray.push(each_listing);
           }
         }
         if (this.recListingsArray.length < 4){
           for (let i = 0; i < this.allListingsArray.length; i++){
             let each_listing = this.allListingsArray[i]
-            if(each_listing.area == rec_area){
+            if(each_listing['listing']['area'] == rec_area && !(this.recListingsArray.includes(each_listing))){
               this.recListingsArray.push(each_listing);
             }
           }
@@ -283,10 +292,12 @@ export default {
         if (this.recListingsArray.length < 4){
           while (this.recListingsArray.length < 4 ){
             let elem = this.allListingsArray.pop()
-            this.recListingsArray.push(elem);
+            if (!(this.recListingsArray.includes(elem))){
+              this.recListingsArray.push(elem);
+            }
           }
         }
-
+        console.log(this.recListingsArray)
       }
       
     }
