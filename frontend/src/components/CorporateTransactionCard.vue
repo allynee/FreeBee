@@ -23,7 +23,7 @@
             <v-list-item>
               <v-checkbox
                 v-if="
-                  (transaction.status != 'Collected') &
+                  (transaction.status != 'Completed') &
                   (transaction.status != 'Cancelled')
                 "
                 value="checked"

@@ -1,9 +1,13 @@
 <template>
   <div class="white pa-5 bground" style="height: 50%">
     <v-container class="pb-15" style="width: 50%" data-aos="fade-down">
-      <span class="text-h6 text-capitalize orange--text">Give back to the Community</span><br />
+      <span class="text-h6 text-capitalize orange--text"
+        >Give back to the Community</span
+      ><br />
       <v-row class="mb-7 ml-1 mt-1">
-        <span class="text-h4 text-capitalize brown--text">Create a listing</span>
+        <span class="text-h4 text-capitalize brown--text"
+          >Create a listing</span
+        >
       </v-row>
 
       <v-card>
@@ -192,16 +196,17 @@ export default {
         formData.append("data", JSON.stringify(data));
 
         const listingManagementUrl = "http://localhost:5000/listing_management";
-        axios.post(listingManagementUrl, formData, {
+        const response = await axios.post(listingManagementUrl, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
-        }).then((response) =>{
-          if(response.data.code == 200){
-            alert("Listing Successful !")
-            this.$router.push('/')
-          }
-        })
+        });
+        if (response.data.code == 200) {
+          alert("Listing Successful !");
+          this.$router.push("/");
+        }else{
+          alert(response.data.message)
+        }
       } catch (error) {
         console.log(error);
       }

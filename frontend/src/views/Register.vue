@@ -417,9 +417,11 @@ export default {
           // end of sql db code
 
           this.$router.push("/");
+        } else {
+          return alert(response.data.errorMessage);
         }
       } catch (error) {
-        console.log("fail");
+        return alert(error.message);
         // alert(`${response_data.authStatus},${response_data.errorMessage}`);
       }
     },

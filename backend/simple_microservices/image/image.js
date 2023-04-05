@@ -39,14 +39,6 @@ async function createListingFirebase(image) {
       stRef(storage, "listings/" + key + ext),
       bufferData
     );
-
-    // const imageUrl = await getDownloadURL(
-    //   stRef(storage, "listings/" + key + ext)
-    // );
-    const imageUrl = `https://firebasestorage.googleapis.com/v0/b/esdeeznutz.appspot.com/o/listings%2F${
-      key + ext
-    }?alt=media&token=d96a1b6f-e4a2-42d1-a06b-c9331d4490a4`;
-    console.log(imageUrl);
     let return_response = {
       statusCode: 200,
       authStatus: "Success",
@@ -65,10 +57,10 @@ async function createListingFirebase(image) {
 
 function getImageUrl() {
   // Get the download URL of the file
-    const front_url = "https://firebasestorage.googleapis.com/v0/b/esdeeznutz.appspot.com/o/listings%2F"
-    const back_url = "?alt=media&token=d96a1b6f-e4a2-42d1-a06b-c9331d4490a4"
-    return { front_url: front_url, back_url: back_url };
-
+  const front_url =
+    "https://firebasestorage.googleapis.com/v0/b/esdeeznutz.appspot.com/o/listings%2F";
+  const back_url = "?alt=media&token=d96a1b6f-e4a2-42d1-a06b-c9331d4490a4";
+  return { front_url: front_url, back_url: back_url };
 }
 
 module.exports = {
