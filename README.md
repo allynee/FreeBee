@@ -36,7 +36,7 @@ FreeBee! strives to address this problem by providing a user-friendly web applic
 
 ### Database
 - Firebase
-- AWS RDS for MySQL database
+- AWS RDS for MySQL 
 
 ### External Services
 - Google Geocoding
