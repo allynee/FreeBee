@@ -63,12 +63,12 @@ def update_transaction():
             required_details = request.get_json()
             print("\nJSON with details to update in transaction:", required_details)
             listing = required_details["listing"]
-            transaction = required_details["transaction"]
+            transactions = required_details["transactions"]
             token = required_details["token"]
             status = required_details["status"]
             # do the actual work
             # 1. initiate update of transaction
-            result = processUpdateTransaction(transaction, listing, token, status)
+            result = processUpdateTransaction(transactions, listing, token, status)
             print('\n------------------------')
             print('\nresult: ', result)
             
@@ -253,7 +253,7 @@ def processCreateTransaction(listing, beneficiary_id, quantityDeducted, token):
             "message": "Unauthenticated user. User needs to be logged into a beneficiary account."
         }, 404
 
-def processUpdateTransaction(transaction, listing, token, status):
+def processUpdateTransaction(transactions, listing, token, status):
 
     listing_id = listing["listing_id"]
 
@@ -261,52 +261,53 @@ def processUpdateTransaction(transaction, listing, token, status):
     authentication_result = authenticateUser(token)
 
     if authentication_result["statusCode"] == "200":
-        transaction_id = transaction["transaction_id"]
-        #3. Update transaction
-        transaction_URL_full = transaction_URL + "/" + str(transaction_id)
-        print('\n-----Invoking transaction microservice-----')
-        transaction_update = {
-            "status": status
-        }
-        transaction_result = invoke_http(transaction_URL_full, method='PUT', json=transaction_update)
-        print('transaction_results:', transaction_result)    
+        for transaction in transactions:
+            transaction_id = transaction["transaction_id"]
+            #3. Update transaction
+            transaction_URL_full = transaction_URL + "/" + str(transaction_id)
+            print('\n-----Invoking transaction microservice-----')
+            transaction_update = {
+                "status": status
+            }
+            transaction_result = invoke_http(transaction_URL_full, method='PUT', json=transaction_update)
+            print('transaction_results:', transaction_result)    
 
         #4. Notify users if theres is a change in the status of the transaction
 
         #4a. If transaction is Cancelled from Corporate
         # CHANGED transaction_result['status'] to status because AMQP was recieving the outdated status
-        if status == "Cancelled":
-            print('\n-----Send to Notification microservice-----')
-            obj = {
-                "purpose": "cancelled",
-                "listing_result": listing
-            } 
-            message = json.dumps(obj)
-            amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="cancel.notif", 
-                body=message, properties=pika.BasicProperties(delivery_mode = 2))
-            print(f"sending message: {message} to 'cancel'")
-            #4b. update listing to unavailable
-            listing_URL_full = listing_URL + "/" + str(listing_id)
-            listing_update = {"status": "Unavailable"}
-            listing_result = invoke_http(listing_URL_full, method='PUT', json=listing_update)
-            print('listing_result:', listing_result)
-            return {"code": 200, "message": "Transaction status successfully updated, cancelled."}
+            if status == "Cancelled":
+                print('\n-----Send to Notification microservice-----')
+                obj = {
+                    "purpose": "cancelled",
+                    "listing_result": listing
+                } 
+                message = json.dumps(obj)
+                amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="cancel.notif", 
+                    body=message, properties=pika.BasicProperties(delivery_mode = 2))
+                print(f"sending message: {message} to 'cancel'")
+                #4b. update listing to unavailable
+                listing_URL_full = listing_URL + "/" + str(listing_id)
+                listing_update = {"status": "Unavailable"}
+                listing_result = invoke_http(listing_URL_full, method='PUT', json=listing_update)
+                print('listing_result:', listing_result)
+                return {"code": 200, "message": "Transaction status successfully updated, cancelled."}
 
-        #4c. If items are Ready to Collect or Completed
-        elif status == "Ready for Collection" or "Completed":
-            obj = {
-                "purpose": "toBeneficiary",
-                "listing_result": listing,
-                "transaction_result": transaction
-            }
-            message = json.dumps(obj)
-            amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="change.notif", 
-                body=message, properties=pika.BasicProperties(delivery_mode = 2))
-            print(f"sending message: {message} to 'collect'")
-            return {"code": 200 ,"message": f"Success transaction status changed to {status}"}
-        
-        else:
-            return {"code": 500, "message": "Invalid status."}
+            #4c. If items are Ready to Collect or Completed
+            elif status == "Ready for Collection" or "Completed":
+                obj = {
+                    "purpose": "toBeneficiary",
+                    "listing_result": listing,
+                    "transaction_result": transaction
+                }
+                message = json.dumps(obj)
+                amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="change.notif", 
+                    body=message, properties=pika.BasicProperties(delivery_mode = 2))
+                print(f"sending message: {message} to 'collect'")
+                return {"code": 200 ,"message": f"Success transaction status changed to {status}"}
+            
+            else:
+                return {"code": 500, "message": "Invalid status."}
 
 
 def authenticateUser(token_input):

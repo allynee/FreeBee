@@ -7,89 +7,101 @@
       </v-row>
 
       <v-container>
-        
         <v-row> View Transaction Status of : </v-row>
-        <v-row>
-          <v-select
-            style="margin-right: 15px; max-width: 300px"
-            outlined
-            rounded
-            name="status"
-            placeholder="Choose a Status"
-            id="status"
-            v-model="transactionStatus"
-            :items="myStatuses"
-            item-text="name"
-            item-value="value"
-            @change="clearCheckbox"
+      </v-container>
+      <v-tabs v-model="tab" grow class="rounded-lg">
+        <v-tab class="amber lighten-2">In Progress</v-tab>
+        <v-tab class="amber lighten-2">Ready for Collection</v-tab>
+        <v-tab class="amber lighten-2">Completed</v-tab>
+        <v-tab class="amber lighten-2">Cancelled</v-tab>
+      </v-tabs>
+      <v-tabs-items v-model="tab" class="rounded-lg pa-3 amber lighten-5">
+        <v-tab-item :value="0">
+          <v-card
+            flat
+            v-for="transaction in this.inProgressArray"
+            :key="transaction.transaction_id"
+            class="my-5 mx-5"
+            data-aos="fade-up"
           >
-          </v-select>
-          <v-btn
-            color="amber lighten-3"
-            style="margin-top: 10px"
-            @click="updateDB"
-          >
-            Update Status
-          </v-btn>
-        </v-row>
-        <v-tabs v-model="tab" grow class="rounded-lg">
-                <v-tab class="amber lighten-2">In Progress</v-tab>
-                <v-tab class="amber lighten-2">Ready for Collection</v-tab>
-                <v-tab class="amber lighten-2">Completed</v-tab>
-                <v-tab class="amber lighten-2">Cancelled</v-tab>
-        </v-tabs>
-          <v-tabs-items v-model="tab" class="rounded-lg pa-3 amber lighten-5">
-            <v-tab-item :value="0">
-              <v-card flat v-for="aTransaction in inProgressArray" :key="aTransaction.transaction_id"
-              class="my-5 mx-5" data-aos="fade-up">
-                <CorporateTransactionCard :aTransaction="aTransaction" data-aos="fade-up"></CorporateTransactionCard>
-              </v-card>
-              <!-- <v-row v-for="transaction in shownTransactions" :key="transaction.transaction_id">
+            <CorporateTransactionCard
+              :transaction="transaction"
+              data-aos="fade-up"
+              @update:addUpdate="addUpdate($event)"
+            ></CorporateTransactionCard>
+          </v-card>
+          <!-- <v-row v-for="transaction in shownTransactions" :key="transaction.transaction_id">
                 <CorporateTransactionCard
                   :transaction="transaction"
                   v-on:update:addUpdate="addUpdate($event)"
                 ></CorporateTransactionCard>
               </v-row> -->
-              <v-btn
-                  color="amber lighten-3"
-                  style="margin-top: 10px"
-                  @click="updateDB"
-                >
-                  Update Status
-                </v-btn>
-            </v-tab-item>
-                    
-            <v-tab-item :value="1">
-              <v-card flat v-for="aTransaction in readyArray" :key="aTransaction.transaction_id"
-              class="my-5 mx-5" data-aos="fade-up">
-                <CorporateTransactionCard :aTransaction="aTransaction" data-aos="fade-up"></CorporateTransactionCard>
-              </v-card>
-              <v-btn
-                  color="amber lighten-3"
-                  style="margin-top: 10px"
-                  @click="updateDB"
-                >
-                  Update Status
-                </v-btn>
-            </v-tab-item>
+          <v-btn
+            color="amber lighten-3"
+            style="margin-top: 10px"
+            @click="updateDB('Ready for Collection')"
+          >
+            Update Status
+          </v-btn>
+        </v-tab-item>
 
-            <v-tab-item :value="2">
-              <v-card flat v-for="aTransaction in completedArray" :key="aTransaction.transaction_id"
-              class="my-5 mx-5" data-aos="fade-up">
-                <CorporateTransactionCard :aTransaction="aTransaction" data-aos="fade-up"></CorporateTransactionCard>
-              </v-card>
-            </v-tab-item>
+        <v-tab-item :value="1">
+          <v-row v-if="readyArray">
+            <v-card
+              flat
+              v-for="transaction in this.readyArray"
+              :key="transaction.transaction_id"
+              class="my-5 mx-5"
+              data-aos="fade-up"
+            >
+              <CorporateTransactionCard
+                :transaction="transaction"
+                data-aos="fade-up"
+                @update:addUpdate="addUpdate($event)"
+              ></CorporateTransactionCard>
+            </v-card>
+            <v-btn
+              color="amber lighten-3"
+              style="margin-top: 10px"
+              @click="updateDB('Collected')"
+            >
+              Update Status
+            </v-btn>
+          </v-row>
+        </v-tab-item>
 
-            <v-tab-item :value="3">
-              <v-card flat v-for="aTransaction in cancelledArray" :key="aTransaction.transaction_id"
-              class="my-5 mx-5" data-aos="fade-up">
-                <CorporateTransactionCard :aTransaction="aTransaction" data-aos="fade-up"></CorporateTransactionCard>
-              </v-card>
-            </v-tab-item>
-          </v-tabs-items>
-        </v-container>
-      </v-container>
-    </div>
+        <v-tab-item :value="2">
+          <v-card
+            flat
+            v-for="transaction in this.completedArray"
+            :key="transaction.transaction_id"
+            class="my-5 mx-5"
+            data-aos="fade-up"
+          >
+            <CorporateTransactionCard
+              :transaction="transaction"
+              data-aos="fade-up"
+            ></CorporateTransactionCard>
+          </v-card>
+        </v-tab-item>
+
+        <v-tab-item :value="3">
+          <v-card
+            flat
+            v-for="transaction in this.cancelledArray"
+            :key="transaction.transaction_id"
+            class="my-5 mx-5"
+            data-aos="fade-up"
+          >
+            <CorporateTransactionCard
+              :transaction="transaction"
+              data-aos="fade-up"
+            ></CorporateTransactionCard>
+          </v-card>
+        </v-tab-item>
+      </v-tabs-items>
+    </v-container>
+  </div>
 </template>
 
 <style src="../style/style.css"></style>
@@ -99,20 +111,20 @@ import CorporateTransactionCard from "../components/CorporateTransactionCard.vue
 import axios from "axios";
 
 export default {
-  name: "register",
+  name: "corporateTransaction",
   data() {
     return {
-      fab: false,
+      tab: false,
       myStatuses: [
         { name: "In Progress", value: "Ready for Collection" },
         { name: "Ready for Collection", value: "Collected" },
         { name: "Collected", value: "Done" },
         { name: "Cancelled", value: "Cancelled" },
       ],
-      inProgressArray:[],
-      readyArray:[],
-      completedArray:[],
-      cancelledArray:[],
+      inProgressArray: [],
+      readyArray: [],
+      completedArray: [],
+      cancelledArray: [],
       transactions: [],
       image_url: "",
       listing_details: null,
@@ -124,25 +136,28 @@ export default {
 
   methods: {
     async fetchTransactions() {
-            const transaction_URL = 'http://localhost:5100/transaction_management/corporate/' + this.$route.params.listingid
-            axios.get(transaction_URL).then((response) => {
-                console.log(response.data.result)
-                response.data.result.forEach((transaction) => {
-                    if (transaction.status == 'In Progress') {
-                        this.inProgressArray.push(transaction)
-                    }
-                    else if (transaction.status == 'Ready for Collection') {
-                        this.readyArray.push(transaction)
-                    }
-                    else if (transaction.status == 'Completed') {
-                        this.completedArray.push(transaction)
-                    }
-                    else if (transaction.status == 'Cancelled') {
-                        this.cancelledArray.push(transaction)
-                    }
-                })
-            })
-        },
+      try {
+        const transaction_URL =
+          "http://localhost:5100/transaction_management/corporate/" +
+          this.$route.params.listingid;
+        const response = await axios.get(transaction_URL);
+        console.log(response.data.result)
+        response.data.result.transactions.result.forEach((transaction) => {
+          if (transaction.status == "In Progress") {
+            this.inProgressArray.push(transaction);
+          } else if (transaction.status == "Ready for Collection") {
+            this.readyArray.push(transaction);
+          } else if (transaction.status == "Completed") {
+            this.completedArray.push(transaction);
+          } else if (transaction.status == "Cancelled") {
+            this.cancelledArray.push(transaction);
+          }
+        });
+        this.listing_details = response.data.result.listing_details.result;
+      } catch (error) {
+        console.log(error);
+      }
+    },
     addUpdate(value) {
       console.log(value);
       if (value.value != null) {
@@ -155,15 +170,15 @@ export default {
         }
       }
     },
-    async updateDB() {
+    async updateDB(status) {
       if (this.update.length > 0) {
         console.log(this.transactionStatus);
         axios
           .put(`http://localhost:5100/transaction_management`, {
             listing: this.listing_details,
-            transaction: this.update,
+            transactions: this.update,
             token: this.$store.state.accessToken,
-            status: this.transactionStatus,
+            status: status,
           })
           .then((response) => {
             if (response.data.code == 404) {
@@ -175,38 +190,10 @@ export default {
           });
       }
     },
-    clearCheckbox() {
-      this.update = [];
-    },
   },
 
-  computed: {
-    shownTransactions() {
-      let status;
-      console.log(this.transactionStatus);
-      if (
-        this.transactionStatus == "Ready for Collection" ||
-        this.transactionStatus == "In Progress"
-      ) {
-        status = "In Progress";
-      } else if (this.transactionStatus == "Collected") {
-        status = "Ready for Collection";
-      } else if (this.transactionStatus == "Done") {
-        status = "Collected";
-      } else if (this.transactionStatus == "Cancelled") {
-        status = "Cancelled";
-      }
-
-      return this.transactions.filter((transaction) => {
-        if (transaction.status.includes(status)) {
-          return true;
-        } else {
-          return false;
-        }
-      });
-    },
-  },
-  mounted() {
+  computed: {},
+  created() {
     this.fetchTransactions();
   },
 };

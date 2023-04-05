@@ -108,8 +108,9 @@ export default {
 
   methods: {
     async fetchListings() {
-      const listing_URL = `http://localhost:5000/listing_management`;
-      axios.get(listing_URL).then((response) => {
+      try {
+        const listing_URL = `http://localhost:5000/listing_management`;
+        const response = await axios.get(listing_URL);
         response.data.forEach((element) => {
           if (element.listing.corporate_id == this.$store.state.uid) {
             //
@@ -117,7 +118,9 @@ export default {
           }
         });
         console.log(this.allListingsArray);
-      });
+      } catch (error) {
+        console.log(error);
+      }
     },
     gotoListing(listing_id) {
       this.$router.push(`/corporatelisting/${listing_id}`);

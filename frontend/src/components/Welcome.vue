@@ -180,15 +180,17 @@ export default {
       ],
       loaded: true,
       search: "",
-      
     };
   },
   computed: {
     filteredListings() {
       return this.allListingsArray.filter((listing) => {
-        console.log(listing)
-        if (this.filteredCategories.includes(listing.listing.category) && ((listing.listing.name).toLowerCase()).includes(this.search)) {
-          return true
+        console.log(listing);
+        if (
+          this.filteredCategories.includes(listing.listing.category) &&
+          listing.listing.name.toLowerCase().includes(this.search)
+        ) {
+          return true;
         } else {
           return false;
         }
@@ -200,8 +202,9 @@ export default {
 
   methods: {
     async fetchListings() {
-      const listing_URL = `http://localhost:5000/listing_management`;
-      axios.get(listing_URL).then((response) => {
+      try {
+        const listing_URL = `http://localhost:5000/listing_management`;
+        const response = await axios.get(listing_URL);
         // console.log(response.data)
         response.data.forEach((element) => {
           // console.log(element)
@@ -219,7 +222,9 @@ export default {
           }
         });
         console.log(this.allListingsArray);
-      });
+      } catch (error) {
+        console.log(error);
+      }
       // console.log(this.allListingsArray)
     },
     gotoListing(listing_id) {
