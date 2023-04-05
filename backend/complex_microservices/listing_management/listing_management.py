@@ -74,7 +74,7 @@ def update_listing(listing_id):
             listing = request_json['listing']
             print("\nReceived an listing in JSON:", listing) 
             token = request_json['token']
-            listing['status'] = 'Unavailable'
+            # listing['status'] = 'Unavailable'
             # do the actual work
             # 1. Update listing info 
             result = processUpdateListing(listing, listing_id, token)
@@ -114,6 +114,12 @@ def display_listings():
     listing_result = listing_result["result"]
 
     image_result = invoke_http(image_URL, method="GET", json=None)
+    if image_result["code"] != 200:
+        return{
+            "code": image_result["code"],
+            "message": "image service not invoked correctly"
+        }
+    print('image_result', image_result)
     image_result = image_result["result"]
 
     for listing in listing_result:
@@ -130,7 +136,7 @@ def display_listings():
 
 @app.route("/subscriptions/<string:beneficiary_id>", methods=['GET'])
 def display_subscriptions(beneficiary_id):
-    list_of_subscriptions = []
+    # list_of_subscriptions = []
     print("------ Retrieving Subscriptions ------")
     subscription_get_URL = user_URL + "subscription/beneficiary/" + beneficiary_id
 
@@ -141,20 +147,25 @@ def display_subscriptions(beneficiary_id):
     if subscriptions["code"] != 200:
         return {
             "code": subscriptions["code"],
-            "message": "subscriptions service was not invoked properly"
+            "message": "users microservice was not invoked properly"
         }
 
     subscriptions = subscriptions["result"]
 
     image_result = invoke_http(image_URL, method="GET", json=None)
-
+    if image_result["code"] !=200:
+        return {
+            "code": image_result["code"],
+            "message": "image service not invoked correctly."
+        }
+    image_result = image_result["result"]
     listings = []
 
     for subscription in subscriptions:
         corporate_id = subscription['corporate_id']
         listing_corporate_URL = listing_URL + "listings/" + corporate_id
         corporate_listings = invoke_http(listing_corporate_URL,method='GET',json=None)
-        corporate_listings = corporate_listings["results"]
+        corporate_listings = corporate_listings["result"]
         for corporate_listing in corporate_listings:
             listing_id = corporate_listing["listing_id"]
             img_ext = corporate_listing["img_ext"]
@@ -166,8 +177,8 @@ def display_subscriptions(beneficiary_id):
 
 @app.route("/favourites/<string:beneficiary_id>", methods=['GET'])
 def get_all_favourites(beneficiary_id):
-    list_of_subscriptions = []
-    print("------ Retrieving Subscriptions ------")
+    # list_of_subscriptions = []
+    print("------ Retrieving Favourites ------")
     favourite_get_URL = user_URL + "all_favourite/" + beneficiary_id
 
     favourites = invoke_http(favourite_get_URL,method='GET',json=None)
@@ -175,21 +186,33 @@ def get_all_favourites(beneficiary_id):
     if favourites["code"]!=200:
         return {
             "code": favourites["code"],
-            "message": "favourites service not invoked correctly" 
+            "message": "user service not invoked correctly" 
         }
-
-    favourites = favourites["result"]
     
     print("Favourites results: ",favourites)
+
+    favourites = favourites["result"]
+
     listings = []
+
     for favourite in favourites:
         print(favourite)
         listing_id = favourite['listing_id']
         listing_id_URL = listing_URL + "listing/" + listing_id
-        listing= invoke_http(listing_id_URL,method='GET',json=None)
-        listing= listing["result"]
+        listing = invoke_http(listing_id_URL,method='GET',json=None)
+        if listing["code"] != 200:
+            return {
+                "code": listing["code"],
+                "message": "listing service not invoked correctly"
+            }
+        listing = listing["result"]
         img_ext = listing["img_ext"]
         image_result = invoke_http(image_URL, method="GET", json=None)
+        if image_result["code"] != 200:
+            return {
+                "code": image_result["code"],
+                "message": "image service not invoked correctly"
+            }
         image_result = image_result["result"]
 
         firebase_url = image_result["front_url"] + listing_id + img_ext + image_result["back_url"]
