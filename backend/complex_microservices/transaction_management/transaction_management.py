@@ -259,7 +259,7 @@ def processUpdateTransaction(transactions, listing, token, status):
 
     #2. Authenticate user
     authentication_result = authenticateUser(token)
-
+    return_listing = []
     if authentication_result["statusCode"] == "200":
         for transaction in transactions:
             transaction_id = transaction["transaction_id"]
@@ -291,7 +291,7 @@ def processUpdateTransaction(transactions, listing, token, status):
                 listing_update = {"status": "Unavailable"}
                 listing_result = invoke_http(listing_URL_full, method='PUT', json=listing_update)
                 print('listing_result:', listing_result)
-                return {"code": 200, "message": "Transaction status successfully updated, cancelled."}
+                return_listing.append({"code": 200, "message": "Transaction status successfully updated, cancelled."})
 
             #4c. If items are Ready to Collect or Completed
             elif status == "Ready for Collection" or "Completed":
@@ -304,11 +304,11 @@ def processUpdateTransaction(transactions, listing, token, status):
                 amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="change.notif", 
                     body=message, properties=pika.BasicProperties(delivery_mode = 2))
                 print(f"sending message: {message} to 'collect'")
-                return {"code": 200 ,"message": f"Success transaction status changed to {status}"}
+                return_listing.append({"code": 200 ,"message": f"Success transaction status changed to {status}"})
             
             else:
                 return {"code": 500, "message": "Invalid status."}
-
+        return {"code": 200, "result": return_listing}  
 
 def authenticateUser(token_input):
     print('\n-----Authenticating user-----')
