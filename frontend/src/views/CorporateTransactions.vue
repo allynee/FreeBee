@@ -1,21 +1,18 @@
 <template>
   <div class="white pa-5 bground" style="height: 50%">
     <v-container class="pb-15" style="width: 50%" data-aos="fade-down">
-      <v-row class="mb-2 ml-1 mt-1">
-        <div class="text-h4 brown--text text-darken-1">Transactions for</div>
+      <v-row class="mb-10 ml-1 mt-1">
+        <div class="text-h4 brown--text text-darken-1">Transactions Status</div>
         <v-icon large right class="brown--text text-darken-3">mdi-bee</v-icon>
       </v-row>
 
-      <v-container>
-        <v-row> View Transaction Status of : </v-row>
-      </v-container>
       <v-tabs v-model="tab" grow class="rounded-lg">
         <v-tab class="amber lighten-2">In Progress</v-tab>
         <v-tab class="amber lighten-2">Ready for Collection</v-tab>
         <v-tab class="amber lighten-2">Completed</v-tab>
         <v-tab class="amber lighten-2">Cancelled</v-tab>
       </v-tabs>
-      <v-tabs-items v-model="tab" class="rounded-lg pa-3 amber lighten-5">
+      <v-tabs-items v-model="tab" class="rounded-lg pa-8 amber lighten-5">
         <v-tab-item :value="0">
           <v-card
             flat
