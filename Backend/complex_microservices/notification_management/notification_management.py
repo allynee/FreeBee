@@ -110,7 +110,7 @@ def subscription(info):
             subject = f"{corporate_name} has posted a new listing!"
             message = f"Hi {username} aka {email}! <br><br>{corporate_name} has posted a new listing! <br>Please check it out at http://localhost:8080/findFreeBee/{str(info['listing_result']['listing_id'])}<br><br>Thank you for using FreeBee!"
             print("calling sendEmail function")
-            result = sendEmail('lixuen.low.2021@scis.smu.edu.sg', subject, message);
+            result = sendEmail(email, subject, message);
             result_codes += [result['code']]
         print(set(result_codes))
         if set(result_codes) == {200}:
@@ -157,7 +157,7 @@ def toBeneficiary(info):
         # if status == "Cancelled":
         #     subject = f"Your item collection has been cancelled!"
         #     message = f"Hi {username} aka {email}!<br><br>Your item - {info['listing_result']['name']} has been cancelled by {corporate_name}!<br>We apologize for any inconvinience caused<br><br>Thank you for using FreeBee!"
-        result = sendEmail('lixuen.low.2021@scis.smu.edu.sg', subject, message);
+        result = sendEmail(email, subject, message);
         if result['code'] == 200:
             return {
                     'code': 200,
@@ -197,7 +197,7 @@ def toCorporate(info):
         else:
             subject = f"Successfully posted listing!"
             message = f"Hi {corporate_name} aka {email}! <br><br>You have successfully posted a new listing - {info['listing_result']['name']}! <br><br>Thank you for using FreeBee!"
-        result = sendEmail('lixuen.low.2021@scis.smu.edu.sg', subject, message);
+        result = sendEmail(email, subject, message);
         if result['code'] == 200:
             return {
                     'code': 200,
@@ -237,7 +237,7 @@ def cancel(info):
                 username = beneficiary_result['username']
                 email = beneficiary_result['email']
                 message = f"Hi {username} aka {email}!<br><br>Your item - {info['listing_result']['name']} has been cancelled by {corporate_name}!<br>We apologize for any inconvinience caused.<br><br>Thank you for using FreeBee!"
-                result = sendEmail('lixuen.low.2021@scis.smu.edu.sg', subject, message);
+                result = sendEmail(email, subject, message);
                 result_codes += [result['code']]
             print(set(result_codes))
             if set(result_codes) == {200}:
