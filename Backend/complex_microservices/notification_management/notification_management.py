@@ -54,7 +54,7 @@ def recieveMail():
             # do the actual work
             # 1. recieve info 
             result = sortMail(info)
-            return jsonify(result) #this is always None cus nvr return reply
+            return result #this is always None cus nvr return reply
 
         except Exception as e:
             # Unexpected error in code
@@ -77,14 +77,14 @@ def recieveMail():
 def sortMail(info):
     #sort mail here
     if info['purpose'] == "subscription":
-        subscription(info)
+        return subscription(info)
     elif info['purpose'] == "toBeneficiary":
-        toBeneficiary(info)
+        return toBeneficiary(info)
     elif info['purpose'] == "toCorporate":
-        print("toCorporate")
-        toCorporate(info)
+        # print("toCorporate")
+        return toCorporate(info)
     elif info['purpose'] == "cancelled":
-        cancel(info)
+        return cancel(info)
 
 def subscription(info):
 #     ############ This is for mass sending to all subscribers ## FROM listing_manage ##########
@@ -98,7 +98,7 @@ def subscription(info):
     print('subscription_result:', subscription_result) #this returns a list of the beneficiary info
     corporate_name =info['listing_result']['corporate_name']
     print("subscribers")
-    if subscription_result != []:
+    if "detail" not in str(subscription_result):
         print('there are subs')
         result_codes = []
         for sub in subscription_result:
@@ -123,6 +123,12 @@ def subscription(info):
                 'code': 429,
                 'message': "Not all beneficiaries were successfully sent an email"
             }
+    else:
+        return {
+            'code': 400,
+            'response': subscription_result,
+            'message': "Unsuccessful call of transaction ms"
+        }
     # doEmail();
 
 def toBeneficiary(info):
@@ -268,7 +274,7 @@ def sendEmail(email, subject, message):
         toEmail = {'email': email, 'subject': subject, 'message': message}
         email_result = invoke_http(full_sendEmail_URL, method='GET', json=toEmail)
         print('email_result:', email_result)
-        if email_result["statusCode"] not in range(200,300):
+        if int(email_result["statusCode"]) not in range(200,300):
             return {
                 'code': 400,
                 'response': email_result,
