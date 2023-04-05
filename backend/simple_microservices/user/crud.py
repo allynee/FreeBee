@@ -15,6 +15,10 @@ def get_all_beneficiaries(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Beneficiary).offset(skip).limit(limit).all()
 
 def create_beneficiary(db: Session, beneficiary: schemas.BeneficiaryCreate):
+    b = get_beneficiary(db, beneficiary_id = beneficiary.beneficiary_id)
+    if b:
+        raise HTTPException(status_code=400, detail="Beneficiary already exists")
+    
     beneficiary = models.Beneficiary(**beneficiary.dict())
     db.add(beneficiary)
     db.commit() 
@@ -90,10 +94,16 @@ def get_all_subscriptions(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Subscription).offset(skip).limit(limit).all()
 
 def get_subscriptions_by_corporate(db: Session, corporate_id: str, skip: int = 0, limit: int = 100):
-    return db.query(models.Subscription).filter(models.Subscription.corporate_id == corporate_id).offset(skip).limit(limit).all()
+    subscriptions = db.query(models.Subscription).filter(models.Subscription.corporate_id == corporate_id).offset(skip).limit(limit).all()
+    if not subscriptions:
+         raise HTTPException(status_code=404, detail="Corporate has no subscribers.")
+    return subscriptions
 
 def get_subscriptions_by_beneficiary(db: Session, beneficiary_id: str, skip: int = 0, limit: int = 100):
-    return db.query(models.Subscription).filter(models.Subscription.beneficiary_id == beneficiary_id).offset(skip).limit(limit).all()
+    subscriptions = db.query(models.Subscription).filter(models.Subscription.beneficiary_id == beneficiary_id).offset(skip).limit(limit).all()
+    if not subscriptions:
+         raise HTTPException(status_code=404, detail="Beneficiary not subscribed to anyone.")
+    return subscriptions
 
 def create_subscription(db: Session, subscription: schemas.SubscriptionCreate):
     subscription = models.Subscription(**subscription.dict())
@@ -126,7 +136,12 @@ def get_favourite(db: Session, beneficiary_id: str, listing_id: str):
                                             models.Favourite.listing_id == listing_id).first()
     
 def get_all_favourites(db: Session,beneficiary_id:str, skip: int = 0, limit: int = 100):
-    return db.query(models.Favourite).filter(models.Favourite.beneficiary_id == beneficiary_id).offset(skip).limit(limit).all()
+    favourites = db.query(models.Favourite).filter(models.Favourite.beneficiary_id == beneficiary_id).offset(skip).limit(limit).all()
+
+    if not favourites:
+        raise HTTPException(status_code=404, detail="Beneficiary has no favourites")
+    
+    return favourites
 
 def create_favourite(db: Session, favourite: schemas.FavouriteCreate):
     favourite = models.Favourite(**favourite.dict())
@@ -156,10 +171,22 @@ def delete_favourite(db: Session, favourite:schemas.Favourite):
 
 ### CORPORATE TABLE ###
 def get_corporate(db: Session, corporate_id: str):
-    return db.query(models.Corporate).filter(models.Corporate.corporate_id == corporate_id).first()
+
+    corporate = db.query(models.Corporate).filter(models.Corporate.corporate_id == corporate_id).first()
+
+    if not corporate:
+        raise HTTPException(status_code=404, detail="No corporate with input id")
+    
+    return corporate
 
 def get_all_corporates(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.Corporate).offset(skip).limit(limit).all()
+    corporates = db.query(models.Corporate).offset(skip).limit(limit).all()
+
+    if not corporates:
+        raise HTTPException(status_code=404, detail="No corporates")
+    
+    return corporates
+
 
 def create_corporate(db: Session, corporate: schemas.CorporateCreate):
     corporate = models.Corporate(**corporate.dict())
@@ -201,6 +228,3 @@ def delete_corporate(db: Session, corporate_id: str):
             "code": 200,
             "message": "Corporate deleted successfully"
         }
-
-def get_subscriptions_by_beneficiary(db: Session, beneficiary_id: str, skip: int = 0, limit: int = 100):
-    return db.query(models.Subscription).filter(models.Subscription.beneficiary_id == beneficiary_id).offset(skip).limit(limit).all()
