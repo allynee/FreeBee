@@ -108,7 +108,7 @@ def subscription(info):
             email = sub_details['email']
             username = sub_details['username']
             subject = f"{corporate_name} has posted a new listing!"
-            message = f"Hi {username} aka {email}! <br><br>{corporate_name} has posted a new listing! <br>Please check it out at http://localhost:8080/findFreeBee/{str(info['listing_result']['listing_id'])}<br><br>Thank you for using FreeBee!"
+            message = f"Hi {username}! <br><br>{corporate_name} has posted a new listing! <br>Please check it out at http://localhost:8080/findFreeBee/{str(info['listing_result']['listing_id'])}<br><br>Thank you for using FreeBee!"
             print("calling sendEmail function")
             result = sendEmail(email, subject, message);
             result_codes += [result['code']]
@@ -147,16 +147,16 @@ def toBeneficiary(info):
         username = beneficiary_result['username']
         if status == "In Progress":
             subject = f"Your claim is in progress!"
-            message = f"Hi {username} aka {email}!<br><br>You have successfully claimed an item - {info['listing_result']['name']}!<br>You may check the collection details in FreeBee and you'll be notified again when the item is ready for collection!<br><br>Thank you for using FreeBee!"
+            message = f"Hi {username}!<br><br>You have successfully claimed an item - {info['listing_result']['name']}!<br>You may check the collection details in FreeBee and you'll be notified again when the item is ready for collection!<br><br>Thank you for using FreeBee!"
         if status == "Ready for Collection":
             subject = f"Your claim is ready for collection!"
-            message = f"Hi {username} aka {email}!<br><br>Your item - {info['listing_result']['name']} is ready for collection!<br>The collection details are as follows:<br>{info['listing_result']['collection_details']}<br>Collect at: {info['listing_result']['address']}, {info['listing_result']['postal']}<br><br>Thank you for using FreeBee!"
+            message = f"Hi {username}!<br><br>Your item - {info['listing_result']['name']} is ready for collection!<br>The collection details are as follows:<br>{info['listing_result']['collection_details']}<br>Collect at: {info['listing_result']['address']}, {info['listing_result']['postal']}<br><br>Thank you for using FreeBee!"
         if status == "Completed":
             subject = f"Your item has been successfully collected!"
-            message = f"Hi {username} aka {email}!<br><br>Your item - {info['listing_result']['name']} has been collected!<br><br>Thank you for using FreeBee!"
+            message = f"Hi {username}!<br><br>Your item - {info['listing_result']['name']} has been collected!<br><br>Thank you for using FreeBee!"
         # if status == "Cancelled":
         #     subject = f"Your item collection has been cancelled!"
-        #     message = f"Hi {username} aka {email}!<br><br>Your item - {info['listing_result']['name']} has been cancelled by {corporate_name}!<br>We apologize for any inconvinience caused<br><br>Thank you for using FreeBee!"
+        #     message = f"Hi {username}!<br><br>Your item - {info['listing_result']['name']} has been cancelled by {corporate_name}!<br>We apologize for any inconvinience caused<br><br>Thank you for using FreeBee!"
         result = sendEmail(email, subject, message);
         if result['code'] == 200:
             return {
@@ -193,10 +193,10 @@ def toCorporate(info):
         email = corporate_result['email']
         if info['listing_result']['quantity'] == 0:
             subject = f"Your listing has been fully claimed on Freebee!"
-            message = f"Hi {corporate_name} aka {email}! <br><br>Your listing - {info['listing_result']['name']} has been fully claimed on FreeBee!<br>Please check it out at http://localhost:8080/findFreeBee/{str(info['listing_result']['listing_id'])}<br><br>Thank you for using FreeBee!"
+            message = f"Hi {corporate_name}! <br><br>Your listing - {info['listing_result']['name']} has been fully claimed on FreeBee!<br>Please check it out at http://localhost:8080/findFreeBee/{str(info['listing_result']['listing_id'])}<br><br>Thank you for using FreeBee!"
         else:
             subject = f"Successfully posted listing!"
-            message = f"Hi {corporate_name} aka {email}! <br><br>You have successfully posted a new listing - {info['listing_result']['name']}! <br><br>Thank you for using FreeBee!"
+            message = f"Hi {corporate_name}! <br><br>You have successfully posted a new listing - {info['listing_result']['name']}! <br><br>Thank you for using FreeBee!"
         result = sendEmail(email, subject, message);
         if result['code'] == 200:
             return {
@@ -236,7 +236,7 @@ def cancel(info):
                 beneficiary_result = invoke_http(full_user_URL, method='GET', json=None)
                 username = beneficiary_result['username']
                 email = beneficiary_result['email']
-                message = f"Hi {username} aka {email}!<br><br>Your item - {info['listing_result']['name']} has been cancelled by {corporate_name}!<br>We apologize for any inconvinience caused.<br><br>Thank you for using FreeBee!"
+                message = f"Hi {username}!<br><br>Your item - {info['listing_result']['name']} has been cancelled by {corporate_name}!<br>We apologize for any inconvinience caused.<br><br>Thank you for using FreeBee!"
                 result = sendEmail(email, subject, message);
                 result_codes += [result['code']]
             print(set(result_codes))
