@@ -28,8 +28,6 @@ def create_listing():
     data = json.loads(request.form.get('data'))
     listing = json.loads(data['listing'])
 
-    print('line32', listing)
-    print(image_file)
     filename = image_file.filename
     tempdir = "/data"
     filepath = os.path.join(tempdir, filename)
@@ -99,7 +97,7 @@ def update_listing(listing_id):
         "message": "Invalid JSON input: " + str(request.get_data())
     }), 400
 
-@app.route("/listing_management", methods=['GET']) #implement function to view all listings
+@app.route("/listing_management", methods=['GET']) 
 def display_listings():
     list_of_listings = []
     #1. Retrieve all listings
@@ -107,8 +105,16 @@ def display_listings():
     print('\n-----Retrieving listings-----')
     listing_URL_FULL = listing_URL + "listing"
     listing_result = invoke_http(listing_URL_FULL, method="GET", json=None)
+    if listing_result["code"] !=200:
+        return {
+            "code": listing_result["code"],
+            "message": "listing service not invoked correctly"
+        }
     print('listing_result:', listing_result)
+    listing_result = listing_result["result"]
+
     image_result = invoke_http(image_URL, method="GET", json=None)
+    image_result = image_result["result"]
 
     for listing in listing_result:
         listing_id = listing["listing_id"]
@@ -131,13 +137,24 @@ def display_subscriptions(beneficiary_id):
     subscriptions = invoke_http(subscription_get_URL,method='GET',json=None)
     
     print("Subscription results: ",subscriptions)
+
+    if subscriptions["code"] != 200:
+        return {
+            "code": subscriptions["code"],
+            "message": "subscriptions service was not invoked properly"
+        }
+
+    subscriptions = subscriptions["result"]
+
     image_result = invoke_http(image_URL, method="GET", json=None)
 
     listings = []
+
     for subscription in subscriptions:
         corporate_id = subscription['corporate_id']
         listing_corporate_URL = listing_URL + "listings/" + corporate_id
         corporate_listings = invoke_http(listing_corporate_URL,method='GET',json=None)
+        corporate_listings = corporate_listings["results"]
         for corporate_listing in corporate_listings:
             listing_id = corporate_listing["listing_id"]
             img_ext = corporate_listing["img_ext"]
@@ -154,6 +171,14 @@ def get_all_favourites(beneficiary_id):
     favourite_get_URL = user_URL + "all_favourite/" + beneficiary_id
 
     favourites = invoke_http(favourite_get_URL,method='GET',json=None)
+
+    if favourites["code"]!=200:
+        return {
+            "code": favourites["code"],
+            "message": "favourites service not invoked correctly" 
+        }
+
+    favourites = favourites["result"]
     
     print("Favourites results: ",favourites)
     listings = []
@@ -162,9 +187,10 @@ def get_all_favourites(beneficiary_id):
         listing_id = favourite['listing_id']
         listing_id_URL = listing_URL + "listing/" + listing_id
         listing= invoke_http(listing_id_URL,method='GET',json=None)
-        print(listing)
+        listing= listing["result"]
         img_ext = listing["img_ext"]
         image_result = invoke_http(image_URL, method="GET", json=None)
+        image_result = image_result["result"]
 
         firebase_url = image_result["front_url"] + listing_id + img_ext + image_result["back_url"]
         return_listing = {'listing': listing,
@@ -211,12 +237,18 @@ def processCreateListing(listing_object, token, image):
             print('\n-----Invoking image microservice-----')
             image = eval(image)
             image_result = invoke_http(image_URL, method='POST', json=image)
-            print('image_result:', image_result)
-            #still need to check whether this is successful or not, ideally
-            
+            if image_result["code"] != 200:
+                return {
+                    "code": image_result["code"],
+                    "result": image_result["result"]
+                }
+            image_result = image_result["result"]
+            print('image_result:', image_result)   
+
             listing_object["listing_id"] = image_result['listingid']
             listing_object['img_ext']=  image_result['extension']
             print(listing_object)
+
             #5. Send the listing info to database
             #Invoke the listing microservice
             print('\n-----Invoking listing microservice-----')
@@ -224,14 +256,13 @@ def processCreateListing(listing_object, token, image):
             listing_result = invoke_http(listing_URL_FULL, method="POST", json=listing_object)
             print('listing_result:', listing_result)
 
-        
-            if "detail" not in listing_result: 
+            if listing_result["code"] == 200: 
                 #5. Send the notification to users who are subscribed to the corporate
                 ############  Publish to subscribe queue   #############
                 print('\n-----Sending notification to subscribers-----')
                 obj = {
                     "purpose": "subscription",
-                    "listing_result": listing_result
+                    "listing_result": listing_result["result"]
                 } 
                 message = json.dumps(obj)
                 amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="subscribers.notif", 
@@ -241,7 +272,7 @@ def processCreateListing(listing_object, token, image):
                 print('\n-----Sending notification to corporate of successful listing-----')
                 obj2 = {
                     "purpose": "toCorporate",
-                    "listing_result": listing_result
+                    "listing_result": listing_result["result"]
                 } 
                 message = json.dumps(obj2)
                 amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="toCorporate.notif", 
@@ -273,6 +304,15 @@ def processUpdateListing(listing, listing_id,token):
         print('\n-----Invoking listing microservice-----')
         listing_result = invoke_http(listing_URL_full, method='PUT', json=listing)
         print('listing_result:', listing_result)
+        if listing_result["code"] != 200:
+            return {
+                "code" : listing_result["code"],
+                "result": listing_result["result"]
+            }
+        return {
+            "code": 200,
+            "result": listing_result["result"]
+        }
     else:
         return {
             "code": 404,
@@ -284,7 +324,7 @@ def authenticateUser(token_input):
     authentication_URL_full = authentication_URL + token_input #need to get token from the front-end, currently HARDCODED
     authentication_result = invoke_http(authentication_URL_full, method="GET", json=None)
     print('authentication_result:', authentication_result)
-    return authentication_result
+    return authentication_result["result"]
 
 if __name__ == "__main__":
     print("This is flask " + os.path.basename(__file__) + " for managing a listing...")

@@ -24,13 +24,13 @@ def invoke_http(url, method='GET', json=None, **kwargs):
         code = 500
         result = {"code": code, "message": "invocation of service fails: " + url + ". " + str(e)}
     if code not in range(200,300):
-        return result
+        return {"code": code, "result": result}
 
     ## Check http call result
     if r.status_code != requests.codes.ok:
         code = r.status_code
     try:
-        result = r.json() if len(r.content)>0 else ""
+        result = {"code": code, "result": r.json() if len(r.content)>0 else ""}
     except Exception as e:
         code = 500
         result = {"code": code, "message": "Invalid JSON output from service: " + url + ". " + str(e)}
