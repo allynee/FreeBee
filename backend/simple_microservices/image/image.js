@@ -1,7 +1,12 @@
 const { initializeApp } = require("firebase/app");
 const { ref: dbref, getDatabase, push } = require("firebase/database");
-const { ref: stRef,getStorage, uploadBytes } = require("firebase/storage");
-const fs = require('fs');
+const {
+  ref: stRef,
+  getStorage,
+  uploadBytes,
+  getDownloadURL,
+} = require("firebase/storage");
+const fs = require("fs");
 
 const firebaseConfig = initializeApp({
   apiKey: "AIzaSyD5ESzYYAhQhq7fecEJZofuXqjZTzSHRus",
@@ -19,12 +24,12 @@ const storage = getStorage();
 
 async function createListingFirebase(image) {
   try {
-    const filepath = image.filepath
-    const filename = image.filename
-    console.log(filepath)
-    console.log(filename)
+    const filepath = image.filepath;
+    const filename = image.filename;
+    console.log(filepath);
+    console.log(filename);
     const bufferData = fs.readFileSync(filepath);
-    console.log(bufferData)
+    console.log(bufferData);
     const data = await push(dbref(db, "Listing"), {
       image: filename,
     });
@@ -34,7 +39,7 @@ async function createListingFirebase(image) {
       stRef(storage, "listings/" + key + ext),
       bufferData
     );
-    
+
     // const imageUrl = await getDownloadURL(
     //   stRef(storage, "listings/" + key + ext)
     // );
@@ -58,6 +63,15 @@ async function createListingFirebase(image) {
   }
 }
 
+function getImageUrl() {
+  // Get the download URL of the file
+    const front_url = "https://firebasestorage.googleapis.com/v0/b/esdeeznutz.appspot.com/o/listings%2F"
+    const back_url = "?alt=media&token=d96a1b6f-e4a2-42d1-a06b-c9331d4490a4"
+    return { front_url: front_url, back_url: back_url };
+
+}
+
 module.exports = {
   createListingFirebase,
+  getImageUrl,
 };

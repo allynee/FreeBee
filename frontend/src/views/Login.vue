@@ -60,6 +60,7 @@
           <v-layout row>
             <v-flex xs12>
               <v-btn
+                class="amber lighten-2"
                 block
                 outlined
                 brown

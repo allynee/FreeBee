@@ -144,7 +144,29 @@
             </div>
             <br />
             <!-- Claim -->
-            <div class="white rounded-xl my-5 pa-4">
+            <div v-if="notAvailable">
+              <v-row>
+              <v-col cols="9" align="left">
+              <v-btn
+                    rounded-xl
+                    x-large
+                    class="red lighten-3 ml-2 my-1"
+                    disabled
+                  >
+                    This listing is no longer available
+                  </v-btn>
+                </v-col>
+                <v-col cols="2" align="right">
+                  <span data-aos="fade-left" class="ml-15" justify-center >
+                    <video-background 
+                      :src="require(`@/assets/bee.mp4`)"
+                      style="height: 50px; width: 36px"
+                    ></video-background>
+                  </span>
+                </v-col>
+                </v-row>
+            </div>
+            <div v-else class="white rounded-xl my-5 pa-4">
               <form @submit.prevent="onClaim()">
                 <v-row>
                   <v-col cols="5">
@@ -214,6 +236,7 @@ export default {
       favourite: false,
       subscribed: false,
       loaded: true,
+      notAvailable: false
     };
   },
   methods: {
@@ -226,6 +249,9 @@ export default {
           this.listing = response.data;
           console.log(this.listing);
           this.image = `https://firebasestorage.googleapis.com/v0/b/esdeeznutz.appspot.com/o/listings%2F${this.listing.listing_id}${this.listing.img_ext}?alt=media&token=d96a1b6f-e4a2-42d1-a06b-c9331d4490a4`;
+          if (this.listing.status == "Unavailable"){
+            this.notAvailable = true
+          }
           this.checksubscribe();
         })
         .catch((exception) => {

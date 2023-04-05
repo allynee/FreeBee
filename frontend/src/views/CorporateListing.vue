@@ -45,7 +45,19 @@
                 <v-icon left small>mdi-pencil-outline</v-icon>
                 Edit Listing
               </v-btn> -->
-
+              <div v-if="notAvailable">
+                <v-btn
+                class="amber lighten-4 ml-2"
+                depressed
+                outlined
+                disabled
+                @click="deleteListing"
+              >
+                <v-icon left small>mdi-delete-empty</v-icon>
+                Listing deleted
+              </v-btn>
+              </div>
+              <div v-else>
               <v-btn
                 class="amber lighten-4 ml-2"
                 depressed
@@ -55,6 +67,7 @@
                 <v-icon left small>mdi-delete-empty</v-icon>
                 Delete Listing
               </v-btn>
+            </div>
             </v-row>
           </v-container>
           <!-- v tabs -->
@@ -72,7 +85,7 @@
                   Description:
                 </h1>
                 <h1
-                  class="text-body-1 font-weight-light grey--text text--darken-3"
+                  class="text-h6 font-weight-light grey--text text--darken-3"
                 >
                   {{ this.listing.description }}
                 </h1>
@@ -80,10 +93,10 @@
                   <h1
                     class="text-h6 font-weight-medium grey--text text--darken-3 mt-3 mb-1"
                   >
-                    Quantity:
+                    Quantity Left:
                   </h1>
                   <h1
-                    class="text-body-1 font-weight-light grey--text text--darken-3"
+                    class="text-h6 font-weight-light grey--text text--darken-3"
                   >
                     {{ this.listing.quantity }}
                   </h1>
@@ -95,7 +108,7 @@
                 >
                   Address:
                 </span>
-                <span class="text-body-1 font-weight-light">
+                <span class="text-h6 font-weight-light grey--text text--darken-3">
                   {{ this.listing.address }}
                 </span>
                 <br />
@@ -104,7 +117,7 @@
                 >
                   Postal Code:
                 </span>
-                <span class="text-body-1 font-weight-light">
+                <span class="text-h6 font-weight-light grey--text text--darken-3">
                   {{ this.listing.postal }}
                 </span>
               </v-tab-item>
@@ -128,6 +141,7 @@ export default {
       tab: null,
       listing: null,
       quantity: 0,
+      notAvailable: false
     };
   },
   methods: {
@@ -140,6 +154,9 @@ export default {
           console.log(response.data);
           this.listing = response.data;
           this.image = `https://firebasestorage.googleapis.com/v0/b/esdeeznutz.appspot.com/o/listings%2F${this.listing.listing_id}${this.listing.img_ext}?alt=media&token=d96a1b6f-e4a2-42d1-a06b-c9331d4490a4`;
+          if (this.listing.status == "Unavailable"){
+            this.notAvailable = true
+          }
         })
         .catch((exception) => {
           console.log(exception);
