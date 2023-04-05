@@ -6,7 +6,6 @@ export default(to,from,next)=>{
     else{
         next('/Login')
     }
-    console.log(store.state.corporateName)
     if(store.state.corporateName){
         next('/corporatehomepage')
     }

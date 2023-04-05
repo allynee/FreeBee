@@ -186,13 +186,10 @@ export default {
         };
         // formData.append("listing", listing);
         let token = this.$store.state.accessToken;
-
-        console.log(this.imagePost);
         var data = {
           listing: JSON.stringify(listing),
           token: token,
         };
-        console.log(data);
         formData.append("data", JSON.stringify(data));
 
         const listingManagementUrl = "http://localhost:5000/listing_management";
@@ -251,7 +248,6 @@ export default {
             });
           });
           const address = results[0].description;
-          console.log(address);
           this.geocodeResult = address; // parase address information to Vue
         } catch (error) {
           console.error(error);

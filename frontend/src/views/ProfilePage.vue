@@ -91,7 +91,6 @@ export default {
           icon: "mdi-email",
           route: "/subscribedlistings",
         },
-        { title: "Logout", icon: "mdi-logout" },
       ],
     };
   },
