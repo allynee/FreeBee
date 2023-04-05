@@ -12,7 +12,8 @@ export const store = new Vuex.Store({
     accessToken: null,
     uid: null,
     corporateName: null,
-    area:null
+    area:null,
+    district:null,
   },
   plugins: [persistedState],
   mutations: {
@@ -20,6 +21,8 @@ export const store = new Vuex.Store({
       state.accessToken = access.accessToken;
       state.uid = access.uid;
       state.corporateName = access.corporateName;
+      state.area = access.area;
+      state.district = access.district;
     },
     resetState(state) {
       Object.assign(state, getDefaultState());

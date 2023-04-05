@@ -95,9 +95,6 @@ def get_beneficiary_by_id(beneficiary_id: str, db: Session = Depends(get_db)):
 def get_subscriptions_by_corporate(corporate_id: str, db: Session = Depends(get_db), skip: int = 0, limit: int = 100,):
     subscriptions = crud.get_subscriptions_by_corporate(db, corporate_id=corporate_id, skip=skip,limit=limit)
 
-    if subscriptions is None:
-        raise HTTPException(status_code=404, detail="Corporate has no subscribers.")
-
     return subscriptions
 
 ### GET SUBSCRIPTIONS BASED ON BENEFICIARY ID ###

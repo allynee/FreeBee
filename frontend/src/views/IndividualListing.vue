@@ -291,9 +291,6 @@ export default {
         // console.log("this is the checking function")
         const user_URL = `http://localhost:8421/subscription/corporate/${this.listing.corporate_id}`;
         const response = await axios.get(user_URL);
-        if(response.status == 401){
-          return this.subscribed = false
-        }
         response.data.forEach((subscriber) => {
           if (subscriber.beneficiary_id == this.$store.state.uid) {
             this.subscribed = true;

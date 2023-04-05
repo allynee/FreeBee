@@ -145,12 +145,18 @@ export default {
               accessToken: response.data.accessToken,
               uid: response.data.uid,
               corporateName: response.data.name,
+              area: null,
+              district: null
             });
           } else {
+            const location = await axios.get(`http://localhost:8421/beneficiary/${response.data.uid}`)
+
             this.$store.commit("access", {
               accessToken: response.data.accessToken,
               uid: response.data.uid,
               corporateName: null,
+              area:location.data.area,
+              district:location.data.district
             });
           }
           this.$router.push("/");

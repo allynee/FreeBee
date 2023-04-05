@@ -95,8 +95,8 @@ def get_all_subscriptions(db: Session, skip: int = 0, limit: int = 100):
 
 def get_subscriptions_by_corporate(db: Session, corporate_id: str, skip: int = 0, limit: int = 100):
     subscriptions = db.query(models.Subscription).filter(models.Subscription.corporate_id == corporate_id).offset(skip).limit(limit).all()
-    if not subscriptions:
-         raise HTTPException(status_code=404, detail="Corporate has no subscribers.")
+    # if not subscriptions:
+    #      raise HTTPException(status_code=404, detail="Corporate has no subscribers.")
     return subscriptions
 
 def get_subscriptions_by_beneficiary(db: Session, beneficiary_id: str, skip: int = 0, limit: int = 100):
