@@ -17,8 +17,5 @@ import NavbarCorp from "../src/components/NavbarCorp";
 export default {
   name: "App",
   components: { Navbar, Footer, NavbarCorp },
-  mounted() {
-    console.log(this.$store.state.corporateName);
-  },
 };
 </script>

@@ -31,11 +31,11 @@
           >
         </v-row>
         <v-row class="px-5">
-          <v-col cols="5" class="mx-5"
+          <v-col
+            cols="5"
+            class="mx-5"
             v-for="aListing in subscriptions"
             :key="aListing.listing_id"
-            style=""
-            
           >
             <Listing
               :aListing="aListing"
@@ -80,46 +80,10 @@ export default {
       });
     },
     gotoListing(listing_id) {
-      // console.log(listing_id)
-      // console.log("clicked")
       this.$router.push({
         name: "IndividualListing",
         params: { listingid: listing_id },
       });
-    },
-  },
-
-  computed: {
-    loading() {
-      return this.$store.getters.loading;
-    },
-    comparePasswords() {
-      return this.password != this.confirmpassword
-        ? "Passwords do not match!"
-        : "";
-    },
-    passwordLength() {
-      if (this.password.length < 6) {
-        return "Minimum length is 6 characters";
-      } else if (!this.password.match(/[a-z]/)) {
-        return "Must contain at least 1 lowercase letter";
-      } else if (!this.password.match(/[A-Z]/)) {
-        return "Must contain at least 1 uppercase letter";
-      } else if (!this.password.match(/[`!@#$%^&*()_+\-=[\]{};':"\\|,.<>?~]/)) {
-        return "Must contain at least 1 symbol";
-      } else {
-        return true;
-      }
-    },
-    formIsValid() {
-      return (
-        this.fullname != "" &&
-        this.email != "" &&
-        this.username != "" &&
-        this.password != "" &&
-        this.confirmpassword != "" &&
-        this.password == this.confirmpassword
-      );
     },
   },
   mounted() {

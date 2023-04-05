@@ -107,7 +107,6 @@ export default {
           "http://localhost:5100/transaction_management/beneficiary/" +
           this.$store.state.uid;
         const response = await axios.get(transaction_URL);
-        console.log(response)
         if (response.data.result.length > 0) {
           response.data.result.forEach((transaction) => {
             if (transaction.status == "In Progress") {

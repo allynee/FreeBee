@@ -9,17 +9,6 @@
         outlined
         class="pa-2"
       >
-        <v-card-actions>
-          <!-- <v-btn v-if="isRed" depressed plain @click="like" class="">
-           <v-icon :class="{'red': isRed}">mdi-heart</v-icon>\ -->
-
-          <!-- </v-btn> -->
-          <!-- <v-btn v-else depressed plain @click="like" class="">
-          <v-icon :class="{'red': isRed}">mdi-circle</v-icon>
-          this not is red
-       </v-btn> -->
-        </v-card-actions>
-
         <v-img
           cover
           style="max-height: 200px"
@@ -48,14 +37,6 @@
             >
             Status: {{ aListing.listing.status }}
           </div>
-          <!-- <v-btn small class="amber lighten-4 ml-2" style="margin-bottom: 10px;" depressed outlined @click="subscribe">
-            <v-icon left small>mdi-pencil-outline</v-icon>
-            View your listing
-        </v-btn>
-        <v-btn small class="amber lighten-4 ml-2" depressed outlined @click="subscribe">
-            <v-icon left small>mdi-delete-empty</v-icon>
-            Delete Listing
-        </v-btn> -->
         </v-card-text>
       </v-card>
     </v-hover>
@@ -64,7 +45,6 @@
 
 <script>
 import AOS from "aos";
-// import axios from 'axios'
 
 export default {
   emits:['gotoListing'],

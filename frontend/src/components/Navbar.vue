@@ -109,7 +109,6 @@ export default {
     return {
       showDropdown: false,
       hamburger: false,
-      authorisation: false,
     };
   },
   computed: {
@@ -130,7 +129,6 @@ export default {
           { text: "Register", route: "/register", icon: "mdi-account-plus" },
           { text: "Login", route: "/login", icon: "mdi-login" },
         ];
-        console.log("not login");
       }
       return linkitems;
     },

@@ -10,21 +10,8 @@
           >Login</span
         >
       </v-row>
-      <!-- <v-row> -->
-      <!-- <v-card style="width:45%;height:75%;" elevation="2" class="mx-auto brown pt-9 pb-10 lighten-4">
-                    <v-card-text>  -->
       <v-container>
         <form @submit.prevent="login">
-          <!-- <v-row >
-                                    <v-col>
-                                    <v-alert v-if="this.loggedout" type="info">
-                                    You have logged out successfully
-                                    </v-alert>
-                                   
-                                    </v-col>
-
-                                </v-row> -->
-
           <v-layout row>
             <v-flex xs12>
               <v-text-field
@@ -69,7 +56,6 @@
                 :loading="loading"
               >
                 Login
-                <!-- button loader -->
                 <template v-slot:loader>
                   <span class="custom-loader">
                     <v-icon light>mdi-cached</v-icon>
@@ -91,9 +77,6 @@
           Don't have an account ? Register&nbsp;<a href="/register" clickable> here</a> 
         </v-row>
       </v-container>
-      <!-- </v-card-text>
-                </v-card>  -->
-      <!-- </v-row> -->
     </v-container>
   </div>
 </template>
@@ -139,7 +122,6 @@ export default {
           `http://localhost:3001/login/${this.email}/${this.password}`
         );
         if (response.data.statusCode == "200") {
-          console.log(response.data);
           if (response.data.role == "corporate") {
             this.$store.commit("access", {
               accessToken: response.data.accessToken,

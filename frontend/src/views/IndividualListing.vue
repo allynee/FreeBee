@@ -246,12 +246,10 @@ export default {
           "http://localhost:8000/listing/" + this.$route.params.listingid;
         const response = await axios.get(listing_URL);
         this.listing = response.data;
-        console.log(this.listing);
         this.image = `https://firebasestorage.googleapis.com/v0/b/esdeeznutz.appspot.com/o/listings%2F${this.listing.listing_id}${this.listing.img_ext}?alt=media&token=d96a1b6f-e4a2-42d1-a06b-c9331d4490a4`;
         if (this.listing.status == "Unavailable") {
           this.notAvailable = true;
         }
-        console.log('check')
         await this.checksubscribe();
       } catch (error) {
         alert(error.message);
@@ -271,7 +269,6 @@ export default {
               token: this.$store.state.accessToken,
               quantity: this.quantity,
             });
-            console.log(response.data[1]);
             if (response.data[1] == 200) {
               alert(response.data[0].message);
               this.$router.push("/");
@@ -288,7 +285,6 @@ export default {
     },
     async checksubscribe() {
       try {
-        // console.log("this is the checking function")
         const user_URL = `http://localhost:8421/subscription/corporate/${this.listing.corporate_id}`;
         const response = await axios.get(user_URL);
         response.data.forEach((subscriber) => {
@@ -305,7 +301,6 @@ export default {
         if (this.$store.state.uid == null) {
           alert("Please register and log in to like this post!");
         } else {
-          // console.log("this is the like function")
           const user_URL = "http://localhost:8421/subscription";
           const response = await axios.post(user_URL, {
             beneficiary_id: this.$store.state.uid,
@@ -323,7 +318,6 @@ export default {
     },
     async unsubscribe() {
       try {
-        // console.log("this is the unsubscribe function")
         const user_URL = "http://localhost:8421/subscription";
         const response = await axios.delete(user_URL, {
           data: {
@@ -344,7 +338,6 @@ export default {
       if (this.$store.state.uid == null) {
         alert("Please register and log in to like this post!");
       } else {
-        // console.log("this is the like function")
         const user_URL = "http://localhost:8421/favourite";
         axios
           .post(user_URL, {
@@ -361,7 +354,6 @@ export default {
       }
     },
     unlike() {
-      // console.log("this is the unlike function")
       const user_URL = "http://localhost:8421/favourite";
       axios
         .delete(user_URL, {
@@ -385,30 +377,29 @@ export default {
     },
   },
   created() {
-    console.log("Created");
     this.fetchListing();
-    // this.checksubscribe();
     setTimeout(() => {
       this.loaded = false;
-      // console.log(this.loaded)
     }, 1250);
   },
   mounted() {
     let listing_id = this.$route.params.listingid;
-    axios
-      .get("http://localhost:8421/favourite", {
-        params: {
-          beneficiary_id: this.$store.state.uid,
-          listing_id: listing_id,
-        },
-      })
-      .then((response) => {
-        this.favourite = response.data;
-      })
-      .catch((error) => {
-        console.error(error);
-        this.favourite = false;
-      });
+    if (this.$store.state.uid != null) {
+      axios
+        .get("http://localhost:8421/favourite", {
+          params: {
+            beneficiary_id: this.$store.state.uid,
+            listing_id: listing_id,
+          },
+        })
+        .then((response) => {
+          this.favourite = response.data;
+        })
+        .catch((error) => {
+          console.error(error);
+          this.favourite = false;
+        });
+    }
   },
 };
 </script>

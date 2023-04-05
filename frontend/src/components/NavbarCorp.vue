@@ -107,12 +107,10 @@ export default {
     return {
       showDropdown: false,
       hamburger: false,
-      authorisation: false,
     };
   },
   computed: {
     links() {
-      console.log("links");
       let linkitems;
       if (this.$store.state.accessToken) {
         linkitems = [
@@ -123,14 +121,12 @@ export default {
           { text: "My Account", route: "/Account", icon: "mdi-account" },
           // {text: 'Matched Pets', route:'/MatchedPets', icon: 'mdi-paw'},
         ];
-        console.log("login");
       } else {
         linkitems = [
         { text: "Find a FreeBee!", route: "/", icon: "mdi-magnify" },
           { text: "Register", route: "/register", icon: "mdi-account-plus" },
           { text: "Login", route: "/login", icon: "mdi-login" },
         ];
-        console.log("not login");
       }
       return linkitems;
     },
@@ -141,35 +137,6 @@ export default {
         this.$store.commit("resetState");
         await axios.get(`http://localhost:3001/signout`);
         location.reload();
-      } catch (error) {
-        console.log(error);
-      }
-    },
-    async userLoggedIn() {
-      try {
-        // let accessToken = null;
-        // var nameEQ = "accessToken=";
-        // var ca = document.cookie.split(";");
-        // for (var i = 0; i < ca.length; i++) {
-        //   var c = ca[i];
-        //   while (c.charAt(0) == " ") c = c.substring(1, c.length);
-        //   if (c.indexOf(nameEQ) == 0) {
-        //     accessToken = c.substring(nameEQ.length, c.length);
-        //   }
-        // }
-        // if (accessToken) {
-        //   const response = await axios.get(
-        //     ` http://localhost:3001/auth/checkaccess/${accessToken}`
-        //   );
-        //   if (response.data.statusCode == 200) {
-        //     this.authorisation = true;
-        //   } else {
-        //     this.authorisation = false;
-        //   }
-        // }
-        if (this.$store.getters.getuser != null) {
-          this.authorisation = true;
-        }
       } catch (error) {
         console.log(error);
       }

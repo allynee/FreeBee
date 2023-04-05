@@ -36,15 +36,6 @@
                 <v-icon left small>mdi-account-multiple</v-icon>
                 View Transactions
               </v-btn>
-              <!-- <v-btn
-                class="amber lighten-4 ml-2"
-                depressed
-                outlined
-                @click="subscribe"
-              >
-                <v-icon left small>mdi-pencil-outline</v-icon>
-                Edit Listing
-              </v-btn> -->
               <div v-if="notAvailable">
                 <v-btn
                   class="amber lighten-4 ml-2"
@@ -126,7 +117,6 @@
             </v-tabs-items>
           </div>
           <br />
-          <!-- Claim -->
           <div class="white rounded-xl"></div>
         </v-col>
       </v-row>
@@ -153,7 +143,6 @@ export default {
       axios
         .get(listing_URL)
         .then((response) => {
-          console.log(response.data);
           this.listing = response.data;
           this.image = `https://firebasestorage.googleapis.com/v0/b/esdeeznutz.appspot.com/o/listings%2F${this.listing.listing_id}${this.listing.img_ext}?alt=media&token=d96a1b6f-e4a2-42d1-a06b-c9331d4490a4`;
           if (this.listing.status == "Unavailable") {
@@ -164,39 +153,7 @@ export default {
           console.log(exception);
         });
     },
-    onClaim() {
-      if (this.quantity == 0) {
-        return "No";
-      } else {
-        const listingManagement_URL = "blabla";
-        axios.post(listingManagement_URL, {
-          listing: this.listing,
-          beneficiary_id: this.$store.state.uid,
-          token: this.$store.state.state.accessToken,
-          quantity: this.quantity,
-        });
-      }
-    },
-    subscribe() {
-      const user_URL = "http://localhost:8421/subscription";
-      axios
-        .post(user_URL, {
-          beneficiary_id: this.$store.state.uid,
-          corporate_id: this.listing.corporate_id,
-        })
-        .then((response) => {
-          const response_data = response.data;
-          if (response_data.statusCode == "200") {
-            console.log(response_data.name);
-            //some success
-          } else {
-            //some failure
-          }
-        })
-        .catch((error) => {
-          console.log("error " + error);
-        });
-    },
+
     gotoTransactions() {
       this.$router.push(
         `/corporatetransactions/${this.$route.params.listingid}`
@@ -227,7 +184,6 @@ export default {
           listing: this.listing,
           token: this.$store.state.accessToken,
         });
-        console.log(listing_update.data);
         if (listing_update.data.code != 200) {
           return alert(listing_update.data.message);
         }
