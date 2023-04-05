@@ -110,13 +110,13 @@ def get_subscriptions_by_beneficiary(beneficiary_id: str, db: Session = Depends(
 
     return subscriptions
 
-### GET SUBSCRIBERS INFO BASED ON BENEFICIARY ID ###
-@app.get('/subscriber/beneficiary/{beneficiary_id}', response_model=List[schemas.Beneficiary])
-def get_subscribers_information_by_beneficiary(beneficiary_id: str, db: Session = Depends(get_db), skip: int = 0, limit: int = 100,):
-    subscriptions = crud.get_subscriptions_by_beneficiary(db, beneficiary_id=beneficiary_id, skip=skip,limit=limit)
+### GET SUBSCRIBERS INFO BASED ON CORPORATE ID ###
+@app.get('/subscriber/corporate/{corporate_id}', response_model=List[schemas.Beneficiary])
+def get_subscribers_information_by_corporate(corporate_id: str, db: Session = Depends(get_db), skip: int = 0, limit: int = 100,):
+    subscriptions = crud.get_subscriptions_by_corporate(db, corporate_id=corporate_id, skip=skip,limit=limit)
     
     if subscriptions is None:
-        raise HTTPException(status_code=404, detail="Beneficiary is not subscribed to anyone.")
+        raise HTTPException(status_code=404, detail="Corporate has no subscribers.")
     
     subscribers = []
     for s in subscriptions:

@@ -49,13 +49,13 @@ app.get('/sendmail/:email?', async (req, res) => {
         } catch (error) {
         // this is if there is an error with trying the sendmail function
         console.log('email not sent ' + 500)
-        let result = { result: "internal error with samplemail.js", statusCode: '500' };
+        let result = { result: "internal error with emailing.js", statusCode: '500' };
         res.json(result);
         return result;
         }
     }
     else{
-        let result = { result: "invalid parsing", statusCode: '404' };
+        let result = { result: "invalid parsing", statusCode: '422' };
         res.json(result);
         return result;
     }
