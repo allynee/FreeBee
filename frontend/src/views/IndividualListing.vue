@@ -272,12 +272,12 @@ export default {
               token: this.$store.state.accessToken,
               quantity: this.quantity,
             });
-            console.log(response.data[1])
+            console.log(response.data[1]);
             if (response.data[1] == 200) {
               alert(response.data[0].message);
               this.$router.push("/");
-            }else{
-              alert(response.data[0].message)
+            } else {
+              alert(response.data[0].message);
             }
           } else {
             this.$router.push("/login");
@@ -287,17 +287,20 @@ export default {
         alert(error.message);
       }
     },
-    checksubscribe() {
-      // console.log("this is the checking function")
-      const user_URL = `http://localhost:8421/subscription/corporate/${this.listing.corporate_id}`;
-      axios.get(user_URL).then((response) => {
+    async checksubscribe() {
+      try {
+        // console.log("this is the checking function")
+        const user_URL = `http://localhost:8421/subscription/corporate/${this.listing.corporate_id}`;
+        const response = await axios.get(user_URL);
         console.log(response.data);
         response.data.forEach((subscriber) => {
           if (subscriber.beneficiary_id == this.$store.state.uid) {
             this.subscribed = true;
           }
         });
-      });
+      } catch (error) {
+        alert(error.message);
+      }
     },
     async subscribe() {
       try {
@@ -320,23 +323,24 @@ export default {
         alert(error.message);
       }
     },
-    unsubscribe() {
-      // console.log("this is the unsubscribe function")
-      const user_URL = "http://localhost:8421/subscription";
-      axios
-        .delete(user_URL, {
+    async unsubscribe() {
+      try {
+        // console.log("this is the unsubscribe function")
+        const user_URL = "http://localhost:8421/subscription";
+        const response = await axios.delete(user_URL, {
           data: {
             beneficiary_id: this.$store.state.uid,
             corporate_id: this.listing.corporate_id,
           },
-        })
-        .then((response) => {
-          if (response.status == "200") {
-            this.subscribed = false;
-          } else {
-            return alert("Unscription failed");
-          }
         });
+        if (response.status == "200") {
+          this.subscribed = false;
+        } else {
+          return alert("Unscription failed");
+        }
+      } catch (error) {
+        alert(error.message);
+      }
     },
     like() {
       if (this.$store.state.uid == null) {

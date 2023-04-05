@@ -107,9 +107,11 @@ export default {
       try {
         const listing_URL = `http://localhost:5000/listing_management`;
         const response = await axios.get(listing_URL);
+        console.log(response.data)
         response.data.forEach((element) => {
           if (element.listing.corporate_id == this.$store.state.uid) {
             //
+            console.log(element)
             this.allListingsArray.push(element);
           }
         });

@@ -46,7 +46,6 @@
         </v-tab-item>
 
         <v-tab-item :value="1">
-          <v-row v-if="readyArray">
             <v-card
               flat
               v-for="transaction in this.readyArray"
@@ -63,11 +62,10 @@
             <v-btn
               color="amber lighten-3"
               style="margin-top: 10px"
-              @click="updateDB('Collected')"
+              @click="updateDB('Completed')"
             >
               Update Status
             </v-btn>
-          </v-row>
         </v-tab-item>
 
         <v-tab-item :value="2">
@@ -184,10 +182,10 @@ export default {
               status: status,
             }
           );
-          if (response.data.code == 404) {
+          if (response.data.code == 500) {
             return alert("Invalid update request");
           } else {
-            alert("Success");
+            alert("Update Success");
             location.reload();
           }
         }

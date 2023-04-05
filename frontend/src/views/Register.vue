@@ -395,23 +395,35 @@ export default {
 
           // if function to push to sql db
           if (role == "corporate") {
-            await axios.post("http://localhost:8421/corporate", {
-              corporate_id: this.$store.state.uid,
-              email: this.corporateEmail,
-              name: this.corporatename,
-              description: this.description,
-            });
+            const response = await axios.post(
+              "http://localhost:8421/corporate",
+              {
+                corporate_id: this.$store.state.uid,
+                email: this.corporateEmail,
+                name: this.corporatename,
+                description: this.description,
+              }
+            );
+            if (response.status != 200) {
+              return alert(response.data.detail);
+            }
           } else {
-            await axios.post("http://localhost:8421/beneficiary", {
-              beneficiary_id: this.$store.state.uid,
-              email: this.email,
-              username: this.username,
-              phone: parseInt(this.phone),
-              address: this.address,
-              postal: parseInt(this.postal),
-              district: parseInt(this.district),
-              area: this.area,
-            });
+            const response = await axios.post(
+              "http://localhost:8421/beneficiary",
+              {
+                beneficiary_id: this.$store.state.uid,
+                email: this.email,
+                username: this.username,
+                phone: parseInt(this.phone),
+                address: this.address,
+                postal: parseInt(this.postal),
+                district: parseInt(this.district),
+                area: this.area,
+              }
+            );
+            if (response.status != 200) {
+              return alert(response.data.detail);
+            }
           }
 
           // end of sql db code

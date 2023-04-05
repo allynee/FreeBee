@@ -1,6 +1,6 @@
 <template>
-  <v-container style="margin:0">
-    <v-row >
+  <v-container style="margin: 0">
+    <v-row>
       <v-col cols="3">
         <v-card height="350" width="256">
           <v-navigation-drawer class="amber lighten-2" permanent>
@@ -63,11 +63,18 @@ export default {
     };
   },
   methods: {
-    fetchLikes() {
-      const user_url = `http://localhost:5000/favourites/${this.$store.state.uid}`;
-      axios.get(user_url).then((favourites) => {
+    async fetchLikes() {
+      try {
+        const user_url = `http://localhost:5000/favourites/${this.$store.state.uid}`;
+        const favourites = await axios.get(user_url);
         this.favourites = favourites.data;
-      });
+        console.log(favourites);
+        if(favourites.status != 200){
+          return alert(favourites.data.detail)
+        }
+      } catch (error) {
+        alert(error.message);
+      }
     },
     gotoListing(listing_id) {
       // console.log(listing_id)
