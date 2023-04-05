@@ -189,6 +189,9 @@ def get_all_corporates(db: Session, skip: int = 0, limit: int = 100):
 
 
 def create_corporate(db: Session, corporate: schemas.CorporateCreate):
+    c = get_corporate(db, corporate_id = corporate.corporate_id)
+    if c:
+        raise HTTPException(status_code=400, detail="Corporate already exists")
     corporate = models.Corporate(**corporate.dict())
     db.add(corporate)
     db.commit() 
