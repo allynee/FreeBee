@@ -105,6 +105,11 @@ def display_listings():
     print('\n-----Retrieving listings-----')
     listing_URL_FULL = listing_URL + "listing"
     listing_result = invoke_http(listing_URL_FULL, method="GET", json=None)
+    if listing_result["code"] !=200:
+        return {
+            "code": listing_result["code"],
+            "message": "listing service not invoked correctly"
+        }
     print('listing_result:', listing_result)
     listing_result = listing_result["result"]
 
@@ -136,7 +141,7 @@ def display_subscriptions(beneficiary_id):
     if subscriptions["code"] != 200:
         return {
             "code": subscriptions["code"],
-            "result": subscriptions["result"]
+            "message": "subscriptions service was not invoked properly"
         }
 
     subscriptions = subscriptions["result"]
@@ -170,7 +175,7 @@ def get_all_favourites(beneficiary_id):
     if favourites["code"]!=200:
         return {
             "code": favourites["code"],
-            "results": favourites["result"]
+            "message": "favourites service not invoked correctly" 
         }
 
     favourites = favourites["result"]
