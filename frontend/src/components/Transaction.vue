@@ -81,14 +81,10 @@ export default {
     methods: {
        // redirecting function below
         redirect(listingid){
-            console.log(listingid)
             this.$store.dispatch('loadedPet', listingid)
             this.$router.push('/FindFreeBee/'+ listingid)
         },
     },
-    mounted(){
-        console.log(this.aTransaction)
-    }
 
 }
 </script>

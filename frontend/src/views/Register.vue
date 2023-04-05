@@ -163,13 +163,6 @@
                     </v-alert>
                   </v-col>
                 </v-row>
-
-                <!-- Error Message -->
-                <!-- <v-layout row>
-                                <v-flex xs12>
-                                    <p v-if="errorstatus"></p>
-                                </v-flex>
-                            </v-layout> -->
               </form>
             </v-card-text>
           </v-tab-item>
@@ -276,12 +269,6 @@
                     </v-alert>
                   </v-col>
                 </v-row>
-                <!-- Error Message -->
-                <!-- <v-layout row>
-                                    <v-flex xs12>
-                                        <p v-if="errorstatus"></p>
-                                    </v-flex>
-                                </v-layout> -->
               </form>
             </v-card-text>
           </v-tab-item>
@@ -366,7 +353,6 @@ export default {
   methods: {
     async onRegister(role) {
       try {
-        console.log(role);
         let name;
         let email;
         if (role == "corporate") {
@@ -385,7 +371,6 @@ export default {
 
         const response_data = response.data;
         if (response_data.statusCode == "200") {
-          // console.log(response_data.name);
           this.$store.commit("access", {
             accessToken: response_data.accessToken,
             uid: response_data.uid,
@@ -477,7 +462,6 @@ export default {
             });
           });
           const address = results[0].description;
-          console.log(address);
           this.geocodeResult = address; // parase address information to Vue
         } catch (error) {
           console.error(error);

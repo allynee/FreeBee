@@ -27,12 +27,6 @@
               @update:addUpdate="addUpdate($event)"
             ></CorporateTransactionCard>
           </v-card>
-          <!-- <v-row v-for="transaction in shownTransactions" :key="transaction.transaction_id">
-                <CorporateTransactionCard
-                  :transaction="transaction"
-                  v-on:update:addUpdate="addUpdate($event)"
-                ></CorporateTransactionCard>
-              </v-row> -->
           <v-btn
             color="amber lighten-3"
             style="margin-top: 10px"
@@ -155,7 +149,6 @@ export default {
       }
     },
     addUpdate(value) {
-      console.log(value);
       if (value.value != null) {
         this.update.push(value.data);
       } else {
@@ -169,7 +162,6 @@ export default {
     async updateDB(status) {
       try {
         if (this.update.length > 0) {
-          console.log(this.transactionStatus);
           const response = await axios.put(
             `http://localhost:5100/transaction_management`,
             {

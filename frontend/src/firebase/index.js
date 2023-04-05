@@ -1,3 +1,5 @@
+// not using this refer to backend code for firebase 
+
 import { initializeApp} from 'firebase/app'
 import { 
     getFirestore, 
@@ -18,14 +20,3 @@ initializeApp(firebaseConfig)
 const db=getFirestore()
 
 export default db
-//initialise services
-// // export default getFirestore()
-
-// // //collection ref
-// // const userRef=collection(db, 'Users')
-
-// // //get collection data
-// // getDocs(userRef)
-// // .then((snapshot)=>{
-// //     console.log(snapshot.docs)
-// // })

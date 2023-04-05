@@ -41,29 +41,23 @@
           </span>
         </v-row>
         <v-row class="my-15">
-          <!-- <SearchBar @search="searchForListings($event)"></SearchBar> -->
           <v-container class="px-15">
-          <v-text-field
-            outlined
-            prepend-icon="mdi-magnify"
-            class="rounded-xl px-5"
-            label="Search for a FreeBee"
-            clearable
-            v-model="search"
-          >
-          </v-text-field>
-        </v-container>
+            <v-text-field
+              outlined
+              prepend-icon="mdi-magnify"
+              class="rounded-xl px-5"
+              label="Search for a FreeBee"
+              clearable
+              v-model="search"
+            >
+            </v-text-field>
+          </v-container>
         </v-row>
       </div>
 
       <div class="mx-15 px-15">
-        <!-- Categories -->
         <v-row class="">
           <span class="text-h4 grey--text text--darken-3">Categories</span>
-          <!-- <span style="width:80%" class="justify-right">
-          <v-btn plain depressed class="grey--text text--darken-4">
-          <v-icon small left>mdi-view-grid</v-icon>See all categories</v-btn>
-        </span> -->
         </v-row>
 
         <v-row class="my-10 justify-center">
@@ -98,14 +92,6 @@
             ></Listing>
           </v-col>
         </v-row>
-        <!-- 
-      <v-row justify="center" class="my-15">
-        <v-col cols="12" align="center" data-aos="fade-left">
-          <video-background :src="require(`@/assets/bee.mp4`)" style="height: 250px; width: 180px">
-          </video-background>
-        </v-col>
-      </v-row> -->
-
         <v-row class="">
           <h1 class="text-h4 grey--text text--darken-3">All FreeBees</h1>
         </v-row>
@@ -146,7 +132,6 @@
 <script>
 import AOS from "aos";
 import Category from "./Category.vue";
-// import SearchBar from "./SearchBar.vue";
 import Listing from "./Listing.vue";
 import axios from "axios";
 export default {
@@ -155,8 +140,6 @@ export default {
     AOS.init({
       duration: 1600,
     });
-    // console.log(this.$store.getters.getAccessToken)
-    // console.log(this.$store.state)
   },
   data() {
     return {
@@ -187,7 +170,6 @@ export default {
   computed: {
     filteredListings() {
       return this.allListingsArray.filter((listing) => {
-        console.log(listing);
         if (
           this.filteredCategories.includes(listing.listing.category) &&
           listing.listing.name.toLowerCase().includes(this.search)
@@ -207,9 +189,7 @@ export default {
       try {
         const listing_URL = `http://localhost:5000/listing_management`;
         const response = await axios.get(listing_URL);
-        // console.log(response.data)
         response.data.forEach((element) => {
-          // console.log(element)
           if (element.listing.status == "Available") {
             //
             this.allListingsArray.push(element);
@@ -217,15 +197,11 @@ export default {
         });
         console.log("this.filter_recc called")
         this.filter_recc();
-        console.log(this.allListingsArray);
       } catch (error) {
         console.log(error);
       }
-      // console.log(this.allListingsArray)
     },
     gotoListing(listing_id) {
-      // console.log(listing_id)
-      // console.log("clicked")
       this.$router.push({
         name: "IndividualListing",
         params: { listingid: listing_id },
@@ -299,14 +275,12 @@ export default {
         }
         console.log(this.recListingsArray)
       }
-      
-    }
+    },
   },
   created() {
     this.fetchListings();
     setTimeout(() => {
       this.loaded = false;
-      // console.log(this.loaded)
     }, 1250);
   },
 };

@@ -57,7 +57,6 @@ export default {
           icon: "mdi-email",
           route: "/subscribedlistings",
         },
-        { title: "Logout", icon: "mdi-logout" },
       ],
       favourites: null,
     };
@@ -77,8 +76,6 @@ export default {
       }
     },
     gotoListing(listing_id) {
-      // console.log(listing_id)
-      // console.log("clicked")
       this.$router.push({
         name: "IndividualListing",
         params: { listingid: listing_id },

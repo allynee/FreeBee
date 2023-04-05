@@ -42,7 +42,6 @@ export default {
         { title: "Profile", icon: "mdi-account" },
         { title: "Liked Listings", icon: "mdi-heart" },
         { title: "Subscribed", icon: "mdi-email" },
-        { title: "Logout", icon: "mdi-logout" },
       ],
       subscriptions: null,
       favourites: null,
@@ -64,8 +63,6 @@ export default {
       }
     },
     gotoListing(listing_id) {
-      // console.log(listing_id)
-      // console.log("clicked")
       this.$router.push({
         name: "IndividualListing",
         params: { listingid: listing_id },

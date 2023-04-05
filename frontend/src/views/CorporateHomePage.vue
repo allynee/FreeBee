@@ -1,15 +1,4 @@
 <template>
-  <!-- <div v-if="loaded">
-    <v-row justify="center" class="my-15">
-      <v-col cols="12" align="center" data-aos="fade-left">
-        <video-background
-          :src="require(`@/assets/bee.mp4`)"
-          style="height: 250px; width: 180px"
-        >
-        </video-background>
-      </v-col>
-    </v-row>
-  </div> -->
   <div>
     <div class="white darken-3">
       <div class="py-5">
@@ -42,10 +31,6 @@
         <!-- Categories -->
         <v-row class="">
           <span class="text-h4 grey--text text--darken-3">Your Listings</span>
-          <!-- <span style="width:80%" class="justify-right">
-          <v-btn plain depressed class="grey--text text--darken-4">
-          <v-icon small left>mdi-view-grid</v-icon>See all categories</v-btn>
-        </span> -->
         </v-row>
 
         <v-row class="my-15">
@@ -82,8 +67,6 @@
 </template>
 
 <script>
-// import AOS from 'aos'
-// import axios from 'axios'
 import CorporateListingCard from "@/components/CorporateListingCard.vue";
 import axios from "axios";
 export default {
@@ -107,15 +90,11 @@ export default {
       try {
         const listing_URL = `http://localhost:5000/listing_management`;
         const response = await axios.get(listing_URL);
-        console.log(response.data)
         response.data.forEach((element) => {
           if (element.listing.corporate_id == this.$store.state.uid) {
-            //
-            console.log(element)
             this.allListingsArray.push(element);
           }
         });
-        console.log(this.allListingsArray);
       } catch (error) {
         console.log(error);
       }
@@ -134,7 +113,6 @@ export default {
   },
   computed: {},
   mounted() {
-    console.log(this.$store.state);
     this.fetchListings();
   },
 };

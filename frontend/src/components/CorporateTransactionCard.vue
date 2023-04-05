@@ -50,7 +50,6 @@ export default {
     AOS.init({
       duration: 1600,
     });
-    console.log(this.transaction);
   },
   data() {
     return {
@@ -66,7 +65,6 @@ export default {
   methods: {
     // redirecting function below
     redirect(listingid) {
-      console.log(listingid);
       this.$store.dispatch("loadedPet", listingid);
       this.$router.push("/FindFreeBee/" + listingid);
     },
