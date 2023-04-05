@@ -3,7 +3,21 @@
     <v-card style="margin-bottom: 15px">
       <v-card-text>
         <v-container>
-          <v-col>
+          <v-row>
+          <v-col cols="3">
+            <v-list-item>
+              <v-checkbox
+                v-if="
+                  (transaction.status != 'Completed') &
+                  (transaction.status != 'Cancelled')
+                "
+                value="checked"
+                v-model="checkbox"
+                @click="addTransaction()"
+              />
+            </v-list-item>
+          </v-col>
+          <v-col cols="9">
             <v-row> Beneficiary ID: {{ transaction.beneficiary_id }} </v-row>
             <v-row> Quantity claimed: {{ transaction.quantity }} </v-row>
             <v-row>
@@ -19,19 +33,7 @@
               {{ transaction.created.split("T")[1] }}
             </v-row>
           </v-col>
-          <v-col>
-            <v-list-item>
-              <v-checkbox
-                v-if="
-                  (transaction.status != 'Completed') &
-                  (transaction.status != 'Cancelled')
-                "
-                value="checked"
-                v-model="checkbox"
-                @click="addTransaction()"
-              />
-            </v-list-item>
-          </v-col>
+          </v-row>
         </v-container>
       </v-card-text>
     </v-card>
