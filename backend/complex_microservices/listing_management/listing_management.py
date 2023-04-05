@@ -76,6 +76,7 @@ def update_listing(listing_id):
             listing = request_json['listing']
             print("\nReceived an listing in JSON:", listing) 
             token = request_json['token']
+            listing['status'] = 'Unavailable'
             # do the actual work
             # 1. Update listing info 
             result = processUpdateListing(listing, listing_id, token)
