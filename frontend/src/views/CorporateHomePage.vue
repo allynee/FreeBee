@@ -36,9 +36,6 @@
             </video-background>
           </span>
         </v-row>
-        <v-row class="my-15">
-          <SearchBar></SearchBar>
-        </v-row>
       </div>
 
       <div class="mx-15 px-15">
@@ -88,7 +85,6 @@
 // import AOS from 'aos'
 // import axios from 'axios'
 import CorporateListingCard from "@/components/CorporateListingCard.vue";
-import SearchBar from "@/components/SearchBar.vue";
 import axios from "axios";
 export default {
   name: "corporatehomepage",
@@ -104,7 +100,7 @@ export default {
       allListingsArray: [],
     };
   },
-  components: { CorporateListingCard, SearchBar },
+  components: { CorporateListingCard },
 
   methods: {
     async fetchListings() {

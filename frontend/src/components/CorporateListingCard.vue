@@ -5,7 +5,7 @@
         flat
         :elevation="hover ? 10 : 2"
         :class="{ 'on-hover': hover }"
-        style="width: 350px; height: 350px"
+        style="width: 350px; height: 375px"
         outlined
         class="pa-2"
       >
@@ -32,9 +32,21 @@
         <v-divider class="mx-3 mb-1"></v-divider>
         <v-card-text>
           <div
-            class="text-subtitle-2 font-weight-bold mb-2 red--text text--darken-4"
+            class="text-subtitle-2 font-weight-bold mb-2 black--text text--darken-4"
           >
             Quantity Left: {{ aListing.listing.quantity }}
+          </div>
+          <div
+            class="text-subtitle-2 font-weight-bold mb-2 red--text text--darken-4"
+            v-if=" aListing.listing.status == 'Unavailable'"
+            >
+            Status: {{ aListing.listing.status }}
+          </div>
+          <div
+            class="text-subtitle-2 font-weight-bold mb-2 green--text text--darken-4"
+            v-if=" aListing.listing.status == 'Available'"
+            >
+            Status: {{ aListing.listing.status }}
           </div>
           <!-- <v-btn small class="amber lighten-4 ml-2" style="margin-bottom: 10px;" depressed outlined @click="subscribe">
             <v-icon left small>mdi-pencil-outline</v-icon>
