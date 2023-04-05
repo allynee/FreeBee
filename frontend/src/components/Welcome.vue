@@ -212,15 +212,8 @@ export default {
             //
             this.allListingsArray.push(element);
           }
-          // console.log(this.$store.state.area)
-          let rec_area = this.$store.state.area;
-          if (
-            (element.area == rec_area || rec_area == null) &&
-            element.listing.status == "Available"
-          ) {
-            this.recListingsArray.push(element);
-          }
         });
+        this.filter_recc();
         console.log(this.allListingsArray);
       } catch (error) {
         console.log(error);
@@ -261,6 +254,40 @@ export default {
     toTop() {
       this.$vuetify.goTo(0);
     },
+    filter_recc(){
+      let rec_area = this.$store.state.area;
+      let rec_district = this.$store.state.area;
+      if(this.allListingsArray.length <= 4){
+        this.recListingsArray = this.allListingsArray
+      }
+      else if(rec_area == null){
+        this.recListingsArray = this.allListingsArray.slice(-4)
+      }
+      else{
+        for (let i = 0; i < this.allListingsArray.length; i++){
+          let each_listing = this.allListingsArray[i]
+          if(each_listing.district == rec_district){
+            this.recListingsArray.push(each_listing);
+          }
+        }
+        if (this.recListingsArray.length < 4){
+          for (let i = 0; i < this.allListingsArray.length; i++){
+            let each_listing = this.allListingsArray[i]
+            if(each_listing.area == rec_area){
+              this.recListingsArray.push(each_listing);
+            }
+          }
+        }
+        if (this.recListingsArray.length < 4){
+          while (this.recListingsArray.length < 4 ){
+            let elem = this.allListingsArray.pop()
+            this.recListingsArray.push(elem);
+          }
+        }
+
+      }
+      
+    }
   },
   created() {
     this.fetchListings();
