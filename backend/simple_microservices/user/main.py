@@ -90,7 +90,7 @@ def get_beneficiary_by_id(beneficiary_id: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Beneficiary does not exist.")
     return beneficiary
 
-### GET SUBSCRIBERS INFO BASED ON CORPORATE ID ###
+### GET SUBSCRIPTIONS BASED ON CORPORATE ID ###
 @app.get('/subscription/corporate/{corporate_id}', response_model=List[schemas.Subscription])
 def get_subscriptions_by_corporate(corporate_id: str, db: Session = Depends(get_db), skip: int = 0, limit: int = 100,):
     subscriptions = crud.get_subscriptions_by_corporate(db, corporate_id=corporate_id, skip=skip,limit=limit)
@@ -100,24 +100,27 @@ def get_subscriptions_by_corporate(corporate_id: str, db: Session = Depends(get_
 
     return subscriptions
 
+### GET SUBSCRIPTIONS BASED ON BENEFICIARY ID ###
+@app.get('/subscription/beneficiary/{beneficiary_id}', response_model=List[schemas.Subscription])
+def get_subscriptions_by_beneficiary(beneficiary_id: str, db: Session = Depends(get_db), skip: int = 0, limit: int = 100,):
+    subscriptions = crud.get_subscriptions_by_beneficiary(db, beneficiary_id=beneficiary_id, skip=skip,limit=limit)
+
+    if subscriptions is None:
+        raise HTTPException(status_code=404, detail="Beneficiary is not subscribed to anyone.")
+
+    return subscriptions
+
 ### GET SUBSCRIBERS INFO BASED ON BENEFICIARY ID ###
-@app.get('/subscription/beneficiary/{beneficiary_id}', response_model=List[schemas.Beneficiary])
+@app.get('/subscriber/beneficiary/{beneficiary_id}', response_model=List[schemas.Beneficiary])
 def get_subscribers_information_by_beneficiary(beneficiary_id: str, db: Session = Depends(get_db), skip: int = 0, limit: int = 100,):
     subscriptions = crud.get_subscriptions_by_beneficiary(db, beneficiary_id=beneficiary_id, skip=skip,limit=limit)
     
     if subscriptions is None:
-        raise HTTPException(status_code=404, detail="Beneficiary has no subscribers.")
+        raise HTTPException(status_code=404, detail="Beneficiary is not subscribed to anyone.")
     
     subscribers = []
     for s in subscriptions:
         subscribers.append(crud.get_beneficiary(db, beneficiary_id=s.beneficiary_id))
-    # Convert subscriptions to a list of subscription objects
-    # subscription_models = [schemas.Subscription(beneficiary_id=s.beneficiary_id, corporate_id=s.corporate_id) for s in subscriptions]
-
-    # subscribers = []
-
-    # for sub in subscription_models:
-    #     subscribers.append(crud.get_beneficiary(db, beneficiary_id=sub.beneficiary_id))
 
     return subscribers
 
