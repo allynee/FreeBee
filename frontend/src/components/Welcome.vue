@@ -258,7 +258,7 @@ export default {
     },
     filter_recc(){
       let rec_area = this.$store.state.area;
-      let rec_district = this.$store.state.area;
+      let rec_district = this.$store.state.district;
       if(this.allListingsArray.length <= 4){
         this.recListingsArray = this.allListingsArray
       }

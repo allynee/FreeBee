@@ -10,7 +10,6 @@ import isCorp from './isCorp.js'
 
 // import SignUp from "../views/SignUp.vue";
 import Account from "../views/ProfilePage.vue";
-// import MatchedPets from "../views/MatchedPets.vue";
 import Register from "../views/Register.vue";
 // import BeneficiarySignUp from "../views/RegisterBeneficiary.vue";
 // import CorporateSignUp from "../views/RegisterCorporate.vue";
