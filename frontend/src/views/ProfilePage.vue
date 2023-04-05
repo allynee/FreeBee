@@ -32,21 +32,21 @@
                         Username:
                     </span>
                     <br/>
-                    <v-text-field outlined style="margin-left: 15px; max-width: 300px;" disabled label="username">
+                    <v-text-field outlined style="margin-left: 15px; max-width: 300px;" disabled :value='username'>
                     </v-text-field>
                     
                     <span class="text-h7 font-weight-medium grey--text text--darken-3 mx-5">
                         Email:
                     </span>
                     <br/>
-                    <v-text-field outlined style="margin-left: 15px; max-width: 400px;" disabled label="email">
+                    <v-text-field outlined style="margin-left: 15px; max-width: 400px;" disabled :value="email">
                     </v-text-field>
 
                     <span class="text-h7 font-weight-medium grey--text text--darken-3 mx-5">
                         Address:
                     </span>
                     <br/>
-                    <v-text-field outlined style="margin-left: 15px; max-width: 400px;" disabled label="address">
+                    <v-text-field outlined style="margin-left: 15px; max-width: 400px;" disabled :value="address">
                     </v-text-field>
                 </v-card>
             </v-col>
@@ -55,9 +55,14 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
     data () {
       return {
+        username: '',
+        email: '',
+        address: '',
         items: [
           { title: 'Profile', icon: 'mdi-account', route:'/profile'},
           { title: 'Liked Listings', icon: 'mdi-heart', route:'/liked'},
@@ -66,6 +71,19 @@ export default {
         ],
       }
     },
+    methods: {
+        async fetchUser() {
+            const beneficiary_url = 'http://localhost:8421/beneficiary/' + this.$store.state.uid;
+            axios.get(beneficiary_url).then((response) => {
+                this.username = response.data.username;
+                this.email = response.data.email;
+                this.address = response.data.address;
+            })
+        }
+    },
+    mounted () {
+        this.fetchUser();
+    }
   }
 </script>
 
