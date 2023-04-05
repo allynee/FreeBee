@@ -201,11 +201,11 @@ export default {
             "Content-Type": "multipart/form-data",
           },
         });
-        if (response.data.code == 200) {
+        if (response.data[1] == 200) {
           alert("Listing Successful !");
           this.$router.push("/");
         }else{
-          alert(response.data.message)
+          alert(response.data[0].message)
         }
       } catch (error) {
         console.log(error);

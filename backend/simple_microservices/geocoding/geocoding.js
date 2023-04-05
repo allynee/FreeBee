@@ -1,9 +1,12 @@
-const axios = require('axios');
+const axios = require("axios");
 
 async function geocode(address) {
   // Ensures that Address is no empty
   if ((address == null) | (address == "")) {
-    return null;
+    return       {
+      code: 400,
+      address: null,
+    };;
   } else {
     console.log(address);
     try {
@@ -89,11 +92,20 @@ async function geocode(address) {
           area = key;
         }
       });
-      let return_json = {"address":address,'area': area, 'district': district , 'postal_code': postalCode};
+      let return_json = {
+        code: 200,
+        address: address,
+        area: area,
+        district: district,
+        postal_code: postalCode,
+      };
       return return_json;
     } catch (error) {
-      console.log(error);
-      console.log("no");
+      let return_json = {
+        code: 400,
+        address: null
+      };
+      return return_json
     }
   }
 
@@ -130,7 +142,7 @@ async function getPostalCode(placeId) {
     // address_components would return the address components which consists of all the different details of the address
     const address_components = response.data.results[0].address_components;
     for (let i = 0; i < address_components.length; i++) {
-        // finds the address components which is the postal code
+      // finds the address components which is the postal code
       if (address_components[i].types == "postal_code") {
         return address_components[i].long_name;
       }

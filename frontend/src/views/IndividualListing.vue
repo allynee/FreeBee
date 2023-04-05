@@ -241,22 +241,21 @@ export default {
   },
   methods: {
     async fetchListing() {
-      const listing_URL =
-        "http://localhost:8000/listing/" + this.$route.params.listingid;
-      axios
-        .get(listing_URL)
-        .then((response) => {
-          this.listing = response.data;
-          console.log(this.listing);
-          this.image = `https://firebasestorage.googleapis.com/v0/b/esdeeznutz.appspot.com/o/listings%2F${this.listing.listing_id}${this.listing.img_ext}?alt=media&token=d96a1b6f-e4a2-42d1-a06b-c9331d4490a4`;
-          if (this.listing.status == "Unavailable") {
-            this.notAvailable = true;
-          }
-          this.checksubscribe();
-        })
-        .catch((exception) => {
-          console.log(exception);
-        });
+      try {
+        const listing_URL =
+          "http://localhost:8000/listing/" + this.$route.params.listingid;
+        const response = await axios.get(listing_URL);
+        this.listing = response.data;
+        console.log(this.listing);
+        this.image = `https://firebasestorage.googleapis.com/v0/b/esdeeznutz.appspot.com/o/listings%2F${this.listing.listing_id}${this.listing.img_ext}?alt=media&token=d96a1b6f-e4a2-42d1-a06b-c9331d4490a4`;
+        if (this.listing.status == "Unavailable") {
+          this.notAvailable = true;
+        }
+        console.log('check')
+        await this.checksubscribe();
+      } catch (error) {
+        alert(error.message);
+      }
     },
     async onClaim() {
       try {
@@ -292,7 +291,9 @@ export default {
         // console.log("this is the checking function")
         const user_URL = `http://localhost:8421/subscription/corporate/${this.listing.corporate_id}`;
         const response = await axios.get(user_URL);
-        console.log(response.data);
+        if(response.status == 401){
+          return this.subscribed = false
+        }
         response.data.forEach((subscriber) => {
           if (subscriber.beneficiary_id == this.$store.state.uid) {
             this.subscribed = true;

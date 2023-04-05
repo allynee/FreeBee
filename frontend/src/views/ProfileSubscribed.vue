@@ -90,34 +90,7 @@ export default {
     loading() {
       return this.$store.getters.loading;
     },
-    comparePasswords() {
-      return this.password != this.confirmpassword
-        ? "Passwords do not match!"
-        : "";
-    },
-    passwordLength() {
-      if (this.password.length < 6) {
-        return "Minimum length is 6 characters";
-      } else if (!this.password.match(/[a-z]/)) {
-        return "Must contain at least 1 lowercase letter";
-      } else if (!this.password.match(/[A-Z]/)) {
-        return "Must contain at least 1 uppercase letter";
-      } else if (!this.password.match(/[`!@#$%^&*()_+\-=[\]{};':"\\|,.<>?~]/)) {
-        return "Must contain at least 1 symbol";
-      } else {
-        return true;
-      }
-    },
-    formIsValid() {
-      return (
-        this.fullname != "" &&
-        this.email != "" &&
-        this.username != "" &&
-        this.password != "" &&
-        this.confirmpassword != "" &&
-        this.password == this.confirmpassword
-      );
-    },
+
   },
   mounted() {
     this.fetchSubscriptions();
