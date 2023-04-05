@@ -146,8 +146,8 @@
             <!-- Claim -->
             <div v-if="notAvailable">
               <v-row>
-              <v-col cols="9" align="left">
-              <v-btn
+                <v-col cols="9" align="left">
+                  <v-btn
                     rounded-xl
                     x-large
                     class="red lighten-3 ml-2 my-1"
@@ -157,14 +157,14 @@
                   </v-btn>
                 </v-col>
                 <v-col cols="2" align="right">
-                  <span data-aos="fade-left" class="ml-15" justify-center >
-                    <video-background 
+                  <span data-aos="fade-left" class="ml-15" justify-center>
+                    <video-background
                       :src="require(`@/assets/bee.mp4`)"
                       style="height: 50px; width: 36px"
                     ></video-background>
                   </span>
                 </v-col>
-                </v-row>
+              </v-row>
             </div>
             <div v-else class="white rounded-xl my-5 pa-4">
               <form @submit.prevent="onClaim()">
@@ -236,7 +236,7 @@ export default {
       favourite: false,
       subscribed: false,
       loaded: true,
-      notAvailable: false
+      notAvailable: false,
     };
   },
   methods: {
@@ -249,8 +249,8 @@ export default {
           this.listing = response.data;
           console.log(this.listing);
           this.image = `https://firebasestorage.googleapis.com/v0/b/esdeeznutz.appspot.com/o/listings%2F${this.listing.listing_id}${this.listing.img_ext}?alt=media&token=d96a1b6f-e4a2-42d1-a06b-c9331d4490a4`;
-          if (this.listing.status == "Unavailable"){
-            this.notAvailable = true
+          if (this.listing.status == "Unavailable") {
+            this.notAvailable = true;
           }
           this.checksubscribe();
         })
@@ -258,29 +258,30 @@ export default {
           console.log(exception);
         });
     },
-    onClaim() {
-      if (this.quantity == 0) {
-        return "No";
-      } else {
-        if (this.$store.state.accessToken) {
-          const transactionManagement_URL =
-            "http://localhost:5100/transaction_management";
-          axios
-            .post(transactionManagement_URL, {
+    async onClaim() {
+      try {
+        if (this.quantity == 0) {
+          return "No";
+        } else {
+          if (this.$store.state.accessToken) {
+            const transactionManagement_URL =
+              "http://localhost:5100/transaction_management";
+            const response = await axios.post(transactionManagement_URL, {
               listing: this.listing,
               beneficiary_id: this.$store.state.uid,
               token: this.$store.state.accessToken,
               quantity: this.quantity,
-            })
-            .then((response) => {
-              if (response.data[0].code == 200) {
-                alert("Claim Successful !");
-                this.$router.push("/");
-              }
             });
-        } else {
-          this.$router.push("/login");
+            if (response.data[0].code == 200) {
+              alert("Claim Successful !");
+              this.$router.push("/");
+            }
+          } else {
+            this.$router.push("/login");
+          }
         }
+      } catch (error) {
+        alert(error.message);
       }
     },
     checksubscribe() {
@@ -295,25 +296,25 @@ export default {
         });
       });
     },
-    subscribe() {
-      if (this.$store.state.uid == null) {
-        alert("Please register and log in to like this post!");
-      } else {
-        // console.log("this is the like function")
-        const user_URL = "http://localhost:8421/subscription";
-        axios
-          .post(user_URL, {
+    async subscribe() {
+      try {
+        if (this.$store.state.uid == null) {
+          alert("Please register and log in to like this post!");
+        } else {
+          // console.log("this is the like function")
+          const user_URL = "http://localhost:8421/subscription";
+          const response = await axios.post(user_URL, {
             beneficiary_id: this.$store.state.uid,
-            corporate_id: this.listing.corporate_id
-          })
-          .then((response) => {
-            if (response.status == "201") {
-              this.subscribed = true;
-              console.log("subscribed!!!");
-            } else {
-              console.log("fail");
-            }
+            corporate_id: this.listing.corporate_id,
           });
+          if (response.status == "201") {
+            this.subscribed = true;
+          } else {
+            return alert("Subscription failed ");
+          }
+        }
+      } catch (error) {
+        alert(error.message);
       }
     },
     unsubscribe() {
@@ -327,13 +328,10 @@ export default {
           },
         })
         .then((response) => {
-          const response_data = response.data;
           if (response.status == "200") {
-            console.log(response_data.name);
             this.subscribed = false;
-            console.log("unsubscribed!!!");
           } else {
-            console.log("fail");
+            return alert("Unscription failed");
           }
         });
     },
@@ -351,9 +349,8 @@ export default {
           .then((response) => {
             if (response.status == "201") {
               this.favourite = true;
-              console.log("liked!!!");
             } else {
-              console.log("fail");
+              return alert("Favourite failed");
             }
           });
       }
@@ -369,13 +366,10 @@ export default {
           },
         })
         .then((response) => {
-          const response_data = response.data;
           if (response.status == "200") {
-            console.log(response_data.name);
             this.favourite = false;
-            console.log("deleted!!!");
           } else {
-            console.log("fail");
+            return alert("Unfavourite failed");
           }
         });
     },

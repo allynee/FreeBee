@@ -207,21 +207,29 @@ export default {
         this.listing.status = "Unavailable";
         const transaction_management_get = `http://localhost:5100/transaction_management/corporate/${this.$route.params.listingid}`;
         const transactions = await axios.get(transaction_management_get);
+        if (transactions.data.code != 200) {
+          return alert(transactions.data.message);
+        }
         const transaction_management_put = `http://localhost:5100/transaction_management`;
-        console.log(transactions.data.result.transactions);
         const update_result = await axios.put(transaction_management_put, {
           listing: this.listing,
           token: this.$store.state.accessToken,
           transactions: transactions.data.result.transactions.result,
           status: "Cancelled",
         });
+        if (update_result.data.code != 200) {
+          return alert(update_result.data.message);
+        }
         const listing_management_url = `http://localhost:5000/listing_management/${this.$route.params.listingid}`;
-        await axios.put(listing_management_url, {
+        const listing_update = await axios.put(listing_management_url, {
           listing: this.listing,
           token: this.$store.state.accessToken,
         });
+        if (listing_update.data.code != 200) {
+          return alert(listing_update.data.message);
+        }
         this.notAvailable = true;
-        console.log(update_result.data);
+        return alert()
       } catch (error) {
         console.log(error);
       }

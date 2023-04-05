@@ -44,8 +44,6 @@ const storage = getStorage();
 
 async function loginEmailPassword(email, password) {
   try {
-    console.log(email, password);
-    console.log("login");
     const userCredential = await signInWithEmailAndPassword(
       auth,
       email,
@@ -61,7 +59,7 @@ async function loginEmailPassword(email, password) {
           uid +
           "/.json"
       );
-      
+
       const role = response.data.role;
       const name = response.data.name;
       let access = {
@@ -74,34 +72,18 @@ async function loginEmailPassword(email, password) {
       // let return_json = { result: user };
       return access;
     } else {
-      console.log("LOG IN FAILED");
       let return_json = { result: "Unsuccessful", statusCode: "401" };
       return return_json;
     }
   } catch (error) {
-    console.log(error);
-    let return_json = { result: "Unsuccessful", statusCode: "401", errorMessage:error.code };
+    let return_json = {
+      result: "Unsuccessful",
+      statusCode: "401",
+      errorMessage: error.code,
+    };
     return return_json;
   }
 }
-
-// Function will login using google and return a UID
-// async function signInWithGoogle() {
-//   try {
-//     // This gives you a Google Access Token. You can use it to access the Google API.
-//     const result = await signInWithPopup(auth, provider);
-//     const credential = GoogleAuthProvider.credentialFromResult(result);
-//     console.log(credential);
-//     const token = credential.idToken;
-//     setCookie(token, 1);
-//     let return_json = { accessToken: token };
-//     return return_json;
-//   } catch (error) {
-//     // Handle Errors here.
-//     const errorCode = error.code;
-//     console.log(errorCode);
-//   }
-// }
 
 async function signUp(email, password, role, name) {
   try {
@@ -113,7 +95,7 @@ async function signUp(email, password, role, name) {
     // Signed in
     const uid = response.user.uid;
     const accessToken = response.user.accessToken;
-      console.log(name)
+    console.log(name);
     set(dbref(db, "UserData/" + uid), {
       role: role,
       name: name,
@@ -126,17 +108,15 @@ async function signUp(email, password, role, name) {
       authStatus: "Sign Up Success",
       accessToken: accessToken,
       statusCode: "200",
-      name:name
+      name: name,
     };
-    console.log(userData);
     return userData;
   } catch (error) {
     let userData = {
       authStatus: "Sign Up Failed",
       statusCode: "401",
-      errorMessage: error.code
+      errorMessage: error.code,
     };
-    console.log(userData);
     return userData;
   }
 }
