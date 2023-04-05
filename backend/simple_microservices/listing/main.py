@@ -45,7 +45,7 @@ def ping():
 
 ### GET ALL LISTINGS ###
 @app.get('/listing', response_model=List[schemas.Listing])
-def get_all_listings(skip: str = 0, limit: int = 100, db: Session = Depends(get_db)):
+def get_all_available_listings(skip: str = 0, limit: int = 100, db: Session = Depends(get_db)):
     items = crud.get_listings(db,skip=skip,limit=limit)
     if items is None:
         raise HTTPException(status_code=404, detail="No listings available")
