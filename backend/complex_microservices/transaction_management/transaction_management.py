@@ -199,10 +199,12 @@ def processCreateTransaction(listing, beneficiary_id, quantityDeducted, token):
 
             # 5. If quantity has depleted to 0, send AMQP to corporate
             if new_quantity == 0:
+                amqp_listing_msg = listing
+                amqp_listing_msg['quantity'] = 0
                 print("\n------------------Sending AMQP for no more qty to corporate------------------")
                 obj = {
                     "purpose": "toCorporate",
-                    "listing_result": listing
+                    "listing_result": amqp_listing_msg
                 }
                 message = json.dumps(obj)
                 amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="corporate.notif", 

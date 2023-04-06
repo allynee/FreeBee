@@ -191,6 +191,7 @@ def toCorporate(info):
     if 'detail' not in str(corporate_result):
         corporate_name = info['listing_result']['corporate_name']
         email = corporate_result['email']
+        print(info['listing_result']['quantity'])
         if info['listing_result']['quantity'] == 0:
             subject = f"Your listing has been fully claimed on Freebee!"
             message = f"Hi {corporate_name}! <br><br>Your listing - {info['listing_result']['name']} has been fully claimed on FreeBee!<br>Please check it out at http://localhost:8080/findFreeBee/{str(info['listing_result']['listing_id'])}<br><br>Thank you for using FreeBee!"
