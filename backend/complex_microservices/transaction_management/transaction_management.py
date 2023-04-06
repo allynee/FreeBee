@@ -146,7 +146,6 @@ def view_transactions_corp(listing_id):
     listing_URL_full = listing_URL + f"/{listing_id}"
     listing_result = invoke_http(listing_URL_full, method="GET", json=None)
     
-    # print(results)
     results = {"transactions": transaction_result, 'listing_details': listing_result}
     return {
         "code": 200,
@@ -173,14 +172,10 @@ def processCreateTransaction(listing, beneficiary_id, quantityDeducted, token):
             }
             #4. Check that beneficiary can deduct quantity requested from listing
             #4a. Get existing listing details
-            # listing_URL_full = listing_URL + "/" + str(listing_id)
-            # listing_result = invoke_http(listing_URL_full, method='GET', json=None)
-            # print('listing_result:', listing_result)
             existing_quantity = int(listing["quantity"])
             #4b. Deduct quantity from  listing
             new_quantity = existing_quantity - int(quantityDeducted)
             new_listing = {"quantity": new_quantity}
-            print(new_quantity)
             if new_quantity >= 0: #if sufficient quantity
                 print('\n-----Updating listing-----')
                 listing_URL_full = listing_URL + "/" + str(listing_id)

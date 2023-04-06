@@ -26,10 +26,7 @@ async function createListingFirebase(image) {
   try {
     const filepath = image.filepath;
     const filename = image.filename;
-    console.log(filepath);
-    console.log(filename);
     const bufferData = fs.readFileSync(filepath);
-    console.log(bufferData);
     const data = await push(dbref(db, "Listing"), {
       image: filename,
     });
