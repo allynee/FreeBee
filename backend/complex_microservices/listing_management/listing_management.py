@@ -114,6 +114,8 @@ def display_listings():
     print('listing_result:', listing_result)
     listing_result = listing_result["result"]
 
+    print('\n-----Invoking Images-----')
+
     image_result = invoke_http(image_URL, method="GET", json=None)
     if image_result["code"] != 200:
         return{
@@ -244,9 +246,8 @@ def processCreateListing(listing_object, token, image):
             }}
             '''
             r = requests.post(geocoding_URL_full, json={'query': query})
-            print(json.dumps(r.json()))
+            print('Geocoding Result:',json.dumps(r.json()))
             r = r.json()
-            print(type(r['data']['address']['code']))
             if(r['data']['address']['code']=="400"):
                 return {
                     "code": 400,
@@ -261,8 +262,6 @@ def processCreateListing(listing_object, token, image):
             listing_object["area"] = area
             listing_object["district"] = int(district)
             listing_object["postal"] = int(postal_code)
-
-            print(listing_object) #check if area district and postal code was added to listing object
 
             #4. Send the image data to database
             #Invoke the image microservice
@@ -279,7 +278,8 @@ def processCreateListing(listing_object, token, image):
 
             listing_object["listing_id"] = image_result['listingid']
             listing_object['img_ext']=  image_result['extension']
-            print(listing_object)
+            
+            print('Final JSON to post on listing: ',listing_object)
 
             #5. Send the listing info to database
             #Invoke the listing microservice
@@ -327,7 +327,6 @@ def processCreateListing(listing_object, token, image):
 def processUpdateListing(listing, listing_id,token):
     #2.authenticate that this user is a corporate
     authentication_result = authenticateUser(token) 
-    print(authentication_result)
 
     if ("role" in authentication_result) and (authentication_result['role'] == "corporate"):
         #3. Update listing info in the database

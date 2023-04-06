@@ -18,7 +18,6 @@ app.get("/login/:email/:password", async (req, res) => {
   // const email = "test@gmail.com"
   // const password = "test1234"
   const authStatus = await authentication.loginEmailPassword(email, password);
-  console.log(authStatus);
   res.json(authStatus);
 });
 
@@ -29,7 +28,6 @@ app.get("/auth/checkaccess/:token", async (req, res) => {
 });
 
 app.post("/register", async (req, res) => {
-  console.log(req.body);
   const email = req.body.email;
   const password = req.body.password;
   const role = req.body.role;

@@ -8,7 +8,6 @@ async function geocode(address) {
       address: null,
     };;
   } else {
-    console.log(address);
     try {
       // Getting the data from Google Maps API based on the address given
       const response = await axios.get(
@@ -22,7 +21,6 @@ async function geocode(address) {
       );
 
       // Retrieves Latitude and Longitude
-      console.log(response.data);
       const lat = response.data.results[0].geometry.location.lat;
       const lng = response.data.results[0].geometry.location.lng;
       // Calling PlaceId Function to get the PlaceId
@@ -79,7 +77,6 @@ async function geocode(address) {
       // Finding the District based on the PostalCode
       let district = "";
       Object.keys(postalDistricts).forEach((key) => {
-        // console.log(postalDistricts[key], key);
         if (postalDistricts[key].includes(postal_front) === true) {
           district = key;
         }

@@ -95,7 +95,6 @@ async function signUp(email, password, role, name) {
     // Signed in
     const uid = response.user.uid;
     const accessToken = response.user.accessToken;
-    console.log(name);
     set(dbref(db, "UserData/" + uid), {
       role: role,
       name: name,
@@ -126,14 +125,8 @@ async function signUp(email, password, role, name) {
 async function checkAuthStatus() {
   const authChange = await onAuthStateChanged(auth, (user) => {
     if (user) {
-      console.log("yes");
-      // User is signed in, see docs for a list of available properties
-      // https://firebase.google.com/docs/reference/js/firebase.User
-      // ...
       return true;
     } else {
-      // User is signed out
-      // ...
     }
     if (authChange) {
       return true;

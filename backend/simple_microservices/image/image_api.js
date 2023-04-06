@@ -15,15 +15,11 @@ const imageFn = require("./image");
 app.post("/image", async (req, res) => {
   const image = req.body
   const authStatus = await imageFn.createListingFirebase(image);
-  console.log(authStatus);
-  console.log("this is authStatus in image_api.js");
   res.json(authStatus);
 });
 
 app.get("/image", async (req, res) => {
   const authStatus = imageFn.getImageUrl();
-  console.log(authStatus);
-  console.log("image getting");
   res.json(authStatus);
 });
 

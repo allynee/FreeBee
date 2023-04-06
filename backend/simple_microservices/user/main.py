@@ -123,16 +123,7 @@ def get_subscribers_information_by_corporate(corporate_id: str, db: Session = De
 
 ### GET FAVOURITE ###
 @app.get('/favourite')
-# def recieveReq(request: Request):
-#     beneficiary_id = request.query_params.get('beneficiary_id')
-#     listing_id = request.query_params.get('listing_id')
-#     print(beneficiary_id, listing_id)
-#     # get_favourite(beneficiary_id=beneficiary_id, listing_id=listing_id)
 def get_favourite(beneficiary_id: str, listing_id:str, db: Session = Depends(get_db)):
-    # favourite = crud.get_favourite(db, favourite)
-    # beneficiary_id = request.query_params.get('beneficiary_id')
-    # listing_id = request.query_params.get('listing_id')
-    # print(beneficiary_id, listing_id)
     favourite = crud.get_favourite(db, beneficiary_id=beneficiary_id, listing_id=listing_id)
     if favourite is None:
         return False
@@ -150,16 +141,7 @@ def delete_subscription(subscription: schemas.Subscription, db: Session = Depend
     return crud.delete_subscription(db, subscription=subscription)
 
 @app.get('/all_favourite/{beneficiary_id}')
-# def recieveReq(request: Request):
-#     beneficiary_id = request.query_params.get('beneficiary_id')
-#     listing_id = request.query_params.get('listing_id')
-#     print(beneficiary_id, listing_id)
-#     # get_favourite(beneficiary_id=beneficiary_id, listing_id=listing_id)
 def get_all_favourites(beneficiary_id: str, db: Session = Depends(get_db)):
-    # favourite = crud.get_favourite(db, favourite)
-    # beneficiary_id = request.query_params.get('beneficiary_id')
-    # listing_id = request.query_params.get('listing_id')
-    # print(beneficiary_id, listing_id)
     favourites = crud.get_all_favourites(db, beneficiary_id=beneficiary_id)
     if favourites is None:
         return None
