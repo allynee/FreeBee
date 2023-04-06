@@ -60,4 +60,4 @@ FreeBee! strives to address this problem by providing a user-friendly web applic
 
 ## 5) Special Thanks to...
 
-Professor Chris Poskitt and Instructor Lay Foo for their guidance and support through our Enterprise Solution Development journey!
+Professor Chris Poskitt, Instructor Lay Foo and TA Kaniel for their guidance and support through our Enterprise Solution Development journey!
